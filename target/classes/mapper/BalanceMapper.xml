@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.BalanceMapper" >
+
+	<resultMap id="baseResultMap" type="com.tzcpa.model.student.OptionDto" >
+    <result column="question_id" property="questionId" jdbcType="INTEGER" />
+    <result column="angle" property="angle" jdbcType="VARCHAR" />
+    <result column="option" property="option" jdbcType="INTEGER" />
+    <result column="quesion_option" property="quesionOption" jdbcType="VARCHAR" />
+    <result column="quesion_option_desc" property="quesionOptionDesc" jdbcType="VARCHAR" />
+    <result column="target_value" property="targetValue" jdbcType="VARCHAR" />
+    <result column="unit" property="unit" jdbcType="VARCHAR" />
+    <result column="standard_score" property="standardScore" jdbcType="INTEGER" />
+    <result column="weight_coefficient" property="weightCoefficient" jdbcType="FLOAT" />
+    <result column="actual_value" property="actualValue" jdbcType="VARCHAR" />
+    <result column="final_score" property="finalScore" jdbcType="INTEGER" />
+    <result column="score_standard" property="scoreStandard" jdbcType="VARCHAR" />
+    <result column="question_id" property="questionId" jdbcType="INTEGER" />
+    <result column="class_id" property="classId" jdbcType="INTEGER" />
+    <result column="team_id" property="teamId" jdbcType="INTEGER" />
+    <result column="year" property="year" jdbcType="INTEGER" />
+  </resultMap>
+	
+	
+
+	<!-- 查询此题的选项以及选项值 -->
+	<select id = "findOption" parameterType = "com.tzcpa.model.student.HseRequest" resultMap="baseResultMap" >
+		SELECT
+		    class_id,
+		    question_id,
+			quesion_option,
+			quesion_option_desc,
+			target_value,
+			balance_score_func,
+			unit
+		FROM
+			t_class_question_option 
+		WHERE
+			question_id = #{hse.questionId}
+			AND class_id = #{hse.classId}
+			AND quesion_option in(${answerList})
+			
+	</select>
+	
+	<!-- 查询此题的选项以及选项值 -->
+	<select id = "findOptionByQuestionIdsOld" resultMap="baseResultMap" >
+		SELECT
+		    class_id,
+		    question_id,
+			quesion_option,
+			quesion_option_desc,
+			target_value,
+			balance_score_func,
+			unit
+		FROM
+			t_class_question_option 
+		WHERE
+			question_id in (${questionIds}) 
+			AND class_id = #{classId}
+	</select>
+	
+	<!-- 查询此题的选项以及选项值 2019-07-15-->
+	<select id="findOptionByQuestionIds" resultMap="baseResultMap" >
+		SELECT a.class_id,a.`year`,
+			question_id,
+			quesion_option,
+			quesion_option_desc,
+			a.target_value_right target_value,
+			balance_score_func,
+			unit  from (SELECT target_value_right, `year`, foreign_id, class_id FROM t_class_balanced_scorecard_target_value WHERE class_id = #{classId} AND `year` in(${years})) a
+			LEFT JOIN (SELECT
+			class_id,
+			question_id,
+			quesion_option,
+			quesion_option_desc,
+			target_value,
+			balance_score_func,
+			unit 
+		FROM
+			t_class_question_option
+		WHERE
+			class_id = #{classId}
+			AND question_id IN (${questionIds}) ) b ON a.foreign_id = b.target_value
+	</select>
+	
+	<!-- 修改平衡记录表记录 -->
+    <update id="updateBalanceScoreCard" parameterType="com.tzcpa.model.student.OptionDto">
+    	update t_team_balanced_scorecard set quesion_option=#{op.quesionOption},question_option_value=#{op.quesionOptionDesc},target_value=#{op.targetValue},unit=#{op.unit},balance_score_func=#{op.balanceScoreFunc},matching_degree=#{op.matchingDegree} where infact_id=#{op.questionId} and class_id = #{op.classId} and `option` = #{op.option} <!-- and strategy in(#{op.strategy},'0') --> and team_id=#{op.teamId} and year in(${beYear})
+    </update>
+    
+    <!-- 批量修改平衡记录表记录 -->
+    <update id="updateBatchBalanceScoreCard">
+    	<foreach collection="list" separator=";" item="op">
+            update t_team_balanced_scorecard set quesion_option=#{op.quesionOption},question_option_value=#{op.quesionOptionDesc},target_value=#{op.targetValue},unit=#{op.unit},balance_score_func=#{op.balanceScoreFunc},matching_degree=#{op.matchingDegree} where infact_id=#{op.questionId} and class_id = #{op.classId} and `option` = #{op.option} <!-- and strategy in(#{op.strategy},'0') --> and team_id=#{op.teamId} and year = #{op.year}
+        </foreach>
+    </update>
+	
+</mapper>

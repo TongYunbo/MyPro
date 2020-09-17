@@ -1,0 +1,1137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.ClassQuestionDescMapper">
+
+    <resultMap id="ClassQuestionDescResultMap" type="com.tzcpa.model.treatment.ClassQuestionDescDO">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="question_title" property="questionTitle" jdbcType="VARCHAR"/>
+        <result column="question_desc" property="questionDesc" jdbcType="LONGVARCHAR"/>
+        <result column="question_year" property="questionYear" jdbcType="INTEGER"/>
+        <result column="question_type" property="questionType" jdbcType="INTEGER"/>
+        <result column="duration" property="duration" jdbcType="INTEGER"/>
+        <result column="background_desc" property="backgroundDesc" jdbcType="LONGVARCHAR"/>
+        <result column="event_Id" property="eventId" jdbcType="INTEGER"/>
+        <result column="class_id" property="classId" jdbcType="INTEGER"/>
+        <result column="is_show" property="isShow" jdbcType="INTEGER"/>
+        <result column="parent_id" property="parentId" jdbcType="INTEGER"/>
+
+    </resultMap>
+
+    <resultMap id="PreQuestionMap" type="com.tzcpa.model.treatment.QuestionAnswerDTO">
+        <result column="thisItemId" property="thisItemId" />
+        <result column="thisItemContent" property="thisItemContent" jdbcType="VARCHAR"/>
+        <result column="nextItemId" property="nextItemId" />
+        <result column="questionType" property="questionType" />
+        <result column="timeLine" property="timeLine" jdbcType="VARCHAR"/>
+        <result column="eventCode" property="eventCode" jdbcType="VARCHAR"/>
+        <result column="eventName" property="eventName" jdbcType="VARCHAR"/>
+        <result column="roleId" property="roleId" />
+        <result column="weight" property="weight" />
+        <result column="isStrategic" property="isStrategic" />
+        <result column="questionYear" property="questionYear" />
+        <result column="questionMonth" property="questionMonth" />
+        <result column="answer" property="answer" />
+        <result column="isShow" property="isShow" />
+        <result column="backgroundDesc" property="backgroundDesc" jdbcType="VARCHAR"/>
+        <collection property="thisItemOptions" ofType="map" >
+            <result column="opt" property="opt" jdbcType="VARCHAR"/>
+            <result column="optCon" property="optCon" jdbcType="VARCHAR"/>
+            <result column="tarVal" property="tarVal" jdbcType="VARCHAR"/>
+            <result column="optionDesc" property="optionDesc" jdbcType="VARCHAR"/>
+        </collection>
+        <collection property="thisChildrenItem" ofType="com.tzcpa.model.treatment.SecondQuestionDTO"
+                    select="getSecondQuestions" column="{teamId=teamId,thisItemId=thisItemId,classId=classId}">
+        </collection>
+    </resultMap>
+
+    <resultMap id="PreQuestionMap2" type="com.tzcpa.model.treatment.SecondQuestionDTO">
+        <result column="thisItemId" property="thisItemId" />
+        <result column="thisItemContent" property="thisItemContent" jdbcType="VARCHAR"/>
+        <result column="nextItemId" property="nextItemId" />
+        <result column="questionType" property="questionType" />
+        <result column="timeLine" property="timeLine" jdbcType="VARCHAR"/>
+        <result column="eventCode" property="eventCode" jdbcType="VARCHAR"/>
+        <result column="eventName" property="eventName" jdbcType="VARCHAR"/>
+        <result column="roleId" property="roleId" />
+        <result column="weight" property="weight" />
+        <result column="isStrategic" property="isStrategic" />
+        <result column="backgroundDesc" property="backgroundDesc" jdbcType="VARCHAR"/>
+        <collection property="thisItemOptions" ofType="map" >
+            <result column="opt" property="opt" jdbcType="VARCHAR"/>
+            <result column="optCon" property="optCon" jdbcType="VARCHAR"/>
+            <result column="tarVal" property="tarVal" jdbcType="VARCHAR"/>
+            <result column="optionDesc" property="optionDesc" jdbcType="VARCHAR"/>
+        </collection>
+        <collection property="thisChildrenItem" ofType="com.tzcpa.model.treatment.ThirdQuestionDTO"
+                    select="getThirdQuestions" column="{teamId=teamId,thisItemId=thisItemId,classId=classId,parentId=parentId}">
+        </collection>
+    </resultMap>
+
+    <resultMap id="PreQuestionMap3" type="com.tzcpa.model.treatment.ThirdQuestionDTO">
+        <result column="thisItemId" property="thisItemId" />
+        <result column="thisItemContent" property="thisItemContent" jdbcType="VARCHAR"/>
+        <result column="nextItemId" property="nextItemId" />
+        <result column="questionType" property="questionType" />
+        <result column="timeLine" property="timeLine" jdbcType="VARCHAR"/>
+        <result column="eventCode" property="eventCode" jdbcType="VARCHAR"/>
+        <result column="eventName" property="eventName" jdbcType="VARCHAR"/>
+        <result column="roleId" property="roleId" />
+        <result column="weight" property="weight" />
+        <result column="isStrategic" property="isStrategic" />
+        <result column="backgroundDesc" property="backgroundDesc" jdbcType="VARCHAR"/>
+        <collection property="thisItemOptions" ofType="map" >
+            <result column="opt" property="opt" jdbcType="VARCHAR"/>
+            <result column="optCon" property="optCon" jdbcType="VARCHAR"/>
+            <result column="tarVal" property="tarVal" jdbcType="VARCHAR"/>
+            <result column="optionDesc" property="optionDesc" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="SandTableMap" type="com.tzcpa.model.treatment.SandTableVO">
+
+        <result column="time" property="time" />
+        <collection property="buttonList" ofType="map" >
+            <result column="name" property="name" jdbcType="VARCHAR"/>
+            <result column="questionId" property="questionId" jdbcType="INTEGER"/>
+            <result column="questionType" property="questionType" jdbcType="INTEGER"/>
+            <result column="role_id" property="roleId" jdbcType="INTEGER"/>
+            <result column="weight" property="weight" jdbcType="REAL"/>
+            <result column="question_type" property="questionType" jdbcType="INTEGER"/>
+            <result column="isScore" property="isScore" jdbcType="INTEGER"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="PreResponseMap" type="com.tzcpa.model.treatment.QuestionAnswerDTO">
+        <result column="thisItemId" property="thisItemId" />
+        <result column="thisItemContent" property="thisItemContent" jdbcType="VARCHAR"/>
+        <result column="nextItemId" property="nextItemId" />
+        <result column="questionType" property="questionType" />
+        <result column="timeLine" property="timeLine" jdbcType="VARCHAR"/>
+        <result column="eventCode" property="eventCode" jdbcType="VARCHAR"/>
+        <result column="eventName" property="eventName" jdbcType="VARCHAR"/>
+        <result column="roleId" property="roleId" />
+        <result column="weight" property="weight" />
+        <result column="isStrategic" property="isStrategic" />
+        <result column="answer" property="answer" />
+        <result column="isShow" property="isShow" />
+        <result column="backgroundDesc" property="backgroundDesc" jdbcType="VARCHAR"/>
+        <collection property="thisItemOptions" ofType="map" >
+            <result column="opt" property="opt" jdbcType="VARCHAR"/>
+            <result column="optCon" property="optCon" jdbcType="VARCHAR"/>
+            <result column="tarVal" property="tarVal" jdbcType="VARCHAR"/>
+            <result column="optionDesc" property="optionDesc" jdbcType="VARCHAR"/>
+        </collection>
+        <collection property="thisChildrenItem" ofType="com.tzcpa.model.treatment.SecondQuestionDTO"
+                    select="getSecondResponse" column="{teamId=teamId,classId=classId,thisItemId=thisItemId}">
+        </collection>
+    </resultMap>
+
+    <resultMap id="PreResponseMap2" type="com.tzcpa.model.treatment.SecondQuestionDTO">
+        <result column="thisItemId" property="thisItemId" />
+        <result column="thisItemContent" property="thisItemContent" jdbcType="VARCHAR"/>
+        <result column="nextItemId" property="nextItemId" />
+        <result column="questionType" property="questionType" />
+        <result column="timeLine" property="timeLine" jdbcType="VARCHAR"/>
+        <result column="eventCode" property="eventCode" jdbcType="VARCHAR"/>
+        <result column="eventName" property="eventName" jdbcType="VARCHAR"/>
+        <result column="roleId" property="roleId" />
+        <result column="weight" property="weight" />
+        <result column="isStrategic" property="isStrategic" />
+        <result column="answer" property="answer" />
+        <result column="backgroundDesc" property="backgroundDesc" jdbcType="VARCHAR"/>
+        <collection property="thisItemOptions" ofType="map" >
+            <result column="opt" property="opt" jdbcType="VARCHAR"/>
+            <result column="optCon" property="optCon" jdbcType="VARCHAR"/>
+            <result column="tarVal" property="tarVal" jdbcType="VARCHAR"/>
+            <result column="optionDesc" property="optionDesc" jdbcType="VARCHAR"/>
+        </collection>
+        <collection property="thisChildrenItem" ofType="com.tzcpa.model.treatment.ThirdQuestionDTO"
+                    select="getThirdResponse" column="{teamId=teamId,classId=classId,thisItemId=thisItemId,parentId=parentId}">
+        </collection>
+    </resultMap>
+
+    <resultMap id="PreResponseMap3" type="com.tzcpa.model.treatment.ThirdQuestionDTO">
+        <result column="thisItemId" property="thisItemId" />
+        <result column="thisItemContent" property="thisItemContent" jdbcType="VARCHAR"/>
+        <result column="nextItemId" property="nextItemId" />
+        <result column="questionType" property="questionType" />
+        <result column="timeLine" property="timeLine" jdbcType="VARCHAR"/>
+        <result column="eventCode" property="eventCode" jdbcType="VARCHAR"/>
+        <result column="eventName" property="eventName" jdbcType="VARCHAR"/>
+        <result column="roleId" property="roleId" />
+        <result column="weight" property="weight" />
+        <result column="isStrategic" property="isStrategic" />
+        <result column="answer" property="answer" />
+        <collection property="thisItemOptions" ofType="map" >
+            <result column="opt" property="opt" jdbcType="VARCHAR"/>
+            <result column="optCon" property="optCon" jdbcType="VARCHAR"/>
+            <result column="tarVal" property="tarVal" jdbcType="VARCHAR"/>
+            <result column="optionDesc" property="optionDesc" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="TimeMap" type="com.tzcpa.model.treatment.CountDownDO">
+        <result column="mothMillisecond" property="mothMillisecond" />
+        <result column="recidueMillSecond" property="recidueMillSecond"/>
+        <result column="bufferTime" property="recidueBufferTime"/>
+
+        <result column="classId" property="classId" />
+        <collection property="topicMilliseconds" ofType="map">
+            <result column="questionId" property="questionId"/>
+            <result column="itemTime" property="itemTime"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="AutoQuestionMap" type="com.tzcpa.model.teacher.AutoAnswerDO">
+        <result column="classId" property="classId" />
+        <result column="teamId" property="teamId" />
+        <result column="rankOneQuesId" property="questionId" />
+        <result column="rootId" property="rootId" />
+
+        <result column="random1" property="isRandom" />
+        <result column="severalOptions1" property="severalOptions" />
+        <result column="chooseFew1" property="chooseFew" />
+        <result column="eventCode" property="eventCode" />
+        <result column="eventName" property="eventName" />
+        <result column="weight" property="weight" />
+        <result column="year" property="year" />
+        <result column="month" property="month" />
+        <result column="questionType" property="questionType" />
+        <result column="roleId" property="roleId" />
+        <result column="timeLine" property="timeLine" />
+        <result column="isStrategic" property="isStrategic" />
+        <collection property="children" ofType="com.tzcpa.model.teacher.AutoAnswerDO2">
+            <result column="classId" property="classId" />
+            <result column="teamId" property="teamId" />
+            <result column="rankTwoQuesId" property="questionId" />
+            <result column="rootId" property="rootId" />
+            <result column="random2" property="isRandom" />
+            <result column="severalOptions2" property="severalOptions" />
+            <result column="chooseFew2" property="chooseFew" />
+            <result column="eventCode" property="eventCode" />
+            <result column="eventName" property="eventName" />
+            <result column="weight" property="weight" />
+            <result column="year" property="year" />
+            <result column="month" property="month" />
+            <result column="roleId" property="roleId" />
+            <result column="questionType" property="questionType" />
+            <result column="timeLine" property="timeLine" />
+            <result column="isStrategic" property="isStrategic" />
+        <collection property="children" ofType="com.tzcpa.model.teacher.BaseAutoAnswer">
+            <result column="classId" property="classId" />
+            <result column="teamId" property="teamId" />
+            <result column="rankThreeQuesId" property="questionId" />
+            <result column="rootId" property="rootId" />
+            <result column="random3" property="isRandom" />
+            <result column="severalOptions3" property="severalOptions" />
+            <result column="chooseFew3" property="chooseFew" />
+            <result column="eventCode" property="eventCode" />
+            <result column="eventName" property="eventName" />
+            <result column="weight" property="weight" />
+            <result column="year" property="year" />
+            <result column="month" property="month" />
+            <result column="questionType" property="questionType" />
+            <result column="roleId" property="roleId" />
+            <result column="timeLine" property="timeLine" />
+            <result column="isStrategic" property="isStrategic" />
+
+        </collection>
+        </collection>
+
+
+    </resultMap>
+
+    <insert id="insertClassQuestionDesc" parameterType="com.tzcpa.model.treatment.ClassQuestionDescDO">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_class_question_desc
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="questionTitle != null">
+                question_title,
+            </if>
+            <if test="questionDesc != null">
+                question_desc,
+            </if>
+            <if test="questionYear != null">
+                question_year,
+            </if>
+            <if test="questionType != null">
+                question_type,
+            </if>
+            <if test="duration != null">
+                duration,
+            </if>
+            <if test="backgroundDesc != null">
+                background_desc,
+            </if>
+            <if test="eventId != null">
+                event_id,
+            </if>
+            <if test="classId != null">
+                class_id,
+            </if>
+
+            <if test="is_show != null">
+                isShow,
+            </if>
+            <if test="parentId != null">
+                parent_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="questionTitle != null">
+                #{questionTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="questionDesc != null">
+                #{questionDesc,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="questionYear != null">
+                #{questionYear,jdbcType=INTEGER},
+            </if>
+            <if test="questionType != null">
+                #{questionType,jdbcType=INTEGER},
+            </if>
+            <if test="duration != null">
+                #{duration,jdbcType=INTEGER},
+            </if>
+            <if test="backgroundDesc != null">
+                #{backgroundDesc,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="eventId != null">
+                #{eventId,jdbcType=INTEGER},
+            </if>
+            <if test="classId != null">
+                #{classId,jdbcType=INTEGER},
+            </if>
+            <if test="isShow != null">
+                #{isShow,jdbcType=INTEGER},
+            </if>
+            <if test="parentId != null">
+                #{parentId,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 初始化题库 -->
+    <insert id="initClassQuestionDesc" parameterType="int">
+		INSERT INTO t_class_question_desc (
+			question_id,
+			question_title,
+			question_desc,
+			question_year,
+			question_type,
+			duration,
+			background_desc,
+			event_id,
+			parent_id,
+			is_random,
+			several_options,
+			choose_a_few,
+			turn_on_randomization,
+			is_show,
+			class_id
+		) SELECT
+			id,
+			question_title,
+			question_desc,
+			question_year,
+			question_type,
+			duration,
+			background_desc,
+			event_id,
+			parent_id,
+			is_random,
+			several_options,
+			choose_a_few,
+			turn_on_randomization,
+			is_show,
+			#{classId}
+		FROM
+			t_conf_question_desc
+    </insert>
+
+    <!-- 获取当前一级未回答问题-->
+    <select id="getQuestions" resultMap="PreQuestionMap">
+                    SELECT
+                question.thisItemId,
+                question.thisItemContent,
+                question.questionType,
+                next.nextItemId,
+                tcqo.quesion_option opt,
+                tcqo.quesion_option_desc optCon,
+                tcqo.option_desc as optionDesc,
+                concat(IFNULL(tcqo.target_value,''),IFNULL(tcqo.unit,'')) tarVal,
+               question.eventType,
+               question.eventCode,
+              question.eventName,
+        date_format(question.timeLine, '%Y-%m-%d') timeLine,
+               question.roleId,
+              question.weight,
+              question.isStrategic,
+              question.backgroundDesc,
+              question.class_id classId,
+             question.question_year questionYear,
+              #{teamId} teamId,
+        cast( date_format(question.timeLine, '%m') AS SIGNED) questionMonth,
+        question.answer,
+        question.isShow
+            FROM ( SELECT
+                        tcqd.question_id thisItemId,
+                        tcqd.question_desc thisItemContent,
+                        tcqd.class_id,
+                        tcqd.question_type questionType,
+                  tcef.event_type eventType,
+                  tcef.event_code eventCode,
+                  tcef.event_name eventName,
+                  tcef.time_line timeLine,
+                    tcef.role_id roleId,
+                    tcef.weight ,
+                    tcef.is_strategic isStrategic,
+                    tcqd.background_desc backgroundDesc,
+                    tcqd.question_year,
+                    tcqd.is_show isShow,
+                    tsa.answer
+                    From t_class_event_flow tcef
+                        left join t_class_question_desc tcqd
+                       ON tcef.event_id = tcqd.event_id and tcef.class_id = tcqd.class_id
+                    LEFT JOIN t_stu_answer tsa
+                ON tcqd.question_id = tsa.question_id AND tsa.team_id = #{teamId}
+                     and tsa.class_id = tcqd.class_id
+                LEFT JOIN
+                (select * from t_stu_answer tsaChild where tsaChild.question_id &lt;> tsaChild.root_id) tsaChild
+                on tsa.class_id = tsaChild.class_id and tsa.team_id = tsaChild.team_id
+                and tsa.question_id = tsaChild.root_id
+                    WHERE
+                        tcef.class_id = #{classId} and tcqd.class_id = #{classId}
+                          <!-- H6风险识别特殊处理 -->
+                    AND  (tsa.id IS NULL or((tsa.question_id = 35 or tsa.question_id = 93) and tsaChild.id is null))
+                      and tcqd.parent_id = 0 and tcef.is_show = 0
+                           and date_format(tcef.time_line, '%Y-%m-%d') = date_format(#{currentMonth}, '%Y-%m-%d')
+        GROUP BY tcef.class_id ,tsa.team_id,tcqd.question_id
+        ORDER BY tcef.event_order LIMIT 1
+                ) question
+            LEFT JOIN t_class_question_option tcqo ON question.thisItemId = tcqo.question_id
+            and tcqo.class_id = question.class_id
+            LEFT JOIN (
+                SELECT
+                    tcqd.question_id nextItemId,
+                    tcqd.class_id
+                From t_class_event_flow tcef
+                        left join t_class_question_desc tcqd
+                       ON tcef.event_id = tcqd.event_id and tcef.class_id = tcqd.class_id
+                LEFT JOIN t_stu_answer tsa
+              ON tcqd.question_id = tsa.question_id AND tsa.team_id = #{teamId}
+               and tsa.class_id = tcqd.class_id
+                LEFT JOIN
+                (select * from t_stu_answer tsaChild where tsaChild.question_id &lt;> tsaChild.root_id) tsaChild
+                on tsa.class_id = tsaChild.class_id and tsa.team_id = tsaChild.team_id
+                and tsa.question_id = tsaChild.root_id
+                WHERE tcef.class_id = #{classId} and tcqd.class_id = #{classId}
+        AND  (tsa.id IS NULL or(tsa.question_id = 35 and tsaChild.id is null))
+                      and tcqd.parent_id = 0  and tcef.is_show = 0
+              and  date_format(tcef.time_line, '%Y-%m-%d') = date_format(#{currentMonth}, '%Y-%m-%d')
+            GROUP BY tcef.class_id ,tsa.team_id,tcqd.question_id
+                ORDER BY tcef.event_order LIMIT 1, 1
+            ) next ON question.class_id = next.class_id
+        ORDER BY tcqo.id
+    </select>
+    <!-- 获取二级未回答问题 -->
+    <select id="getSecondQuestions" resultMap="PreQuestionMap2" >
+                    SELECT
+                question.thisItemId,
+                question.thisItemContent,
+                question.questionType,
+                0 nextItemId,
+                tcqo.quesion_option opt,
+                tcqo.quesion_option_desc optCon,
+                tcqo.option_desc as optionDesc,
+                 concat(IFNULL(tcqo.target_value,''),IFNULL(tcqo.unit,'')) tarVal,
+               question.eventType,
+               question.eventCode,
+              question.eventName,
+               date_format(question.timeLine, '%Y-%m-%d') timeLine,
+               question.roleId,
+              question.weight,
+              question.isStrategic,
+              question.thisItemAnswer,
+              question.backgroundDesc,
+              question.class_id classId,
+              #{teamId} teamId,
+              question.parentId
+            FROM ( SELECT
+                        tcqd.question_id thisItemId,
+                        tcqd.question_desc thisItemContent,
+                        tcqd.class_id,
+                        tcqd.question_type questionType,
+                  tcef.event_type eventType,
+                  tcef.event_code eventCode,
+                  tcef.event_name eventName,
+                  tcef.time_line timeLine,
+                    tcef.role_id roleId,
+                    tcef.weight ,
+                    tcef.is_strategic isStrategic,
+                     tsa.answer thisItemAnswer,
+                    tcqd.background_desc backgroundDesc,
+                     tcqd.parent_id parentId
+                    From t_class_event_flow tcef
+                        left join t_class_question_desc tcqd
+                       ON tcef.event_id = tcqd.event_id and tcef.class_id = tcqd.class_id
+                    LEFT JOIN t_stu_answer tsa
+                ON tcqd.question_id = tsa.question_id AND tsa.team_id = #{teamId}
+                 and tsa.class_id = tcqd.class_id
+                    WHERE
+                        tcqd.parent_id = #{thisItemId} AND tsa.id IS NULL and tcef.class_id = #{classId}
+                    ORDER BY tcqd.question_id
+                ) question
+            LEFT JOIN t_class_question_option tcqo ON question.thisItemId = tcqo.question_id
+            and tcqo.class_id = question.class_id and (tcqo.team_id = 0 or tcqo.team_id = #{teamId})
+            ORDER BY question.thisItemId
+    </select>
+
+    <!-- 获取二级未回答问题 -->
+    <select id="getThirdQuestions" resultMap="PreQuestionMap3">
+                    SELECT
+                question.thisItemId,
+                question.thisItemContent,
+                question.questionType,
+                0 nextItemId,
+                tcqo.quesion_option opt,
+                tcqo.quesion_option_desc optCon,
+                tcqo.option_desc as optionDesc,
+                 concat(IFNULL(tcqo.target_value,''),IFNULL(tcqo.unit,'')) tarVal,
+               question.eventType,
+               question.eventCode,
+              question.eventName,
+               date_format(question.timeLine, '%Y-%m-%d') timeLine,
+               question.roleId,
+              question.weight,
+              question.isStrategic,
+              question.thisItemAnswer,
+                    question.backgroundDesc
+            FROM (SELECT
+                        tcqd.question_id thisItemId,
+                        tcqd.question_desc thisItemContent,
+                        tcqd.class_id,
+                        tcqd.question_type questionType,
+                  tcef.event_type eventType,
+                  tcef.event_code eventCode,
+                  tcef.event_name eventName,
+                  tcef.time_line timeLine,
+                    tcef.role_id roleId,
+                    tcef.weight ,
+                    tcef.is_strategic isStrategic,
+                    tsa.answer thisItemAnswer,
+                    tcqd.background_desc backgroundDesc
+                    From t_class_event_flow tcef
+                        left join t_class_question_desc tcqd
+                       ON tcef.event_id = tcqd.event_id and tcef.class_id = tcqd.class_id
+                    LEFT JOIN t_stu_answer tsa
+                ON tcqd.question_id = tsa.question_id AND tsa.team_id = #{teamId}
+                 and tsa.class_id = tcqd.class_id
+                    WHERE
+                        tcqd.parent_id = #{thisItemId} AND tsa.id IS NULL and tcef.class_id = #{classId}
+                    ORDER BY tcqd.question_id
+                ) question
+            LEFT JOIN t_class_question_option tcqo ON question.thisItemId = tcqo.question_id
+              and tcqo.class_id = question.class_id
+              and ( (
+                    case when  #{parentId} = 232  then tcqo.quesion_option_desc is not null else 1 end and
+                    tcqo.team_id = 0)
+                     or tcqo.team_id = #{teamId} )
+
+              ORDER BY question.thisItemId
+    </select>
+
+    <!-- 获取沙盘数据 -->
+    <select id="getSandTable" resultMap="SandTableMap" >
+        SELECT
+        tcef.time_line time,
+        tcef.event_name name,
+        tcqd.question_id questionId,
+        tcqd.question_type questionType,
+        tcef.role_id,
+        tcef.weight,
+        tcqd.question_type,
+        <!-- #用答案表 关联 得分表 -->
+        case when tss.id is not null then 1 else 0 end
+        as isScore
+        FROM
+        t_class_event_flow tcef
+        INNER JOIN t_class_question_desc tcqd ON tcef.class_id = tcqd.class_id
+        AND tcef.event_id = tcqd.event_id
+        AND tcqd.parent_id = 0
+        INNER JOIN t_stu_answer tsa ON tcqd.class_id = tsa.class_id
+        AND tcqd.question_id = tsa.root_id
+        <!--and tsa.answer &lt;>  '["无提示"]'-->
+        and tsa.answer not in('["无提示"]','["跳过"]')
+        AND tsa.team_id = #{teamId}
+        <!--and case when tcqd.question_id = 113 then tsa.answer &lt;>  '["跳过"]' else 1=1 end
+        and case when tcqd.question_id = 393 then tsa.answer &lt;>  '["跳过"]' else 1=1 end-->
+        <!-- #关联大题 -->
+        left join t_stu_score tss on tsa.question_id = tss.question_id
+        and tsa.class_id = tss.class_id and tsa.team_id = tss.team_id
+        and  tcqd.question_type = 5
+        WHERE
+        tcef.class_id = #{classId}
+        AND tcef.event_type = 2
+        AND tcef.is_show = 0
+        GROUP BY
+        tsa.class_id,
+        tsa.team_id,
+        tcqd.question_id
+        ORDER BY tcef.event_order
+
+    </select>
+
+    <select id="getResponsed" resultMap="PreResponseMap">
+                    SELECT
+                question.thisItemId,
+                question.thisItemContent,
+                question.questionType,
+                tcqo.quesion_option opt,
+                tcqo.quesion_option_desc optCon,
+                tcqo.option_desc as optionDesc,
+                concat(IFNULL(tcqo.target_value,''),IFNULL(tcqo.unit,'')) tarVal,
+               question.eventType,
+               question.eventCode,
+              question.eventName,
+               date_format(question.timeLine, '%Y-%m-%d') timeLine,
+               question.roleId,
+              question.weight,
+              question.isStrategic,
+               question.answer,
+                    question.backgroundDesc,
+                    question.class_id classId,
+                    #{teamId} teamId,
+                    question.isShow
+            FROM (SELECT
+                        tcqd.question_id thisItemId,
+                        tcqd.question_desc thisItemContent,
+                        tcqd.class_id,
+                        tcqd.question_type questionType,
+                  tcef.event_type eventType,
+                  tcef.event_code eventCode,
+                  tcef.event_name eventName,
+                  tcef.time_line timeLine,
+                    tcef.role_id roleId,
+                    tcef.weight ,
+                    tcef.is_strategic isStrategic,
+                    tsa.answer,
+                    tcqd.background_desc backgroundDesc,
+                    tcqd.is_show isShow
+                    From t_class_event_flow tcef
+                        left join t_class_question_desc tcqd
+                       ON tcef.event_id = tcqd.event_id and tcef.class_id = tcqd.class_id
+                    LEFT JOIN t_stu_answer tsa
+                ON tcqd.question_id = tsa.question_id AND tsa.team_id = #{teamId}
+                 and tsa.class_id = tcqd.class_id
+                    WHERE
+                        tcef.class_id = #{classId} and tcqd.class_id = #{classId} AND tsa.id >0
+                          and tcqd.question_id = #{questionId}  and tcef.is_show = 0
+                    ORDER BY tcqd.question_id LIMIT 1
+                ) question
+            LEFT JOIN t_class_question_option tcqo ON question.thisItemId = tcqo.question_id
+              and tcqo.class_id = question.class_id
+    </select>
+
+    <!-- 获取二级已回答问题 -->
+    <select id="getSecondResponse" resultMap="PreResponseMap2" >
+                    SELECT
+                question.thisItemId,
+                question.thisItemContent,
+                question.questionType,
+                0 nextItemId,
+                tcqo.quesion_option opt,
+                tcqo.quesion_option_desc optCon,
+        tcqo.option_desc as optionDesc,
+        concat(IFNULL(tcqo.target_value,''),IFNULL(tcqo.unit,'')) tarVal,
+               question.eventType,
+               question.eventCode,
+              question.eventName,
+        date_format(question.timeLine, '%Y-%m-%d') timeLine,
+               question.roleId,
+              question.weight,
+              question.isStrategic,
+              question.answer,
+                    question.backgroundDesc,
+                    question.class_id classId,
+                    #{teamId} teamId,
+               question.parentId
+            FROM (SELECT
+                        tcqd.question_id thisItemId,
+                        tcqd.question_desc thisItemContent,
+                        tcqd.class_id,
+                        tcqd.question_type questionType,
+                  tcef.event_type eventType,
+                  tcef.event_code eventCode,
+                  tcef.event_name eventName,
+                  tcef.time_line timeLine,
+                    tcef.role_id roleId,
+                    tcef.weight ,
+                    tcef.is_strategic isStrategic,
+                     tsa.answer,
+                    tcqd.background_desc backgroundDesc,
+        tcqd.parent_id parentId
+                    From t_class_event_flow tcef
+                        left join t_class_question_desc tcqd
+                       ON tcef.event_id = tcqd.event_id and tcef.class_id = tcqd.class_id
+                    LEFT JOIN t_stu_answer tsa
+                ON tcqd.question_id = tsa.question_id AND tsa.team_id = #{teamId}
+                and tsa.class_id = tcqd.class_id
+                    WHERE
+                        tcqd.parent_id = #{thisItemId}
+                        <!-- AND tsa.id >0  -->
+                        and tcef.class_id = #{classId}
+                    ORDER BY tcqd.question_id
+                ) question
+            LEFT JOIN t_class_question_option tcqo ON question.thisItemId = tcqo.question_id
+            and tcqo.class_id = question.class_id  and ( tcqo.team_id = 0 or tcqo.team_id = #{teamId} )
+          order by question.thisItemId
+
+    </select>
+
+    <!-- 获取三级已回答问题 -->
+    <select id="getThirdResponse" resultMap="PreResponseMap3" >
+                    SELECT
+                question.thisItemId,
+                question.thisItemContent,
+                question.questionType,
+                0 nextItemId,
+                tcqo.quesion_option opt,
+                tcqo.quesion_option_desc optCon,
+        tcqo.option_desc as optionDesc,
+        concat(IFNULL(tcqo.target_value,''),IFNULL(tcqo.unit,'')) tarVal,
+               question.eventType,
+               question.eventCode,
+              question.eventName,
+        date_format(question.timeLine, '%Y-%m-%d') timeLine,
+               question.roleId,
+              question.weight,
+              question.isStrategic,
+              question.answer,
+                    question.backgroundDesc
+            FROM (SELECT
+                        tcqd.question_id thisItemId,
+                        tcqd.question_desc thisItemContent,
+                        tcqd.class_id,
+                        tcqd.question_type questionType,
+                  tcef.event_type eventType,
+                  tcef.event_code eventCode,
+                  tcef.event_name eventName,
+                  tcef.time_line timeLine,
+                    tcef.role_id roleId,
+                    tcef.weight ,
+                    tcef.is_strategic isStrategic,
+                    tsa.answer,
+                    tcqd.background_desc backgroundDesc
+                    From t_class_event_flow tcef
+                        left join t_class_question_desc tcqd
+                       ON tcef.event_id = tcqd.event_id and tcef.class_id = tcqd.class_id
+                    LEFT JOIN t_stu_answer tsa
+                ON tcqd.question_id = tsa.question_id AND tsa.team_id = #{teamId}
+                    and tsa.class_id = tcqd.class_id
+                    WHERE
+                        tcqd.parent_id = #{thisItemId}
+                        <!-- AND tsa.id >0 -->
+                         and tcef.class_id = #{classId}
+                    ORDER BY tcqd.question_id
+                ) question
+            LEFT JOIN t_class_question_option tcqo ON question.thisItemId = tcqo.question_id
+                      and tcqo.class_id = question.class_id
+        and ( (
+        case when  #{parentId} = 232  then tcqo.quesion_option_desc is not null else 1 end and
+        tcqo.team_id = 0)  or tcqo.team_id = #{teamId} )
+            order by question.thisItemId
+    </select>
+
+    <select id="getCountDownTime" resultMap="TimeMap">
+
+        SELECT
+        sumData.*
+        , tcqdItem.question_id questionId,
+         ifnull(tcqdItem.duration * 60,0) itemTime,
+        buffer.bufferTime
+        FROM
+        (
+        SELECT
+        ifnull(sum(IFNULL(tcqd.duration,1) * 60),0) mothMillisecond,
+         ifnull(sum(IFNULL(tcqd.duration,1) * 60),0) recidueMillSecond,
+        tcqd.class_id classId,
+        tcqd.event_id eventId,
+        tcqd.id quesDescId,
+        tcef.time_line
+        FROM
+        t_class_event_flow tcef
+        LEFT JOIN t_class_question_desc tcqd ON tcef.event_id = tcqd.event_id
+        AND tcef.class_id = tcqd.class_id
+        WHERE
+        tcqd.class_id = #{classId} and tcef.is_show = 0
+        AND tcqd.parent_id = 0 and  date_format(tcef.time_line, '%Y-%m-%d') = date_format(#{currentMonth}, '%Y-%m-%d')
+
+        ) sumData
+        LEFT JOIN t_class_event_flow tcef
+        on sumData.classId = tcef.class_id
+        and tcef.is_show = 0
+        and date_format(sumData.time_line, '%Y-%m-%d') = date_format(tcef.time_line, '%Y-%m-%d')
+        and tcef.event_type &lt;&gt; 3
+        LEFT JOIN t_class_question_desc tcqdItem
+        ON sumData.classId = tcqdItem.class_id and tcef.event_id = tcqdItem.event_id
+        AND tcqdItem.parent_id = 0
+        AND tcqdItem.question_id > 0
+        left join (select CAST(sum(tcv.v_value) as SIGNED ) bufferTime from t_conf_variable tcv
+                where tcv.v_code in ('ADD_TIME_BAS','ADD_TIME_LOOK') ) buffer on 1=1
+    </select>
+
+    <select id="getCountDownTimeTeam" resultMap="TimeMap">
+
+        SELECT
+        sumData.*
+        , tcqdItem.question_id questionId,
+        tcqdItem.duration * 60 itemTime,
+        buffer.bufferTime
+        FROM
+        ( SELECT
+        sum(IFNULL(tcqd.duration,1) * 60) mothMillisecond,
+        sum(IFNULL(tcqd.duration,1) * 60) recidueMillSecond,
+        tcqd.class_id classId,
+        tcqd.event_id eventId,
+        tcqd.id quesDescId,
+        tcef.time_line,
+        tcef.id tcid
+        FROM
+        (select * from t_class_event_flow tcef where tcef.class_id = #{classId}
+        and date_format(tcef.time_line, '%Y-%m-%d') =  date_format(#{currentMonth}, '%Y-%m-%d')
+        ORDER BY tcef.event_code desc LIMIT 1)tcef
+        LEFT JOIN t_class_question_desc tcqd ON tcef.event_id = tcqd.event_id
+        AND tcef.class_id = tcqd.class_id
+        WHERE
+        tcqd.class_id = #{classId} and tcef.is_show = 0
+        AND tcqd.parent_id = 0 and  date_format(tcef.time_line, '%Y-%m-%d') = date_format(#{currentMonth}, '%Y-%m-%d')
+        ) sumData
+        JOIN t_class_event_flow tcef
+        on sumData.classId = tcef.class_id
+        and tcef.is_show = 0
+        and date_format(sumData.time_line, '%Y-%m-%d') = date_format(tcef.time_line, '%Y-%m-%d')
+        and tcef.event_type &lt;> 3 and sumData.tcid = tcef.id
+        LEFT  JOIN t_class_question_desc tcqdItem
+        ON sumData.classId = tcqdItem.class_id and tcef.event_id = tcqdItem.event_id
+        AND tcqdItem.parent_id = 0
+        AND tcqdItem.question_id > 0
+        left join (select CAST(sum(tcv.v_value) as SIGNED ) bufferTime from t_conf_variable tcv
+        where tcv.v_code in ('ADD_TIME_BAS','ADD_TIME_LOOK') ) buffer on 1=1
+    </select>
+
+    <select id="getLocalMonth" resultType="java.util.Date">
+          select IFNULL(max( time_line ),SYSDATE()) as time_line from(
+              SELECT
+                  DISTINCT tcef.time_line
+                FROM
+                    t_class_event_flow tcef
+                <!-- INNER JOIN t_class_question_desc tcqd
+                ON tcef.event_id = tcqd.event_id and tcef.class_id = tcqd.class_id
+                AND	tcqd.class_id = #{classId}
+                AND tcqd.parent_id = 0-->
+                LEFT JOIN t_class_question_month tcqm ON tcef.class_id = tcqm.class_id
+                AND date_format(tcef.time_line, '%Y-%m-%d') &lt;= date_format(tcqm.current_month,'%Y-%m-%d')
+                WHERE
+                    tcqm.id IS NULL and tcef.class_id=#{classId} and tcef.is_show = 0
+                ORDER BY date_format(tcef.time_line, '%Y-%m-%d')
+                LIMIT #{nextMonth}
+            ) aa
+    </select>
+
+    <select id="getAutoQuestion" resultMap="AutoQuestionMap">
+
+        SELECT
+        tcef.class_id classId,
+        tt.id teamId,
+        tcqd.question_id rootId,
+        tcqd.question_id rankOneQuesId,
+        tcqd.is_random random1,
+        tcqd.several_options severalOptions1,
+        tcqd.choose_a_few chooseFew1,
+        tcqd2.question_id rankTwoQuesId,
+        tcqd2.is_random random2,
+        tcqd2.several_options severalOptions2,
+        tcqd2.choose_a_few chooseFew2,
+        tcqd3.question_id rankThreeQuesId,
+        tcqd3.is_random random3,
+        tcqd3.several_options severalOptions3,
+        tcqd3.choose_a_few chooseFew3,
+        tcqd.question_type questionType,
+        tcef.event_code eventCode,
+        tcef.event_name eventName,
+        date_format(tcef.time_line, '%Y-%m-%d') timeLine,
+        tcef.is_strategic isStrategic,
+        tcef.weight ,
+        cast(date_format(tcef.time_line, '%Y') AS SIGNED)
+         YEAR,
+         cast(date_format(tcef.time_line, '%m') AS SIGNED)
+         MONTH,
+         tcef.role_id roleId
+
+        FROM
+        ( SELECT * FROM t_class_event_flow tcef
+        WHERE tcef.class_id = #{classId}
+        AND date_format(tcef.time_line, '%Y-%m-%d') = date_format(#{currentMonth},'%Y-%m-%d')
+        AND tcef.is_show = 0
+        ) tcef
+        JOIN ( SELECT * FROM t_team tt
+        WHERE tt.is_del  = 0
+        ) tt ON tcef.class_id = tt.class_id
+        JOIN ( SELECT * FROM t_class_question_desc tcqd
+        WHERE tcqd.class_id = #{classId}
+        AND tcqd.parent_id = 0
+        ) tcqd ON tt.class_id = tcqd.class_id
+        AND tcef.event_id = tcqd.event_id
+        LEFT JOIN t_class_question_desc tcqd2 ON tcqd.class_id = tcqd2.class_id
+        AND tcqd.question_id = tcqd2.parent_id
+        LEFT JOIN t_class_question_desc tcqd3 ON tcqd2.class_id = tcqd3.class_id
+        AND tcqd2.question_id = tcqd3.parent_id
+        LEFT JOIN t_stu_answer tsq ON tt.class_id = tsq.class_id
+        AND tsq.team_id = tt.id and tsq.question_id = tcqd.question_id
+        AND case when tcqd.question_id =35 or tcqd.question_id=93 then
+              (tsq.question_id = tcqd.question_id and tsq.question_id = tcqd2.question_id) else (
+        tsq.question_id = tcqd.question_id or tsq.question_id = tcqd2.question_id
+        OR tsq.question_id = tcqd3.question_id
+        ) end
+        WHERE
+        tsq.id IS NULL
+        ORDER BY
+        tcef.event_code,
+        tt.id
+    </select>
+
+    <select id="checkNextYear" resultType="boolean">
+        select  case when date_format(tcef.time_line, '%Y') > date_format(#{currentMonth}, '%Y') then true
+      else false end
+        from t_class_event_flow tcef
+         join
+        (select * from  t_class_question_desc tcqd
+        where tcqd.class_id = #{classId} ) tcqd
+        on tcef.event_id = tcef.event_id
+        and tcef.class_id = tcqd.class_id
+       where date_format(tcef.time_line, '%Y-%m-%d') >  date_format(#{currentMonth}, '%Y-%m-%d')
+
+        GROUP By tcef.time_line
+        ORDER BY tcef.time_line limit 1
+    </select>
+
+    <select id="getLastYear" resultType="integer">
+        select case when tcqd.question_year is null then 2010 else tcqd.question_year end  from t_class_question_desc tcqd
+        where tcqd.class_id = #{classId}
+        and tcqd.question_year &lt; cast( date_format(#{currentDate}, '%Y') AS SIGNED)
+        and tcqd.question_year > 1
+        ORDER BY tcqd.question_year desc
+        limit 1
+    </select>
+
+    <select id="getLastYearByYear" resultType="integer">
+        select tcqd.question_year  from t_class_question_desc tcqd
+        where tcqd.class_id = #{classId}
+        and tcqd.question_year &lt; #{localYear}
+        and tcqd.question_year > 1
+        ORDER BY tcqd.question_year desc
+        limit 1
+    </select>
+
+    <select id="checkThisMonth" resultType="map">
+        SELECT
+        tcef.time_line,
+        tcefnext.id ,
+        cast( IFNULL( date_format(last.time_line, '%m'),  0 ) AS SIGNED  )
+        lastMonth,
+        cast( IFNULL( date_format(last.time_line, '%Y'), 2010  ) AS SIGNED)
+        lastYear,
+        cast( IFNULL( date_format(next.time_line, '%m'),  1 ) AS SIGNED  )
+        nextMonth,
+        cast( IFNULL( date_format(next.time_line, '%Y'), 2019  ) AS SIGNED)
+        nextYear,
+        case when tceflast.id is null and
+        IFNULL(
+        date_format(tcef.time_line, '%Y') > date_format(last.time_line, '%Y'),
+        1
+        ) and last.time_line is not null then 1 else 0 end
+        ifstartYear,
+
+        <!-- 判断月末 last.time_line is not null 排除 2010 年-->
+        case when date_format(tcef.time_line, '%m-%d') = '12-31' then 0
+        when (tcefnext.id is null and
+        IFNULL(date_format(tcef.time_line, '%Y-%m') &lt; date_format(next.time_line, '%Y-%m'),1)=1
+        and last.time_line is not null
+        ) or date_format(tcef.time_line, '%Y-%m-%d') = '2016-10-01' then 1 else 0 end
+        ifendMonth,
+        <!-- 判断年末 last.time_line is null 排除2010年-->
+        case when last.time_line is null or date_format(tcef.time_line, '%m-%d') = '12-31' then 0
+        else IFNULL( date_format(tcef.time_line, '%Y') &lt; date_format(next.time_line, '%Y'), 1 ) end
+        ifendYear,
+        <!-- 判断是否当年的最后一道题 last.time_line is null 排除2010年最后一道题 -->
+        case when last.time_line is null then 0
+        else date_format(tcef.time_line, '%m-%d') = '12-31' and
+        IFNULL( date_format(tcef.time_line, '%Y') &lt; date_format(next.time_line, '%Y'), 1 )
+        and tcef.event_name like '研发预算%'
+        end ifLastQuestion
+
+        FROM
+        t_class_event_flow tcef
+        LEFT JOIN t_class_question_desc tcqd ON tcef.event_id = tcqd.event_id
+        AND tcef.class_id = tcqd.class_id
+        <!-- 关联当月上一个事件数据 -->
+        left join( select tceflast.* from t_class_event_flow tcef
+        LEFT JOIN t_class_question_desc tcqd
+        on tcef.class_id = tcqd.class_id
+        and tcef.event_id = tcqd.event_id
+        left join t_class_event_flow tceflast
+        on tcef.class_id = tceflast.class_id
+        and tcef.time_line = tceflast.time_line
+        and tcef.event_order > tceflast.event_order
+        where tcef.class_id = #{classId} and tcqd.question_id = #{questionId}
+
+        and tcef.is_show = 0
+        and tceflast.is_show = 0
+        limit 1 ) tceflast
+        on  tcef.class_id = tceflast.class_id
+        and tcef.time_line = tceflast.time_line
+
+        <!-- 关联 当月的 下一个事件-->
+        left join( select tceflast.* from t_class_event_flow tcef
+        LEFT JOIN t_class_question_desc tcqd
+        on tcef.class_id = tcqd.class_id
+        and tcef.event_id = tcqd.event_id
+        left join t_class_event_flow tceflast
+        on tcef.class_id = tceflast.class_id
+        and tcef.time_line = tceflast.time_line
+        and tcef.event_order &lt; tceflast.event_order
+             where tcef.class_id = #{classId} and tcqd.question_id = #{questionId}
+        and date_format(tceflast.time_line, '%m-%d') &lt;> '12-31'
+
+        and tcef.is_show = 0
+        and tceflast.is_show = 0
+          limit 1
+        ) tcefnext
+        on  tcef.class_id = tcefnext.class_id
+        and tcef.time_line = tcefnext.time_line
+        <!-- 获取下一个事件的数据 包括当前月 和下一月-->
+        LEFT JOIN (
+        SELECT
+        tcef.time_line,
+        tcef.class_id
+        FROM
+        t_class_event_flow tcef
+        LEFT JOIN t_class_question_desc tcqd ON tcef.event_id = tcqd.event_id
+        AND tcef.class_id = tcqd.class_id
+        WHERE
+        tcef.class_id = #{classId}
+        AND tcef.event_order  > (
+        SELECT
+        tcef.event_order
+        FROM
+        t_class_event_flow tcef
+        LEFT JOIN t_class_question_desc tcqd ON tcef.event_id = tcqd.event_id
+        AND tcef.class_id = tcqd.class_id
+        WHERE
+        tcef.class_id = #{classId}
+        AND tcqd.question_id = #{questionId}
+
+        and tcef.is_show = 0
+        )
+         and date_format(tcef.time_line, '%m-%d') &lt;> '12-31'
+
+        and tcef.is_show = 0
+        GROUP BY tcef.time_line
+        ORDER BY
+        tcef.event_order  LIMIT 1
+        ) next ON tcef.class_id = next.class_id
+        <!-- 获取上一年月 包括当前年月-->
+        LEFT JOIN (
+        SELECT
+        tcef.time_line,
+        tcef.class_id
+        FROM
+        t_class_event_flow tcef
+        LEFT JOIN t_class_question_desc tcqd ON tcef.event_id = tcqd.event_id
+        AND tcef.class_id = tcqd.class_id
+        WHERE
+        tcef.class_id = #{classId}
+        AND date_format(tcef.time_line, '%Y-%m') &lt; (
+        SELECT
+        date_format(tcef.time_line, '%Y-%m')
+        FROM
+        t_class_event_flow tcef
+        LEFT JOIN t_class_question_desc tcqd ON tcef.event_id = tcqd.event_id
+        AND tcef.class_id = tcqd.class_id
+        WHERE
+        tcef.class_id = #{classId}
+        AND tcqd.question_id = #{questionId}
+
+        and tcef.is_show = 0
+        )
+
+        and tcef.is_show = 0
+        GROUP BY tcef.time_line
+        ORDER BY
+        tcef.event_order DESC
+        LIMIT 1
+        ) last ON tcef.class_id = last.class_id
+        WHERE
+        tcef.class_id = #{classId}
+        AND tcqd.question_id = #{questionId}
+    </select>
+
+    <select id="getQuesUnAnswerd" resultType="int">
+        SELECT COUNT(tsa.id) from (
+        select * from t_stu_answer tsa where tsa.class_id = #{classId} and tsa.team_id = #{teamId}
+         and tsa.question_id in (350,353,356,359,362,365,368,371,374,377,380,383,386,389,392)
+        ) tsa left join t_stu_score tss on tsa.class_id = tss.class_id
+        and tsa.team_id = tss.team_id and tsa.question_id = tss.question_id
+        where tsa.id is not null and tss.score is null
+    </select>
+
+    <select id="getQues16UnAnswerd" resultType="int">
+        SELECT COUNT(tsa.id) from (
+        select * from t_stu_answer tsa where tsa.class_id = #{classId} and tsa.team_id = #{teamId}
+         and tsa.question_id in(207,208,209,210,211)
+        ) tsa left join t_stu_score tss on tsa.class_id = tss.class_id
+        and tsa.team_id = tss.team_id and tsa.question_id = tss.question_id
+        where tsa.id is not null and tss.score is null
+    </select>
+
+    <select id="getUnAnswerd" resultType="int">
+            select count(tcqd.id) from
+        t_class_event_flow tcef
+        left join t_class_question_desc tcqd
+        ON tcef.event_id = tcqd.event_id and tcef.class_id = tcqd.class_id
+        left join t_team tt on tcqd.class_id = tt.class_id
+            left join t_stu_answer tsa
+            on tt.class_id  = tsa.class_id
+            and tcqd.question_id  = tsa.question_id and tt.id = tsa.team_id
+            left join (select * from t_stu_answer tsa2 where tsa2.root_id &lt;> tsa2.question_id) tsa2
+            on tsa.class_id = tsa2.class_id and tsa.team_id = tsa2.team_id and tsa.question_id = tsa2.root_id
+            where tcqd.parent_id = 0 and tcqd.class_id = #{classId}
+             and tt.is_del = 0 AND tcef.is_show=0
+            and case when tcqd.question_id = 35 or tcqd.question_id = 93 then tsa2.id is null else tsa.id is null end
+            <if test="teamId != null">
+            and tt.id = #{teamId}
+            </if>
+        <if test="currentMonth != null" >
+            and date_format(tcef.time_line, '%Y-%m-%d') = date_format(#{currentMonth}, '%Y-%m-%d')
+        </if>
+    </select>
+
+    <update id="addTime" parameterType="map" >
+         update t_class_question_desc tcqd
+         join (
+        select tcqd.id,tcqd.class_id
+        from t_class_event_flow tcef
+       left join t_class_question_desc tcqd on tcef.class_id = tcqd.class_id
+       and tcef.event_id = tcqd.event_id
+        where tcqd.class_id = #{classId} and
+       date_format( tcef.time_line, '%Y-%m-%d') = date_format(#{currentMonth}, '%Y-%m-%d')
+       and tcqd.parent_id =0 and tcef.is_show = 0
+        ORDER BY tcef.event_id desc LIMIT 1
+        )tcqd2 on tcqd.id = tcqd2.id
+        set tcqd.duration = IFNULL(tcqd.duration,1) +  #{addTime}
+
+    </update>
+</mapper>

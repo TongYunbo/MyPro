@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.TeamProfitStatementMapper">
+
+    <resultMap id="BaseResultMap" type="com.tzcpa.model.treatment.TeamProfitStatementDO">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="year" property="year" jdbcType="INTEGER"/>
+        <result column="gross_revenue" property="grossRevenue" jdbcType="BIGINT"/>
+        <result column="operation_revenue" property="operationRevenue" jdbcType="BIGINT"/>
+        <result column="total_operating_cost" property="totalOperatingCost" jdbcType="BIGINT"/>
+        <result column="operating_cost" property="operatingCost" jdbcType="BIGINT"/>
+        <result column="sale_tax_addict" property="saleTaxAddict" jdbcType="BIGINT"/>
+        <result column="selling_expenses" property="sellingExpenses" jdbcType="BIGINT"/>
+        <result column="administrative_cost" property="administrativeCost" jdbcType="BIGINT"/>
+        <result column="development_expenditure" property="developmentExpenditure" jdbcType="BIGINT"/>
+        <result column="financial_cost" property="financialCost" jdbcType="BIGINT"/>
+        <result column="assets_impairment_loss" property="assetsImpairmentLoss" jdbcType="BIGINT"/>
+        <result column="operating_profit" property="operatingProfit" jdbcType="BIGINT"/>
+        <result column="nonbusiness_income" property="nonbusinessIncome" jdbcType="BIGINT"/>
+        <result column="nonbusiness_expenditure" property="nonbusinessExpenditure" jdbcType="BIGINT"/>
+        <result column="total_profit" property="totalProfit" jdbcType="BIGINT"/>
+        <result column="income_tax_expense" property="incomeTaxExpense" jdbcType="BIGINT"/>
+        <result column="retained_profits" property="retainedProfits" jdbcType="BIGINT"/>
+        <result column="class_id" property="classId" jdbcType="INTEGER"/>
+        <result column="team_id" property="teamId" jdbcType="INTEGER"/>
+        <result column="end_year_undistributed_profits" property="endYearUndistributedProfits" jdbcType="BIGINT"/>
+        <result column="begin_year_undistributed_profits" property="beginYearUndistributedProfits" jdbcType="BIGINT"/>
+        <result column="current_year_undistributed_profits_change" property="currentYearUndistributedProfitsChange" jdbcType="BIGINT"/>
+        <result column="undistributed_profits_net_profit" property="undistributedProfitsNetProfit" jdbcType="BIGINT"/>
+        <result column="undistributed_profits_withdrawal_surplus_reserves" property="undistributedProfitsWithdrawalSurplusReserves"
+                jdbcType="BIGINT"/>
+        <result column="undistributed_profits_distribution_shareholders" property="undistributedProfitsDistributionShareholders" jdbcType="BIGINT"/>
+        <result column="undistributed_profits_other" property="undistributedProfitsOther" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <!-- 初始化团队利润表 -->
+    <insert id="initTeamProfitStatement">
+	INSERT INTO t_team_profit_statement (
+		`year`,
+		gross_revenue,
+		operation_revenue,
+		total_operating_cost,
+		operating_cost,
+		sale_tax_addict,
+		selling_expenses,
+		administrative_cost,
+		development_expenditure,
+		financial_cost,
+		assets_impairment_loss,
+		operating_profit,
+		nonbusiness_income,
+		nonbusiness_expenditure,
+		total_profit,
+		income_tax_expense,
+		retained_profits,
+		end_year_undistributed_profits,
+		begin_year_undistributed_profits,
+		current_year_undistributed_profits_change,
+		undistributed_profits_net_profit,
+		undistributed_profits_withdrawal_surplus_reserves,
+		undistributed_profits_distribution_shareholders,
+		undistributed_profits_other,
+		class_id,
+		team_id
+	) SELECT
+		`year`,
+		gross_revenue,
+		operation_revenue,
+		total_operating_cost,
+		operating_cost,
+		sale_tax_addict,
+		selling_expenses,
+		administrative_cost,
+		development_expenditure,
+		financial_cost,
+		assets_impairment_loss,
+		operating_profit,
+		nonbusiness_income,
+		nonbusiness_expenditure,
+		total_profit,
+		income_tax_expense,
+		retained_profits,
+		end_year_undistributed_profits,
+		begin_year_undistributed_profits,
+		current_year_undistributed_profits_change,
+		undistributed_profits_net_profit,
+		undistributed_profits_withdrawal_surplus_reserves,
+		undistributed_profits_distribution_shareholders,
+		undistributed_profits_other,
+		class_id,
+		#{teamId}
+	FROM
+		t_class_profit_statement
+	WHERE
+		class_id = #{classId}
+    </insert>
+
+    <!-- 查询营业成本 wangbj -->
+    <select id="getOperatingCost" parameterType="java.util.HashMap" resultType="java.lang.Long">
+        select total_operating_cost
+        from t_team_profit_statement
+        where `year` = #{year}
+        and class_id = #{classId}
+        and team_id = #{teamId}
+	</select>
+
+    <select id="getLastYear" resultType="integer">
+		select case when ttps.`year` is null then 2010 else ttps.`year` end from t_team_profit_statement ttps
+		where ttps.class_id = #{classId} and ttps.team_id = #{teamId} and ttps.year &lt; #{year}
+		ORDER BY ttps.`year` desc
+		LIMIT 1
+	</select>
+
+    <select id="getAnnualForm" resultType="com.tzcpa.model.treatment.TeamProfitStatementDO">
+        select * from t_team_profit_statement ttps
+		where ttps.class_id = #{classId} and ttps.team_id = #{teamId}
+		and ttps.`year` in (#{year},#{lastYear})
+		ORDER BY ttps.`year` desc
+    </select>
+
+    <select id="getDataFromMonthly" resultType="com.tzcpa.model.treatment.TeamProfitStatementDO">
+        select ttmps.* ,
+        <!-- #本年未分配利润增减变动金额 -->
+        (ttmps.undistributed_profits_net_profit+
+        ttmps.undistributed_profits_withdrawal_surplus_reserves
+        +ttmps.undistributed_profits_distribution_shareholders
+        +ttmps.undistributed_profits_other)
+        current_year_undistributed_profits_change,
+        <!-- #本年年末未分配利润 -->
+        (ttmps.begin_year_undistributed_profits +
+        ttmps.undistributed_profits_net_profit+
+        ttmps.undistributed_profits_withdrawal_surplus_reserves
+        +ttmps.undistributed_profits_distribution_shareholders
+        +ttmps.undistributed_profits_other)
+        end_year_undistributed_profits
+        from (
+        select ttmps.`year`,sum(ttmps.gross_revenue) gross_revenue,
+        sum(ttmps.operation_revenue) operation_revenue,
+
+        sum(ttmps.total_operating_cost) total_operating_cost,
+        sum(ttmps.operating_cost) operating_cost,
+        sum(ttmps.sale_tax_addict) sale_tax_addict,
+        sum(ttmps.selling_expenses) selling_expenses,
+        sum(ttmps.administrative_cost) administrative_cost,
+        sum(ttmps.development_expenditure) development_expenditure,
+        sum(ttmps.financial_cost) financial_cost,
+        sum(ttmps.assets_impairment_loss) assets_impairment_loss,
+         sum(ttmps.operating_profit) operating_profit,
+
+        sum(ttmps.nonbusiness_income) nonbusiness_income,
+        sum(ttmps.nonbusiness_expenditure) nonbusiness_expenditure,
+        sum(ttmps.total_profit) total_profit,
+        case when sum(ttmps.total_profit) &lt; 0 then 0 else  sum(ttmps.total_profit)*0.15 end
+        income_tax_expense,
+        sum(ttmps.retained_profits) retained_profits,
+        sum(ttmps.final_material_cost) final_material_cost,
+
+        <!-- #本年年初未分配利润 -->
+        last_ttmps.end_year_undistributed_profits begin_year_undistributed_profits,
+
+        <!-- # 未分配利润-本年净利润 -->
+        sum(ttmps.total_profit)-sum(ttmps.total_profit)*0.15 undistributed_profits_net_profit,
+        <!-- #未分配利润-提取盈余公积 -->
+        case when sum(ttmps.retained_profits)*tcfp.undistributed_profits_withdrawal_surplus_reserves > 0
+        then 0 else sum(ttmps.retained_profits)*tcfp.undistributed_profits_withdrawal_surplus_reserves end
+        undistributed_profits_withdrawal_surplus_reserves,
+        <!-- #未分配利润-对股东的分配 -->
+        case when (last_ttmps.undistributed_profits_withdrawal_surplus_reserves
+        +last_ttmps.retained_profits) * tcfp.undistributed_profits_distribution_shareholders > 0
+        then 0 else
+        (last_ttmps.undistributed_profits_withdrawal_surplus_reserves
+        +last_ttmps.retained_profits) * tcfp.undistributed_profits_distribution_shareholders end
+        undistributed_profits_distribution_shareholders,
+        <!-- #未分配利润-其他 -->
+        tcfp.undistributed_profits_other,
+        ttmps.class_id,
+        ttmps.team_id
+        from t_team_monthly_profit_statement ttmps
+        LEFT JOIN t_team_profit_statement last_ttmps
+        on ttmps.class_id = last_ttmps.class_id and ttmps.team_id = last_ttmps.team_id
+         and last_ttmps.`year` = #{lastYear}
+        left join t_class_fixed_param tcfp
+        on ttmps.class_id = tcfp.class_id and ttmps.year = tcfp.year
+        where ttmps.class_id = #{classId} and ttmps.`year` = CAST( date_format( #{currentDate},'%Y') AS SIGNED)
+        and ttmps.team_id = #{teamId}
+        GROUP BY ttmps.team_id
+        )ttmps
+    </select>
+
+    <insert id="insertForBatch" parameterType="list">
+        INSERT INTO t_team_profit_statement (
+        `year`,
+        gross_revenue,
+        operation_revenue,
+        total_operating_cost,
+        operating_cost,
+        sale_tax_addict,
+        selling_expenses,
+        administrative_cost,
+        development_expenditure,
+        financial_cost,
+        assets_impairment_loss,
+        operating_profit,
+        nonbusiness_income,
+        nonbusiness_expenditure,
+        total_profit,
+        income_tax_expense,
+        retained_profits,
+        class_id,
+        team_id,
+        final_material_cost,
+        end_year_undistributed_profits,
+        begin_year_undistributed_profits,
+        current_year_undistributed_profits_change,
+        undistributed_profits_net_profit,
+        undistributed_profits_withdrawal_surplus_reserves,
+        undistributed_profits_distribution_shareholders,
+        undistributed_profits_other
+        ) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.year},
+            #{item.grossRevenue},
+            #{item.operationRevenue},
+            #{item.totalOperatingCost},
+            #{item.operatingCost},
+            #{item.saleTaxAddict},
+            #{item.sellingExpenses},
+            #{item.administrativeCost},
+            #{item.developmentExpenditure},
+            #{item.financialCost},
+            #{item.assetsImpairmentLoss},
+            #{item.operatingProfit},
+            #{item.nonbusinessIncome},
+            #{item.nonbusinessExpenditure},
+            #{item.totalProfit},
+            #{item.incomeTaxExpense},
+            #{item.retainedProfits},
+            #{item.classId},
+            #{item.teamId},
+            #{item.finalMaterialCost},
+            #{item.endYearUndistributedProfits},
+            #{item.beginYearUndistributedProfits},
+            #{item.currentYearUndistributedProfitsChange},
+            #{item.undistributedProfitsNetProfit},
+            #{item.undistributedProfitsWithdrawalSurplusReserves},
+            #{item.undistributedProfitsDistributionShareholders},
+            #{item.undistributedProfitsOther}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 查询利润表 wangbj -->
+    <select id="selectTeamProfitStatement"  parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        select gross_revenue as 'grossRevenue' -- 营业总收入
+        , operation_revenue as 'operationRevenue' -- 营业收入
+        , total_operating_cost as 'totalOperatingCost' -- 营业总成本
+        , operating_cost as 'operatingCost' -- 营业成本
+        , sale_tax_addict as 'saleTaxAddict' -- 税金及附加
+        , selling_expenses as 'sellingExpenses' -- 销售费用
+        , administrative_cost as 'administrativeCost' -- 管理费用
+        , development_expenditure as 'developmentExpenditure' -- 研发费用
+        , financial_cost as 'financialCost' -- 财务费用
+        , assets_impairment_loss as 'assetsImpairmentLoss' -- 资产减值损失
+        , operating_profit as 'operatingProfit' -- 营业利润
+        , nonbusiness_income as 'nonbusinessIncome' -- 营业外收入
+        , nonbusiness_expenditure as 'nonbusinessExpenditure' -- 营业外支出
+        , total_profit as 'totalProfit' -- 利润总额
+        , income_tax_expense as 'incomeTaxExpense' -- 所得税费用
+        , retained_profits as 'retainedProfits' -- 净利润
+        , final_material_cost as 'finalMaterialCost' -- 最终材料成本
+        , end_year_undistributed_profits as 'endProfits' -- 本年年末未分配利润
+        , begin_year_undistributed_profits as 'beginProfits' -- 本年年初未分配利润
+        , current_year_undistributed_profits_change as 'profitsChange' -- 本年未分配利润增减变动金额
+        , undistributed_profits_net_profit as 'profitsNetProfit' -- 未分配利润-本年净利润
+        , undistributed_profits_withdrawal_surplus_reserves as 'surplusReserves' -- 未分配利润-提取盈余公积
+        , undistributed_profits_distribution_shareholders as 'distributionShareholders' -- 未分配利润-对股东的分配
+        , undistributed_profits_other as 'profitsOther' -- 未分配利润-其他
+        from t_team_profit_statement
+        where class_id = #{classId}
+        and team_id = #{teamId}
+        and `year` = #{year}
+    </select>
+    
+    <!-- 查询存货周转天数 -->
+    <select id="getCHZZTS" resultType="java.lang.Double" >
+    	SELECT
+			ROUND(rate_of_stock_turnover,2) 
+		FROM
+			t_team_annual_worth_gather 
+		WHERE
+			class_id = #{classId} 
+			AND team_id = #{teamId} 
+			AND `year` = 2012;
+    </select>
+
+</mapper>

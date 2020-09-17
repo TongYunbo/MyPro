@@ -1,0 +1,74 @@
+{
+  "groups": [
+    {
+      "name": "config",
+      "type": "com.tzcpa.config.ConfigUtil",
+      "sourceType": "com.tzcpa.config.ConfigUtil"
+    },
+    {
+      "name": "spring.datasource.druid",
+      "type": "com.tzcpa.config.DruidDataSourceProperties",
+      "sourceType": "com.tzcpa.config.DruidDataSourceProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "spring.datasource.druid.db-type",
+      "type": "java.lang.String",
+      "sourceType": "com.tzcpa.config.DruidDataSourceProperties"
+    },
+    {
+      "name": "spring.datasource.druid.driver-class-name",
+      "type": "java.lang.String",
+      "sourceType": "com.tzcpa.config.DruidDataSourceProperties"
+    },
+    {
+      "name": "spring.datasource.druid.filters",
+      "type": "java.lang.String",
+      "sourceType": "com.tzcpa.config.DruidDataSourceProperties"
+    },
+    {
+      "name": "spring.datasource.druid.initial-size",
+      "type": "java.lang.Integer",
+      "sourceType": "com.tzcpa.config.DruidDataSourceProperties"
+    },
+    {
+      "name": "spring.datasource.druid.max-active",
+      "type": "java.lang.Integer",
+      "sourceType": "com.tzcpa.config.DruidDataSourceProperties"
+    },
+    {
+      "name": "spring.datasource.druid.max-wait",
+      "type": "java.lang.Long",
+      "sourceType": "com.tzcpa.config.DruidDataSourceProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "spring.datasource.druid.min-idle",
+      "type": "java.lang.Integer",
+      "sourceType": "com.tzcpa.config.DruidDataSourceProperties"
+    },
+    {
+      "name": "spring.datasource.druid.password",
+      "type": "java.lang.String",
+      "sourceType": "com.tzcpa.config.DruidDataSourceProperties"
+    },
+    {
+      "name": "spring.datasource.druid.pool-prepared-statements",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.tzcpa.config.DruidDataSourceProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "spring.datasource.druid.url",
+      "type": "java.lang.String",
+      "sourceType": "com.tzcpa.config.DruidDataSourceProperties"
+    },
+    {
+      "name": "spring.datasource.druid.username",
+      "type": "java.lang.String",
+      "sourceType": "com.tzcpa.config.DruidDataSourceProperties"
+    }
+  ],
+  "hints": []
+}

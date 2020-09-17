@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.student.QuestionProfitAnalysisMapper" >
+
+	<!-- 获取月度利润表的数据 -->
+	<select id="getMonthPData" resultType="java.util.Map" >
+		SELECT
+			SUM( operation_revenue ) '233', -- 营业收入
+			SUM( total_operating_cost ) '235', -- 营业总成本
+			SUM( operating_cost ) '236', -- 营业成本
+			SUM( selling_expenses ) '238', -- 销售费用
+			SUM( administrative_cost ) '438', -- 管理费用
+			SUM( financial_cost ) '439', -- 财务费用
+			SUM( operating_profit ) '440' -- 营业利润
+		FROM
+			t_team_monthly_profit_statement 
+		WHERE
+			`year` = #{year} 
+			AND class_id = #{classId} 
+			AND team_id = #{teamId} 
+			<![CDATA[ AND `month` <= 6 ]]>
+	</select>
+	
+	<!-- 获取中间表的数据 -->
+	<select id="getTIData" resultType="java.util.Map" >
+		SELECT
+			SUM( adjusted_sales ) '234', -- 调整后销量
+			SUM( final_operating_tax_surcharge ) '237' -- 营业税金及附加
+		FROM
+			t_team_intermediate 
+		WHERE
+			`year` = #{year} 
+			AND class_id = #{classId} 
+			AND team_id = #{teamId} 
+			<![CDATA[ AND `month` <= 6 ]]>
+	</select>
+
+</mapper>

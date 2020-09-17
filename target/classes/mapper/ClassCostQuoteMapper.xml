@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.ClassCostQuoteMapper" >
+  <resultMap id="BaseResultMap" type="com.tzcpa.model.treatment.ClassCostQuoteDO" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="year" property="year" jdbcType="INTEGER" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="vehicle_model" property="vehicleModel" jdbcType="VARCHAR" />
+    <result column="sales_range_min" property="salesRangeMin" jdbcType="BIGINT" />
+    <result column="sales_range_max" property="salesRangeMax" jdbcType="BIGINT" />
+    <result column="class_id" property="classId" jdbcType="INTEGER" />
+    <result column="group_key" property="groupKey" jdbcType="VARCHAR"/>
+  </resultMap>
+  <insert id="insert" parameterType="com.tzcpa.model.treatment.ClassCostQuoteDO" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_class_cost_quote (`year`, `level`, vehicle_model, 
+      sales_range, unit_cost, class_id
+      )
+    values (#{year,jdbcType=INTEGER}, #{level,jdbcType=INTEGER}, #{vehicleModel,jdbcType=VARCHAR}, 
+      #{salesRange,jdbcType=BIGINT}, #{unitCost,jdbcType=BIGINT}, #{classId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tzcpa.model.treatment.ClassCostQuoteDO" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_class_cost_quote
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="year != null" >
+        `year`,
+      </if>
+      <if test="level != null" >
+        `level`,
+      </if>
+      <if test="vehicleModel != null" >
+        vehicle_model,
+      </if>
+      <if test="salesRange != null" >
+        sales_range,
+      </if>
+      <if test="unitCost != null" >
+        unit_cost,
+      </if>
+      <if test="classId != null" >
+        class_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="year != null" >
+        #{year,jdbcType=INTEGER},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="vehicleModel != null" >
+        #{vehicleModel,jdbcType=VARCHAR},
+      </if>
+      <if test="salesRange != null" >
+        #{salesRange,jdbcType=BIGINT},
+      </if>
+      <if test="unitCost != null" >
+        #{unitCost,jdbcType=BIGINT},
+      </if>
+      <if test="classId != null" >
+        #{classId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <!-- 根据班级id 查询班级成本引用的信息 -->
+  <select id="selectClassCostQuoteByParam" parameterType="map" resultMap="BaseResultMap">
+    SELECT
+        CONCAT(`year`, '_', vehicle_model) AS group_key,
+        `year`,
+        `level`,
+        vehicle_model,
+        sales_range,
+        unit_cost
+    FROM
+        t_class_cost_quote
+    WHERE
+        class_id = #{map.classId}
+        <if test="map.year != null or map.year !=''">
+            AND `year` = #{map.year}
+        </if>
+  </select>
+
+
+  <!-- 初始化班级成本引用的数据 -->
+  <insert id="initClassCostQuote" parameterType="int">
+    INSERT INTO t_class_cost_quote (
+            YEAR,
+            LEVEL,
+            vehicle_model,
+            sales_range_min,
+            sales_range_max,
+            unit_cost,
+            class_id
+        ) SELECT
+            YEAR,
+            LEVEL,
+            vehicle_model,
+            sales_range_min,
+            sales_range_max,
+            unit_cost,
+            #{classId}
+        FROM
+            t_conf_cost_quote
+  </insert>
+</mapper>

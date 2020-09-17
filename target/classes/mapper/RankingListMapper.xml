@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.student.RankingListMapper">
+	
+	<!-- 盈利能力列表 -->
+	<select id="getProfitabilityList" parameterType="int" resultType="map">
+		SELECT
+			aa.teamName,
+			aa.retainedProfits
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					SUM(t1.retained_profits) AS retainedProfits
+				FROM
+					t_team_profit_statement t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				<![CDATA[
+				AND
+					t1.`year`>=2011
+				AND
+					t1.`year`<=2018
+				]]>
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					t1.team_id ASC
+			) AS aa
+		WHERE
+			aa.retainedProfits IS NOT NULL
+		<![CDATA[
+		AND aa.retainedProfits <> ''
+		]]>
+	</select>
+	
+	<!-- 收入能力列表 -->
+	<select id="getEarningPowerList" parameterType="int" resultType="map">
+		SELECT
+			aa.teamName,
+			aa.operationRevenue
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					SUM(t1.operation_revenue) AS operationRevenue
+				FROM
+					t_team_profit_statement t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				<![CDATA[
+				AND
+					t1.`year`>=2011
+				AND
+					t1.`year`<=2018
+				]]>
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					t1.team_id ASC
+			) AS aa
+		WHERE
+			aa.operationRevenue IS NOT NULL 
+		<![CDATA[
+		AND aa.operationRevenue <> ''
+		]]>
+	</select>
+	
+	<!-- 资产规模列表 -->
+	<select id="getAssetSizeList" parameterType="int" resultType="map">
+		SELECT
+			t1.total_assets AS totalAssets,
+			t2.team_name as teamName,
+			t1.team_id,
+			t1.`year`
+		FROM
+			t_team_balance_sheet t1
+		INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+		AND t1.team_id = t2.id
+		WHERE
+			t1.class_id = #{classId}
+		AND t1.`year` = #{year}
+		ORDER BY
+			t1.team_id ASC
+		<!-- SELECT
+			aa.teamName,
+			aa.totalAssets
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					SUM(t1.total_assets) AS totalAssets
+				FROM
+					t_team_balance_sheet t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				<![CDATA[
+				AND
+					t1.`year`>=2011
+				AND
+					t1.`year`<=2018
+				]]>
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					t1.team_id ASC
+			) AS aa
+		WHERE
+			aa.totalAssets IS NOT NULL 
+		<![CDATA[
+		AND aa.totalAssets <> '' 
+		]]> -->
+	</select>
+	
+	<!-- 执行能力列表 -->
+	<select id="getExecutiveCapabilityList" parameterType="int" resultType="map">	
+		SELECT
+			aa.teamName,
+			aa.score
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					SUM(t1.score) AS score
+				FROM
+					t_stu_score t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					t1.team_id  ASC
+			) AS aa
+		WHERE
+			aa.score IS NOT NULL 
+		<![CDATA[
+		AND aa.score <> '' 
+		]]>
+	</select>
+	
+	<!-- CEO得分 -->
+	<select id="getCEOScoreList" parameterType="int" resultType="map">
+		SELECT
+			aa.teamName,
+			aa.score
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					SUM(t1.score) AS score
+				FROM
+					t_stu_score t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				AND t1.role_id = 1
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					t1.team_id  ASC
+			) AS aa
+		WHERE
+			aa.score IS NOT NULL
+		<![CDATA[
+		AND aa.score <> '' 
+		]]>
+	</select>
+	
+	<!-- CMO得分 -->
+	<select id="getCMOScoreList" parameterType="int" resultType="map">
+		SELECT
+			aa.teamName,
+			aa.score
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					SUM(t1.score) AS score
+				FROM
+					t_stu_score t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				AND t1.role_id = 2
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					t1.team_id  ASC
+			) AS aa
+		WHERE
+			aa.score IS NOT NULL
+		<![CDATA[
+		AND aa.score <> '' 
+		]]>
+	</select>
+	
+	<!-- COO得分 -->
+	<select id="getCOOScoreList" parameterType="int" resultType="map">
+		SELECT
+			aa.teamName,
+			aa.score
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					SUM(t1.score) AS score
+				FROM
+					t_stu_score t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				AND t1.role_id = 3
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					t1.team_id  ASC
+			) AS aa
+		WHERE
+			aa.score IS NOT NULL
+		<![CDATA[
+		AND aa.score <> '' 
+		]]>
+	</select>
+	
+	<!-- CFO得分 -->
+	<select id="getCFOScoreList" parameterType="int" resultType="map">
+		SELECT
+			aa.teamName,
+			aa.score
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					SUM(t1.score) AS score
+				FROM
+					t_stu_score t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				AND t1.role_id = 4
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					t1.team_id  ASC
+			) AS aa
+		WHERE
+			aa.score IS NOT NULL
+		<![CDATA[
+		AND aa.score <> '' 
+		]]>
+	</select>
+	
+	<!-- CRO得分 -->
+	<select id="getCROScoreList" parameterType="int" resultType="map">
+		SELECT
+			aa.teamName,
+			aa.score
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					SUM(t1.score) AS score
+				FROM
+					t_stu_score t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				AND t1.role_id = 5
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					t1.team_id  ASC
+			) AS aa
+		WHERE
+			aa.score IS NOT NULL
+		<![CDATA[
+		AND aa.score <> '' 
+		]]>
+	</select>
+	
+	<!-- 系统计分卡考核得分累计 -->
+	<select id="getScorecardTotalScoreList" parameterType="int" resultType="com.tzcpa.model.student.SyntheticAbilityDTO">
+		SELECT
+			aa.teamName,
+			aa.teamId,
+			aa.ranking
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					t1.team_id AS teamId,
+					sum(t1.check_score) AS ranking
+				FROM
+					t_team_balanced_scorecard t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					ranking DESC
+			) AS aa
+		WHERE
+			aa.ranking IS NOT NULL
+		<![CDATA[
+		AND aa.ranking <> ''
+		]]>
+	</select>
+	
+	<!-- 团队操作积分累计 -->
+	<select id="getTeamTotalScoreList" parameterType="int" resultType="com.tzcpa.model.student.SyntheticAbilityDTO">
+		SELECT
+			aa.teamName,
+			aa.teamId,
+			aa.ranking
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					t1.team_id AS teamId,
+					sum(t1.score) AS ranking
+				FROM
+					t_stu_score t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					ranking DESC
+			) AS aa
+		WHERE
+			aa.ranking IS NOT NULL
+		<![CDATA[
+		AND aa.ranking <> ''
+		]]>
+	</select>
+	
+	<!-- 净利润（加总） -->
+	<select id="getRetainedProfitsTotalList" parameterType="int" resultType="com.tzcpa.model.student.SyntheticAbilityDTO">
+		SELECT
+			aa.teamName,
+			aa.teamId,
+			aa.ranking
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					t1.team_id AS teamId,
+					sum(t1.retained_profits) AS ranking
+				FROM
+					t_team_monthly_profit_statement t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					ranking DESC
+			) AS aa
+		WHERE
+			aa.ranking IS NOT NULL
+		<![CDATA[
+		AND aa.ranking <> ''
+		]]>
+	</select>
+	
+	<!-- 营业收入（加总） -->
+	<select id="getOperationRevenueTotalList" parameterType="int" resultType="com.tzcpa.model.student.SyntheticAbilityDTO">
+		SELECT
+			aa.teamName,
+			aa.teamId,
+			aa.ranking
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					t1.team_id AS teamId,
+					sum(t1.operation_revenue) AS ranking
+				FROM
+					t_team_monthly_profit_statement t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					ranking DESC
+			) AS aa
+		WHERE
+			aa.ranking IS NOT NULL
+		<![CDATA[
+		AND aa.ranking <> ''
+		]]>
+	</select>
+	
+	<!-- 销售毛利率（平均） -->
+	<select id="getGrossProfitMarginTotalList" parameterType="int" resultType="com.tzcpa.model.student.SyntheticAbilityDTO">
+		SELECT
+			aa.teamName,
+			aa.teamId,
+			aa.ranking
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					t1.team_id AS teamId,
+					1 - SUM(t1.operating_cost) / SUM(t1.operation_revenue) AS ranking
+				FROM
+					t_team_monthly_profit_statement t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					ranking DESC
+			) AS aa
+		WHERE
+			aa.ranking IS NOT NULL
+		<![CDATA[
+		AND aa.ranking <> ''
+		]]>
+	</select>
+	
+	<!-- 总资产（最终报表数） -->
+	<select id="getTotalAssetsList" parameterType="int" resultType="com.tzcpa.model.student.SyntheticAbilityDTO">
+		SELECT
+			aa.teamName,
+			aa.teamId,
+			aa.ranking
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					t1.team_id AS teamId,
+					SUM(t1.total_assets) AS ranking
+				FROM
+					t_team_balance_sheet t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				AND t1.`year` = 2018
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					ranking DESC
+			) AS aa
+		WHERE
+			aa.ranking IS NOT NULL
+		<![CDATA[
+		AND aa.ranking <> ''
+		]]>
+	</select>
+	
+	<!-- 销量（分三个产品）H6 -->
+	<select id="getH6TotalSalesVolumeList" parameterType="int" resultType="com.tzcpa.model.student.SyntheticAbilityDTO">
+		SELECT
+			aa.teamName,
+			aa.teamId,
+			aa.ranking
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					t1.team_id AS teamId,
+					SUM(t1.adjusted_sales) AS ranking
+				FROM
+					t_team_intermediate t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				AND t1.vehicle_model = 'h6'
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					ranking DESC
+			) AS aa
+		WHERE
+			aa.ranking IS NOT NULL
+		<![CDATA[
+		AND aa.ranking <> ''
+		]]>
+	</select>
+	
+	<!-- 销量（分三个产品）H8 -->
+	<select id="getH8TotalSalesVolumeList" parameterType="int" resultType="com.tzcpa.model.student.SyntheticAbilityDTO">
+		SELECT
+			aa.teamName,
+			aa.teamId,
+			aa.ranking
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					t1.team_id AS teamId,
+					SUM(t1.adjusted_sales) AS ranking
+				FROM
+					t_team_intermediate t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				AND t1.vehicle_model = 'h8'
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					ranking DESC
+			) AS aa
+		WHERE
+			aa.ranking IS NOT NULL
+		<![CDATA[
+		AND aa.ranking <> ''
+		]]>
+	</select>
+	
+	<!-- 销量（分三个产品）WEY -->
+	<select id="getWEYTotalSalesVolumeList" parameterType="int" resultType="com.tzcpa.model.student.SyntheticAbilityDTO">
+		SELECT
+			aa.teamName,
+			aa.teamId,
+			aa.ranking
+		FROM
+			(
+				SELECT
+					t2.team_name AS teamName,
+					t1.team_id AS teamId,
+					SUM(t1.adjusted_sales) AS ranking
+				FROM
+					t_team_intermediate t1
+				INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.id
+				WHERE
+					t1.class_id = #{classId}
+				AND t1.vehicle_model = 'wey'
+				GROUP BY
+					t1.team_id
+				ORDER BY
+					ranking DESC
+			) AS aa
+		WHERE
+			aa.ranking IS NOT NULL
+		<![CDATA[
+		AND aa.ranking <> ''
+		]]>
+	</select>
+	
+	<!-- 获取得分 -->
+	<select id="getWeightMap" parameterType="int" resultType="java.util.Map">
+		SELECT
+			value_of_item AS valueOfItem,
+			weight
+		FROM
+			t_class_synthetic_ability
+		WHERE
+			class_id = #{classId}
+	</select>
+	
+	<!-- 净资产收益率（平均） -->
+	<select id="getReturnOnEquityScoreList" parameterType="int" resultType="com.tzcpa.model.student.SyntheticAbilityDTO">
+		SELECT
+			teamName,
+			teamId,
+			sum(returnOnEquity) AS ranking
+		FROM
+			(
+				SELECT
+					t3.team_name AS teamName,
+					t1.team_id AS teamId,
+					t1.`year`,
+					sum(
+						(
+							CASE
+							WHEN t2.average IS NOT NULL
+							AND t2.average != 0 THEN
+								t1.retained_profits / t2.average
+							ELSE
+								0
+							END
+						)
+					) AS returnOnEquity
+				FROM
+					t_team_profit_statement t1
+				INNER JOIN v_owners_equity_average t2 ON t1.class_id = t2.class_id
+				AND t1.team_id = t2.team_id
+				AND t1.`year` = t2.`year`
+				INNER JOIN t_team t3 ON t2.class_id = t3.class_id
+				AND t2.team_id = t3.id
+				WHERE
+					t1.class_id = #{classId}
+				GROUP BY
+					t1.team_id,
+					t2. YEAR
+			) t4
+		GROUP BY
+			t4.teamId
+		ORDER BY
+			ranking DESC
+	</select>
+</mapper>

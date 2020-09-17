@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.student.StuAnswerMapper">
+    <resultMap id="StuAnswerResultMap" type="com.tzcpa.model.student.StuAnswerDO">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="answer" property="answer" jdbcType="VARCHAR"/>
+        <result column="question_id" property="questionId" jdbcType="INTEGER"/>
+        <result column="team_id" property="teamId" jdbcType="INTEGER"/>
+        <result column="class_id" property="classId" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <insert id="insertStuAnswer" parameterType="com.tzcpa.model.student.StuAnswerDO">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_stu_answer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="answer != null">
+                answer,
+            </if>
+            <if test="questionId != null">
+                question_id,
+            </if>
+            <if test="teamId != null">
+                team_id,
+            </if>
+            <if test="classId != null">
+                class_id,
+            </if>
+            <if test="year != null">
+                year,
+            </if>
+            <if test="month != null">
+                month,
+            </if>
+            <if test="rootId != null">
+                root_id,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="answer != null">
+                #{answer,jdbcType=VARCHAR},
+            </if>
+            <if test="questionId != null">
+                #{questionId,jdbcType=INTEGER},
+            </if>
+            <if test="teamId != null">
+                #{teamId,jdbcType=INTEGER},
+            </if>
+            <if test="classId != null">
+                #{classId,jdbcType=INTEGER},
+            </if>
+            <if test="year != null">
+                #{year,jdbcType=INTEGER},
+            </if>
+            <if test="month != null">
+                #{month,jdbcType=INTEGER},
+            </if>
+            <if test="rootId != null">
+                #{rootId,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertStuAnswerBatch" parameterType="list">
+        insert into t_stu_answer (
+                id,
+                answer,
+                question_id,
+                team_id,
+                class_id,
+                `year`,
+                `month`,
+                root_id
+        ) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            ( #{item.id,jdbcType=INTEGER},
+                #{item.answer,jdbcType=VARCHAR},
+                #{item.questionId,jdbcType=INTEGER},
+                #{item.teamId,jdbcType=INTEGER},
+                #{item.classId,jdbcType=INTEGER},
+                #{item.year,jdbcType=INTEGER},
+            #{item.month,jdbcType=INTEGER},
+            #{item.rootId,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <!-- 查询已答题的年份 -->
+    <select id="getAnswerYear" resultType="java.lang.Integer">
+        SELECT
+            t.`year`
+        FROM
+            t_stu_answer t
+        WHERE
+            class_id = #{classId}
+        AND team_id = #{teamId}
+        GROUP BY t.`year`
+    </select>
+
+    <!-- 查询答题月份 -->
+    <select id="getAnswerMonth" resultType="java.lang.Integer">
+        SELECT
+            (case when max(`MONTH`) is null then 0 else max(`MONTH`) end) AS MONTH
+        FROM
+            t_stu_answer
+        WHERE
+            class_id = #{classId}
+            and team_id=#{teamId}
+            and `year` = #{year}
+    </select>
+
+    <select id="getAnswer" resultType="com.tzcpa.model.student.StuAnswerDO">
+        select *
+        from t_stu_answer
+        where class_id = #{classId}
+        and team_id = #{teamId}
+        and question_id = #{questionId}
+    </select>
+    
+    <!-- 查询年度分析表的年份 -->
+    <select id="getTeamAnnualWorthGatherYear" resultType="java.lang.Integer">
+		SELECT DISTINCT
+			`year`
+		FROM
+			t_team_annual_worth_gather
+		WHERE
+			class_id = #{classId}
+		AND team_id = #{teamId}
+		AND `year` != 2010
+		ORDER BY
+			`year`
+    </select>
+    
+    <!-- 查询资产负债表的年份 -->
+    <select id="getTeamBalanceSheetYear" resultType="java.lang.Integer">
+		SELECT DISTINCT
+			`year`
+		FROM
+			t_team_balance_sheet
+		WHERE
+			class_id = #{classId}
+		AND team_id = #{teamId}
+		AND `year` != 2010
+		ORDER BY
+			`year`
+    </select>
+    
+    <!-- 查询年度利润表的年份 -->
+    <select id="getTeamProfitStatementYear" resultType="java.lang.Integer">
+		SELECT DISTINCT
+			`year`
+		FROM
+			t_team_profit_statement
+		WHERE
+			class_id = #{classId}
+		AND team_id = #{teamId}
+		AND `year` != 2010
+		ORDER BY
+			`year`
+    </select>
+    
+    <!-- 查询月度利润表的年份 -->
+    <select id="getTeamMonthlyProfitStatementYear" resultType="java.lang.Integer">
+		SELECT DISTINCT
+			`year`
+		FROM
+			t_team_monthly_profit_statement
+		WHERE
+			class_id = #{classId}
+		AND team_id = #{teamId}
+		AND `year` != 2010
+		AND ym_date &lt;= date_format(#{currentMonth},'%Y-%m')
+		ORDER BY
+			`year`
+    </select>
+
+    <select id="getAnswerCount" parameterType="integer" resultType="int">
+        select count(tsa.id) from t_stu_answer tsa
+       where tsa.class_id = #{classId} and tsa.question_id = 112
+    </select>
+</mapper>

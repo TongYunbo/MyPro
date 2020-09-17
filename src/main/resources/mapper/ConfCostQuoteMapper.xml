@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.ConfCostQuoteMapper">
+
+    <resultMap id="ConfCostQuoteResultMap" type="com.tzcpa.model.treatment.ConfCostQuoteDO">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="year" property="year" jdbcType="INTEGER"/>
+        <result column="level" property="level" jdbcType="INTEGER"/>
+        <result column="vehicle_model" property="vehicleModel" jdbcType="VARCHAR"/>
+        <result column="sales_range" property="salesRange" jdbcType="BIGINT"/>
+        <result column="unit_cost" property="unitCost" jdbcType="BIGINT"/>
+        <result column="group_key" property="groupKey" jdbcType="VARCHAR"/>
+    </resultMap>
+
+</mapper>

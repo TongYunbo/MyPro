@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tzcpa.mapper.teacher.ClassMapper">
+
+    <!-- 查询班级信息 -->
+    <select id="findByPage" parameterType="map" resultType="com.tzcpa.model.teacher.Clazz">
+		SELECT
+			c.id,
+			c.class_name,
+			c.class_desc,
+			c.is_del,
+			c.input_time,
+			GROUP_CONCAT(t. NAME) AS teachers
+		FROM
+			t_class c
+		INNER JOIN t_class_teacher tct ON c.id = tct.class_id
+		INNER JOIN t_teacher t ON tct.teacher_id = t.id
+		AND t.account != 'admin'
+		WHERE
+			c.is_del = 0
+		AND t.is_del IN (0, 2)
+		GROUP BY
+			class_name
+		ORDER BY
+			input_time DESC
+        <if test="start!=null and size!=null">
+            limit #{start},#{size}
+        </if>
+    </select>
+
+    <select id="findClassByteacher" parameterType="map" resultType="com.tzcpa.model.teacher.Clazz">
+		SELECT
+			c.id,
+			c.class_name,
+			c.class_desc,
+			c.is_del,
+			c.input_time,
+			c.answer_state,
+            t.`name`
+		FROM
+			t_class c
+		INNER JOIN t_class_teacher tct ON c.id = tct.class_id
+		INNER JOIN t_teacher t ON tct.teacher_id = t.id
+		WHERE
+			c.is_del = 0
+		AND t.is_del IN (0, 2)
+        <if test="account != null and account != 'admin'">
+              and t.account = #{account}
+        </if>
+        <if test="className != null and className !=''">
+            and c.class_name like CONCAT('%',#{className},'%')
+        </if>
+        GROUP BY class_name
+        order by input_time desc
+
+    </select>
+
+    <!-- 查询班级记录总数 -->
+    <select id="selectCount" resultType="int">
+		select count(1) AS `count` from (
+		SELECT
+					1
+				FROM
+					t_class c
+				INNER JOIN t_class_teacher tct ON c.id = tct.class_id
+				INNER JOIN t_teacher t ON tct.teacher_id = t.id
+				AND t.account != 'admin'
+				WHERE
+					c.is_del = 0
+				AND t.is_del IN (0, 2)
+				GROUP BY
+					class_name
+		) as `count`
+	</select>
+
+    <!-- 查询教师姓名 -->
+    <select id="getTeacherName" resultType="com.tzcpa.model.teacher.Teacher">
+		SELECT
+			id,
+			account,
+			CONCAT(`name`, '(', account, ')') AS `name`,
+			`password`,
+			is_del,
+			input_person,
+			input_time,
+			modify_person,
+			modify_time
+		FROM
+			t_teacher
+		WHERE
+			is_del IN (0, 2)
+		AND account != 'admin'
+		ORDER BY
+			input_time DESC
+ 	</select>
+
+    <!-- 新增班级信息 -->
+    <insert id="insertClassInfo" parameterType="com.tzcpa.model.teacher.Clazz">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_class
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="className != null">
+                class_name,
+            </if>
+            <if test="classDesc != null">
+                class_desc,
+            </if>
+            <if test="isDel != null">
+                is_del,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="className != null">
+                #{className,jdbcType=VARCHAR},
+            </if>
+            <if test="classDesc != null">
+                #{classDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="isDel != null">
+                #{isDel,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 新增班级_教师关联表信息 -->
+    <insert id="insertClassTeacherInfo" parameterType="com.tzcpa.model.teacher.Clazz">
+        INSERT INTO t_class_teacher(class_id ,teacher_id) VALUES (#{id},#{tId})
+    </insert>
+
+    <select id="getClassByid" parameterType="int" resultType="com.tzcpa.model.teacher.Clazz">
+        select * from t_class tc where  tc.id = #{classId}
+    </select>
+
+
+    <!-- 根据班级id查看教师列表 -->
+    <select id="getClassToTeacherLists" parameterType="int" resultType="com.tzcpa.model.teacher.Teacher">
+		SELECT
+			t.id,
+			t.account,
+			CONCAT(t.`name`, '(', t.account, ')') AS `name`,
+			t.`password`,
+			t.is_del,
+			t.input_person,
+			t.input_time,
+			t.modify_person,
+			t.modify_time
+		FROM
+			t_class c
+		LEFT JOIN t_class_teacher tct ON c.id = tct.class_id
+		LEFT JOIN t_teacher t ON tct.teacher_id = t.id
+		WHERE
+			c.id = #{id}
+		AND t.is_del IN (0, 2)
+	</select>
+
+    <!-- 查询数据库中班级名称和className是否有重复 -->
+    <select id="selectCnameByClassName" parameterType="String" resultType="String">
+		select class_name from t_class where class_name=#{className} and is_del in (0,2)
+	</select>
+
+    <!-- 根据id和className查看是否修改了className -->
+    <select id="getClassNameById" parameterType="com.tzcpa.model.teacher.Clazz" resultType="String">
+		select class_name from t_class where class_name=#{className} and id=#{id} and is_del in (0,2)
+	</select>
+
+    <select id="getAccountByClassId" resultType="string" parameterType="integer">
+        select tt.account from t_class tc
+        left join t_class_teacher tct
+        on tc.id = tct.class_id
+        LEFT JOIN t_teacher tt
+        on tct.teacher_id = tt.id
+        where tc.id = #{classId}
+    </select>
+
+    <!-- 根据id先删除关联表的所有信息 -->
+    <delete id="deleteClassTeacherByClassid" parameterType="int">
+		delete from t_class_teacher where class_id = #{id}
+	</delete>
+
+    <!-- 修改班级信息 -->
+    <update id="updateClassNameById" parameterType="com.tzcpa.model.teacher.Clazz">
+        update t_class
+        <set>
+            <if test="className != null">
+                class_name = #{className,jdbcType=VARCHAR},
+            </if>
+            <if test="classDesc != null">
+                class_desc = #{classDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel,jdbcType=INTEGER},
+            </if>
+            <if test="answerState != null">
+                answer_state = #{answerState,jdbcType=INTEGER},
+            </if>
+
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyPerson != null">
+                modify_person = #{modifyPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="timeRemain != null">
+                time_remain = #{timeRemain},
+            </if>
+            <if test="bufferRemain != null">
+                buffer_remain = #{bufferRemain},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER} and answer_state &lt;4
+    </update>
+
+    <update id="addTime" parameterType="map">
+        update t_class tc
+        set tc.modify_time = CURRENT_TIMESTAMP,
+            tc.modify_person = #{account},
+             tc.time_remain = #{totalTime}
+        where  tc.id = #{classId}
+    </update>
+
+</mapper>

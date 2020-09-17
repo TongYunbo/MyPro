@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tzcpa.mapper.teacher.TeacherMapper">
+
+
+    <!-- 添加教师信息 -->
+    <insert id="addTeacher" parameterType="com.tzcpa.model.teacher.Teacher">
+        insert into t_teacher
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="account != null">
+                account,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="isDel != null">
+                is_del,
+            </if>
+            <if test="inputPerson != null">
+                input_person,
+            </if>
+            <if test="modifyPerson != null">
+                modify_person,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="account != null">
+                #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="isDel != null">
+                #{isDel,jdbcType=INTEGER},
+            </if>
+            <if test="inputPerson != null">
+                #{inputPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyPerson != null">
+                #{modifyPerson,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 修改教师信息 -->
+    <update id="updateTeacher" parameterType="com.tzcpa.model.teacher.Teacher">
+        update t_teacher
+        <trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+            <if test="account!=null">
+                account=#{account},
+            </if>
+            <if test="name!=null">
+                `name`=#{name},
+            </if>
+            <if test="password!=null">
+                password=#{password},
+            </if>
+            <if test="isDel!=null">
+                is_del=#{isDel},
+            </if>
+            <if test="modifyPerson != null">
+                modify_person = #{modifyPerson},
+            </if>
+        </trim>
+    </update>
+
+    <!-- 根据分页数据start 和size查询教师列表数据 -->
+    <select id="findByPage" resultType="com.tzcpa.model.teacher.Teacher">
+		SELECT
+			id,
+			account,
+			`name`,
+			`password`,
+			is_del,
+			input_time,
+			input_person,
+			modify_time,
+			modify_person
+		FROM
+			t_teacher
+		WHERE
+			is_del IN (0, 2)
+		AND `name` != 'admin'
+		ORDER BY
+			input_time DESC
+        <if test="map.start!=null and map.size!=null">
+            limit #{map.start}, #{map.size}
+        </if>
+    </select>
+
+    <!-- 查询教师记录总数 -->
+    <select id="selectCount" resultType="int">
+		select count(id)
+		from t_teacher
+		where is_del in (0, 2)
+		AND `name`!='admin'
+	</select>
+
+    <!-- 根据账号查看数据库中是否有相同的教师账号 -->
+    <select id="selectAccountById" parameterType="com.tzcpa.model.teacher.Teacher" resultType="String">
+		select account
+		from t_teacher
+		where account = #{account}
+		and is_del in (0, 2)
+		and id = #{id}
+	</select>
+
+    <!-- 根据账号查看数据库中是否有相同的教师账号 -->
+    <select id="selectAccount" parameterType="com.tzcpa.model.teacher.Teacher" resultType="String">
+		select account
+		from t_teacher
+		where account = #{account}
+		and is_del in (0, 2)
+	</select>
+
+    <!-- 根据教师id查询教师密码 -->
+    <select id="selectPassword" parameterType="int" resultType="int">
+		select password
+		from t_teacher
+		where id = #{id}
+		and is_del in (0, 2)
+	</select>
+
+    <!-- 根据教师id和账号查询教师姓名 -->
+    <select id="selectNameByAccount" parameterType="com.tzcpa.model.teacher.Teacher" resultType="String">
+		select `name`
+		from t_teacher
+		where account = #{account}
+		and id != #{id}
+		and is_del in (0, 2)
+	</select>
+
+    <!-- 教师登录 根据账号查询教师信息 wangbj -->
+    <select id="teacherLogin" parameterType="String" resultType="com.tzcpa.model.teacher.Teacher">
+		select id, account, `name`, password, is_del as isDel
+		from t_teacher
+		where is_del in (0, 2)
+		and account = #{account}
+	</select>
+
+
+
+</mapper>

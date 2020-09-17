@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tzcpa.mapper.teacher.StuRoleMapper">
+
+    <insert id="insertStuRole" parameterType="com.tzcpa.model.teacher.StuRole">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_stu_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="roleName != null">
+                role_name,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="teamId != null">
+                team_id,
+            </if>
+            <if test="classId != null">
+                class_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">
+                #{roleId},
+            </if>
+            <if test="roleName != null">
+                #{roleName},
+            </if>
+            <if test="userName != null">
+                #{userName},
+            </if>
+            <if test="teamId != null">
+                #{teamId},
+            </if>
+            <if test="classId != null">
+                #{classId},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateStuRole" parameterType="com.tzcpa.model.teacher.StuRole">
+        update t_stu_role
+        <set>
+            <if test="roleId != null">
+                role_id = #{roleId},
+            </if>
+            <if test="roleName != null">
+                role_name = #{roleName},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName},
+            </if>
+            <if test="teamId != null">
+                team_id = #{teamId},
+            </if>
+            <if test="classId != null">
+                class_id = #{classId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="selectStuRole" parameterType="com.tzcpa.model.teacher.StuRole" resultType="com.tzcpa.model.teacher.StuRole">
+        select id, role_id as roleId, role_name as roleName, user_name as userName, team_id as teamId, class_id as classId
+        from t_stu_role
+        where team_id = #{teamId}
+        and class_id = #{classId}
+    </select>
+
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.ConfSalesUnivalenceMapper" >
+  <resultMap id="BaseResultMap" type="com.tzcpa.model.treatment.ConfSalesUnivalenceDO" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="year" property="year" jdbcType="INTEGER" />
+    <result column="month" property="month" jdbcType="INTEGER" />
+    <result column="vehicle_model" property="vehicleModel" jdbcType="VARCHAR" />
+    <result column="benchmark_sales" property="benchmarkSales" jdbcType="BIGINT" />
+    <result column="benchmark_unit_price" property="benchmarkUnitPrice" jdbcType="BIGINT" />
+    <result column="benchmark_sales_price" property="benchmarkSalesPrice" jdbcType="BIGINT" />
+    <result column="group_key" property="groupKey" jdbcType="VARCHAR" />
+  </resultMap>
+</mapper>

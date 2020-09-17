@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.PickUpCarSettlementMapper">
+
+    <resultMap id="TeamIntermediateResultMap" type="com.tzcpa.model.treatment.TeamIntermediateDO">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="class_id" property="classId" jdbcType="INTEGER"/>
+        <result column="year" property="year" jdbcType="INTEGER"/>
+        <result column="month" property="month" jdbcType="INTEGER"/>
+        <result column="vehicle_model" property="vehicleModel" jdbcType="VARCHAR"/>
+        <result column="benchmark_sales" property="benchmarkSales" jdbcType="BIGINT"/>
+        <result column="benchmark_unit_price" property="benchmarkUnitPrice" jdbcType="BIGINT"/>
+        <result column="benchmark_sales_price" property="benchmarkSalesPrice" jdbcType="BIGINT"/>
+        <result column="benchmark_unit_material_cost" property="benchmarkUnitMaterialCost" jdbcType="BIGINT"/>
+        <result column="benchmark_materials_cost_total" property="benchmarkMaterialsCostTotal" jdbcType="BIGINT"/>
+        <result column="team_id" property="teamId" jdbcType="INTEGER"/>
+        <result column="strategy_select" property="strategySelect" jdbcType="VARCHAR"/>
+        <result column="strategy_benchmark_sales" property="strategyBenchmarkSales" jdbcType="BIGINT"/>
+        <result column="strategy_benchmark_unit_price" property="strategyBenchmarkUnitPrice" jdbcType="BIGINT"/>
+        <result column="strategy_benchmark_sales_price" property="strategyBenchmarkSalesPrice" jdbcType="BIGINT"/>
+        <result column="strategy_benchmark_unit_material_cost" property="strategyBenchmarkUnitMaterialCost" jdbcType="BIGINT"/>
+        <result column="strategy_benchmark_materials_cost_total" property="strategyBenchmarkMaterialsCostTotal" jdbcType="BIGINT"/>
+        <result column="adjusted_sales" property="adjustedSales" jdbcType="BIGINT"/>
+        <result column="adjusted_unit_price" property="adjustedUnitPrice" jdbcType="BIGINT"/>
+        <result column="final_sales" property="finalSales" jdbcType="BIGINT"/>
+        <!--<result column="sales_adjusted_unit_material_cost" property="salesAdjustedUnitMaterialCost" jdbcType="BIGINT"/>-->
+        <result column="adjusted_unit_material_cost" property="adjustedUnitMaterialCost" jdbcType="BIGINT"/>
+        <result column="final_material_cost" property="finalMaterialCost" jdbcType="BIGINT"/>
+        <result column="production_depreciation_expense" property="productionDepreciationExpense" jdbcType="BIGINT"/>
+        <result column="final_energy_cost" property="finalEnergyCost" jdbcType="BIGINT"/>
+        <result column="productive_labor_cost" property="productiveLaborCost" jdbcType="BIGINT"/>
+        <result column="final_operating_cost_plus" property="finalOperatingCostPlus" jdbcType="BIGINT"/>
+        <result column="final_gross_margin" property="finalGrossMargin" jdbcType="REAL"/>
+        <result column="final_operating_tax_surcharge" property="finalOperatingTaxSurcharge" jdbcType="BIGINT"/>
+        <result column="sales_promotional_expenses" property="salesPromotionalExpenses" jdbcType="BIGINT"/>
+        <result column="sales_after_sales_service_fee" property="salesAfterSalesServiceFee" jdbcType="BIGINT"/>
+        <result column="sales_other" property="salesOther" jdbcType="BIGINT"/>
+        <result column="sales_total" property="salesTotal" jdbcType="BIGINT"/>
+        <result column="management_development_cost" property="managementDevelopmentCost" jdbcType="BIGINT"/>
+        <result column="management_depreciation_cost" property="managementDepreciationCost" jdbcType="BIGINT"/>
+        <result column="adjusted_management_other" property="adjustedManagementOther" jdbcType="BIGINT"/>
+        <result column="management_other" property="managementOther" jdbcType="BIGINT"/>
+        <result column="management_total" property="managementTotal" jdbcType="BIGINT"/>
+        <result column="financial_cost" property="financialCost" jdbcType="BIGINT"/>
+        <result column="assets_impairment_loss_bad debt" property="assetsImpairmentLossBadDebt" jdbcType="BIGINT"/>
+        <result column="assets_impairment_loss_inventory" property="assetsImpairmentLossInventory" jdbcType="BIGINT"/>
+        <result column="assets_impairment_loss_fixed_assets" property="assetsImpairmentLossFixedAssets" jdbcType="BIGINT"/>
+        <!--<result column="assets_impairment_loss_total" property="assetsImpairmentLossTotal" jdbcType="BIGINT"/>-->
+        <result column="nonbusiness_income" property="nonbusinessIncome" jdbcType="BIGINT"/>
+        <result column="nonbusiness_expenditure" property="nonbusinessExpenditure" jdbcType="BIGINT"/>
+        <result column="ym_date" property="ymDate" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    
+    
+    <!-- 按年查询中间表 wangbj -->
+    <select id="selectTeamIntermediateYearSum" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+  SELECT
+	  sum(final_sales) as finalSales , <!-- 最终销售额-->
+	  sum(adjusted_sales) as adjustedSales, <!-- 调整后销量-->
+	  sum(final_operating_cost_plus) as yycb, <!-- 营业成本-->
+		SUM(final_operating_cost_plus)+SUM(final_operating_tax_surcharge)+SUM(final_sales_total)+SUM(final_management_total)+SUM(final_financial_cost)+SUM(final_assets_impairment_loss_total) finalOperatingCostPlus ,  <!-- 营业总成本（营业成本+最终营业税金及附加+最终销售费用合计+最终管理费用合计+最终财务费用+最终资产减值损失合计）-->
+	  sum(final_productive_labor_cost) as finalProductiveLaborCost, <!-- 最终生产人工成本-->
+	  sum(production_depreciation_expense) as productionDepreciationExpense, <!-- 生产折旧费用-->
+	  sum(final_energy_cost) as finalEnergyCost , <!-- 最终能耗成本-->
+	  sum(final_operating_tax_surcharge) as finalOperatingTaxSurcharge ,<!-- 税金及附加-->
+	  sum(sales_promotional_expenses) as salesPromotionalExpenses , <!-- 销售费用-宣传推广费-->
+	  sum(adjusted_sales_after_sales_service_fee) as adjustedSalesAfterSalesServiceFee, <!-- 调整后销售费用-售后服务费-->
+	  sum(final_sales_other) as finalSalesOther , <!-- 最终销售费用-其他-->
+	  sum(in_development_cost) as adjustedManagementDevelopmentCost, <!-- 调整后管理费用-研发费-->
+	  sum(management_depreciation_cost) as managementDepreciationCost , <!-- 管理费用-折旧费-->
+	  sum(adjusted_management_other) as adjustedManagementOther, <!-- 调整后管理费用-其他 -->
+	  sum(final_financial_cost) as finalFinancialCost, <!-- 最终财务费用-->
+	  sum(final_assets_impairment_loss_total) as finalAssetsImpairmentLossTotal, <!-- 最终资产减值损失合计-->
+	  sum(final_material_cost) as finalMaterialCost <!-- 最终材料成本-->
+FROM
+t_team_intermediate
+        where class_id = #{map.classId}
+        and team_id = #{map.teamId}
+        and `year` = #{map.year}
+        and vehicle_model = #{map.vehicleModel}
+    </select>
+    <!--上年赊销收现  -->
+    <select id="getSNSX" resultType="java.lang.Double">
+    SELECT
+		v_value
+	FROM
+		t_conf_variable
+	WHERE
+		v_code = '4e41b7a612c48b996c06d577506932da'
+    </select>
+    <!--上年当年收现比例  -->
+    <select id="getSXBL" resultType="java.lang.Double">
+    SELECT
+		v_value
+	FROM
+		t_conf_variable
+	WHERE
+		v_code = '18f31fefce3cdabf991c46003e66524a'
+    </select>
+    <!--产品增加数  -->
+    <select id="getCpNum" resultType="java.lang.Double">
+    SELECT
+		v_value
+	FROM
+		t_conf_variable
+	WHERE
+		v_code = '8494af10ff3fd24ae4c25824bbbb0ea1'
+    </select>
+    <!--发动机采购单价  -->
+    <select id="getCGdj" resultType="java.lang.Double">
+    SELECT
+		v_value
+	FROM
+		t_conf_variable
+	WHERE
+		v_code = '6648ca4dc4998b7d641d5e44553ae625'
+    </select>
+    <!--变速箱采购单价  -->
+    <select id="getCGDJBSX" resultType="java.lang.Double">
+    SELECT
+		v_value
+	FROM
+		t_conf_variable
+	WHERE
+		v_code = '4e0af3b7a67428c1503482cb8b6030b7'
+    </select>
+    <!--其他部件采购单价  -->
+    <select id="getCGDJOther" resultType="java.lang.Double">
+    SELECT
+		v_value
+	FROM
+		t_conf_variable
+	WHERE
+		v_code = '618e81485512db96eb7b6942da7c8559'
+    </select>
+    <!--查询前期赊销付现  -->
+    <select id="getQJSXFX" resultType="java.lang.Double">
+    SELECT
+		v_value
+	FROM
+		t_conf_variable
+	WHERE
+		v_code = 'bf2a043d1e660496e1ae05939e3831b3'
+    </select>
+    <!--查询前期赊销付现  -->
+    <select id="getFXBL" resultType="java.lang.Double">
+    SELECT
+		v_value
+	FROM
+		t_conf_variable
+	WHERE
+		v_code = '93e1f241afef86ac72889455a8c376ed'
+    </select>
+    
+    <select id="getDesc" resultType="java.lang.String">
+    	select quesion_option_desc from t_class_question_option WHERE class_id = #{classId} AND question_id = #{questionId} and quesion_option = '3'
+    </select>
+    <!--资产负债表值影响计算  -->
+    <select id="updateTeamBalanceSheet">
+    	UPDATE t_team_balance_sheet
+		SET 
+		<!-- 固定资产净值-->
+		net_value_fixed_assets = IFNULL(original_value_fixed_assets,0) - IFNULL(accumulated_depreciation,0),   
+		<!-- 固定资产净额-->
+		net_fixed_assets = IFNULL(original_value_fixed_assets,0) - IFNULL(accumulated_depreciation,0) - IFNULL(fixed_assets_depreciation_reserves,0), 
+		<!-- 非流动资产合计-->
+		total_noncurrent_assets = IFNULL(long_term_equity_investment,0) 
+			+(IFNULL(original_value_fixed_assets,0) - IFNULL(accumulated_depreciation, 0) - IFNULL(fixed_assets_depreciation_reserves,0))
+			+ IFNULL(intangible_assets, 0) 
+			+ IFNULL(construction_in_process, 0)
+			+ IFNULL(making_loans_payments, 0) 
+			+ IFNULL(goodwill, 0) 
+			+ IFNULL(deferred_tax_assets, 0) 
+			+ IFNULL(other_noncurrent_assets, 0),
+			<!-- 资产总计-->
+		total_assets = IF(
+			(IFNULL(total_liabilities_equity,0)-(
+			IFNULL(long_term_equity_investment,0) 
+				+(IFNULL(original_value_fixed_assets,0) - IFNULL(accumulated_depreciation, 0) - IFNULL(fixed_assets_depreciation_reserves,0))
+				+ IFNULL(intangible_assets, 0) 
+				+ IFNULL(construction_in_process, 0)
+				+ IFNULL(making_loans_payments, 0) 
+				+ IFNULL(goodwill, 0) 
+				+ IFNULL(deferred_tax_assets, 0) 
+				+ IFNULL(other_noncurrent_assets, 0)
+			)
+			-IFNULL(notes_accounts_receivable,0)
+			-IFNULL(prepayment,0)
+			-IFNULL(inventory,0)
+			-IFNULL(other_receivables,0)
+			-IFNULL(other_current_assets,0))&lt;100000000000,
+			100000000000,
+			(IFNULL(total_liabilities_equity,0)-(
+			IFNULL(long_term_equity_investment,0) 
+				+(IFNULL(original_value_fixed_assets,0) - IFNULL(accumulated_depreciation, 0) - IFNULL(fixed_assets_depreciation_reserves,0))
+				+ IFNULL(intangible_assets, 0) 
+				+ IFNULL(construction_in_process, 0)
+				+ IFNULL(making_loans_payments, 0) 
+				+ IFNULL(goodwill, 0) 
+				+ IFNULL(deferred_tax_assets, 0) 
+				+ IFNULL(other_noncurrent_assets, 0)
+			)
+			-IFNULL(notes_accounts_receivable,0)
+			-IFNULL(prepayment,0)
+			-IFNULL(inventory,0)
+			-IFNULL(other_receivables,0)
+			-IFNULL(other_current_assets,0))
+			)
+			+IFNULL(notes_accounts_receivable,0)
+			+IFNULL(prepayment,0)
+			+IFNULL(other_receivables,0)
+			+IFNULL(inventory,0)
+			+IFNULL(long_term_equity_investment,0) 
+			+(IFNULL(original_value_fixed_assets,0) - IFNULL(accumulated_depreciation, 0) - IFNULL(fixed_assets_depreciation_reserves,0))
+			+ IFNULL(intangible_assets, 0) 
+			+ IFNULL(construction_in_process, 0)
+			+ IFNULL(making_loans_payments, 0) 
+			+ IFNULL(goodwill, 0) 
+			+ IFNULL(deferred_tax_assets, 0) 
+			+ IFNULL(other_noncurrent_assets, 0),
+			<!-- 货币资金-->
+		monetary_capital=IF(
+			(IFNULL(total_liabilities_equity,0)-(
+			IFNULL(long_term_equity_investment,0) 
+				+(IFNULL(original_value_fixed_assets,0) - IFNULL(accumulated_depreciation, 0) - IFNULL(fixed_assets_depreciation_reserves,0))
+				+ IFNULL(intangible_assets, 0) 
+				+ IFNULL(construction_in_process, 0)
+				+ IFNULL(making_loans_payments, 0) 
+				+ IFNULL(goodwill, 0) 
+				+ IFNULL(deferred_tax_assets, 0) 
+				+ IFNULL(other_noncurrent_assets, 0)
+			)
+			-IFNULL(notes_accounts_receivable,0)
+			-IFNULL(prepayment,0)
+			-IFNULL(inventory,0)
+			-IFNULL(other_receivables,0)
+			-IFNULL(other_current_assets,0))&lt;100000000000,
+			100000000000,
+			(IFNULL(total_liabilities_equity,0)-(
+			IFNULL(long_term_equity_investment,0) 
+				+(IFNULL(original_value_fixed_assets,0) - IFNULL(accumulated_depreciation, 0) - IFNULL(fixed_assets_depreciation_reserves,0))
+				+ IFNULL(intangible_assets, 0) 
+				+ IFNULL(construction_in_process, 0)
+				+ IFNULL(making_loans_payments, 0) 
+				+ IFNULL(goodwill, 0) 
+				+ IFNULL(deferred_tax_assets, 0) 
+				+ IFNULL(other_noncurrent_assets, 0)
+			)
+			-IFNULL(notes_accounts_receivable,0)
+			-IFNULL(prepayment,0)
+			-IFNULL(inventory,0)
+			-IFNULL(other_receivables,0)
+			-IFNULL(other_current_assets,0))
+			),
+			total_current_assets=IF(
+			(IFNULL(total_liabilities_equity,0)-(
+			IFNULL(long_term_equity_investment,0) 
+				+(IFNULL(original_value_fixed_assets,0) - IFNULL(accumulated_depreciation, 0) - IFNULL(fixed_assets_depreciation_reserves,0))
+				+ IFNULL(intangible_assets, 0) 
+				+ IFNULL(construction_in_process, 0)
+				+ IFNULL(making_loans_payments, 0) 
+				+ IFNULL(goodwill, 0) 
+				+ IFNULL(deferred_tax_assets, 0) 
+				+ IFNULL(other_noncurrent_assets, 0)
+			)
+			-IFNULL(notes_accounts_receivable,0)
+			-IFNULL(prepayment,0)
+			-IFNULL(inventory,0)
+			-IFNULL(other_receivables,0)
+			-IFNULL(other_current_assets,0))&lt;100000000000,
+			100000000000,
+			(IFNULL(total_liabilities_equity,0)-(
+			IFNULL(long_term_equity_investment,0) 
+				+(IFNULL(original_value_fixed_assets,0) - IFNULL(accumulated_depreciation, 0) - IFNULL(fixed_assets_depreciation_reserves,0))
+				+ IFNULL(intangible_assets, 0) 
+				+ IFNULL(construction_in_process, 0)
+				+ IFNULL(making_loans_payments, 0) 
+				+ IFNULL(goodwill, 0) 
+				+ IFNULL(deferred_tax_assets, 0) 
+				+ IFNULL(other_noncurrent_assets, 0)
+			)
+			-IFNULL(notes_accounts_receivable,0)
+			-IFNULL(prepayment,0)
+			-IFNULL(inventory,0)
+			-IFNULL(other_receivables,0)
+			-IFNULL(other_current_assets,0))
+			)
+			+IFNULL(notes_accounts_receivable,0)
+			+IFNULL(prepayment,0)
+			+IFNULL(other_receivables,0)
+			+IFNULL(inventory,0) 
+		WHERE class_id = #{classId} AND team_id = #{teamId} AND `year` =#{year}
+    </select>
+    <!--流动负债合计  -->
+    <select id="updateTeamBalanceLDFZHJSheet">
+    UPDATE t_team_balance_sheet 
+	  	SET 
+	 	<!-- 流动负债合计-->
+	 	 total_current_liability=IFNULL(short_term_borrowing,0) <!-- 短期借款-->
+							+IFNULL(notes_accounts_payable,0) <!-- 应付票据及应付账款-->
+							+IFNULL(unearned_revenue,0) <!-- 预收款项-->
+							+IFNULL(payroll_payable,0) <!-- 应付职工薪酬-->
+							+IFNULL(tax_payable,0) <!-- 应交税费-->
+							+IFNULL(other_payables,0) <!-- 其他应付款 -->
+							+IFNULL(noncurrent_liabilities_mature_one_year,0) <!-- 一年内到期的非流动负债-->
+							+IFNULL(other_current_liability,0) <!-- 其他流动负债-->
+		WHERE class_id = #{classId} AND team_id = #{teamId} AND `year` =#{year}
+    </select>
+     <!--非流动负债合计  -->
+    <select id="updateTeamBalanceFLDFZJSheet">
+    UPDATE t_team_balance_sheet 
+	  	SET 
+	 	<!-- 非流动负债合计-->
+	 	 total_noncurrent_liabilities=IFNULL(long_term_loan,0) <!-- 长期借款-->
+							+IFNULL(bonds_payable,0)   <!-- 应付债券-->
+							+IFNULL(long_term_payable,0) <!-- 长期应付款-->
+						    +IFNULL(anticipation_liabilities,0) <!-- 预计负债-->
+							+IFNULL(deferred_income,0) <!-- 递延收益-->
+							+IFNULL(deferred_income_tax_liabilities,0) <!-- 递延所得税负债-->
+							+IFNULL(other_noncurrent_liabilities,0) <!-- 其他非流动负债-->
+		WHERE class_id = #{classId} AND team_id = #{teamId} AND `year` =#{year}
+    </select>
+    <!--负债合计  -->
+    <select id="updateTeamBalanceFZHJSheet">
+    UPDATE t_team_balance_sheet 
+	  	SET 
+	 	<!-- 负债合计-->
+	 	 total_liability=IFNULL(total_noncurrent_liabilities,0)
+	 	 +IFNULL(total_current_liability, 0) 
+		WHERE class_id = #{classId} AND team_id = #{teamId} AND `year` =#{year}
+    </select>
+    <!--所有者权益合计算  -->
+    <select id="updateTeamBalanceSYZJSheet">
+    UPDATE t_team_balance_sheet 
+	  	SET 
+        <!-- 所有者权益合计-->
+        total_owners_equity=IFNULL(capitalization,0)
+        + IFNULL(capital_reserve, 0) 
+        + IFNULL(earned_surplus, 0) 
+        + IFNULL(undistributed_profit, 0) 
+		WHERE class_id = #{classId} AND team_id = #{teamId} AND `year` =#{year}
+    </select>
+    <!--负债和所有者权益总计  -->
+    <select id="updateTeamBalanceFZSYZHJSheet">
+    UPDATE t_team_balance_sheet 
+	  	SET 
+        <!-- 负债和所有者权益总计-->
+        total_liabilities_equity=IFNULL(total_owners_equity,0)
+        + IFNULL(total_liability, 0)
+		WHERE class_id = #{classId} AND team_id = #{teamId} AND `year` =#{year}
+    </select>
+    <!--营业总成本  -->
+    <select id="updateTeamMonthlyProfitStatementYYZCB">
+    update t_team_monthly_profit_statement  SET
+  	<!-- 营业总成本71 -->
+	total_operating_cost=IFNULL(operating_cost,0) <!-- 营业成本-->
+                      +IFNULL(sale_tax_addict,0) <!-- 税金及附加-->
+                      +IFNULL(selling_expenses,0) <!-- 销售费用-->
+                      +IFNULL(administrative_cost,0) <!-- 管理费用-->
+                      +IFNULL(financial_cost,0)  <!-- 财务费用-->
+                      +IFNULL(assets_impairment_loss,0) <!-- 资产减值损失-->
+		WHERE class_id = #{classId} AND team_id = #{teamId} AND ym_date =#{ymDate}
+    </select>
+    <!--营业利润  -->
+    <select id="updateTeamMonthlyProfitStatementYYLR">
+  	update t_team_monthly_profit_statement  SET
+  	    <!-- 营业利润 79 -->
+  		operating_profit=IFNULL(operation_revenue,0) <!-- 营业收入-->
+                 -IFNULL(total_operating_cost,0) <!-- 营业总成本-->
+		WHERE class_id = #{classId} AND team_id = #{teamId} AND ym_date =#{ymDate}
+    </select>
+    <!--利润总额  -->
+    <select id="updateTeamMonthlyProfitStatementYYZE">
+    update t_team_monthly_profit_statement SET
+    <!-- 利润总额 82 -->
+  	total_profit=IFNULL(operating_profit,0) <!-- 营业利润-->
+             +IFNULL(nonbusiness_income,0) <!-- 营业外收入-->
+             -IFNULL(nonbusiness_expenditure,0) <!-- 营业外支出-->
+		WHERE class_id = #{classId} AND team_id = #{teamId} AND ym_date =#{ymDate}
+    </select>
+    <!--净利润  未分配利润、本年净利润 -->
+    <select id="updateTeamMonthlyProfitStatementJLR">
+    update t_team_monthly_profit_statement  SET
+  		 <!-- 净利润 84 -->
+   		retained_profits=IFNULL(total_profit,0) <!-- 利润总额-->
+ 						-IFNULL(income_tax_expense,0), <!-- 所得税费用 -->
+        <!-- 未分配利润 本年净利润 87=84 -->
+		undistributed_profits_net_profit=IFNULL(total_profit,0) <!-- 利润总额 -->
+ 										-IFNULL(income_tax_expense,0) <!-- 所得税费用-->
+		WHERE class_id = #{classId} AND team_id = #{teamId} AND ym_date =#{ymDate}
+    </select>
+    <!--未分配利润增减变动金额 -->
+    <select id="updateTeamMonthlyProfitStatementBDJE">
+    update t_team_monthly_profit_statement  SET
+  		<!-- 本年未分配利润增减变动金额  86 -->
+       current_year_undistributed_profits_change=IFNULL(undistributed_profits_net_profit,0) <!-- 未分配利润  本年净利润 -->
+            +IFNULL(undistributed_profits_withdrawal_surplus_reserves,0) <!-- 未分配利润-提取盈余公积-->
+            +IFNULL(undistributed_profits_distribution_shareholders,0) <!-- 未分配利润-对股东的分配-->
+            +IFNULL(undistributed_profits_other,0) <!-- 未分配利润-其他-->
+		WHERE class_id = #{classId} AND team_id = #{teamId} AND ym_date =#{ymDate}
+    </select>
+    <!--月度利润表本年年末未分配利润 91 -->
+    <select id="updateTeamMonthlyProfitStatementWFPLR">
+    update t_team_monthly_profit_statement  SET
+  		 end_year_undistributed_profits = IFNULL(begin_year_undistributed_profits,0) <!-- 本年年初未分配利润-->
+                                          +IFNULL(current_year_undistributed_profits_change,0) <!-- 本年未分配利润增减变动金额-->
+		WHERE class_id = #{classId} AND team_id = #{teamId} AND ym_date =#{ymDate}
+    </select>
+    
+    <!-- 查询考核得分 -->
+    <select id="findKHScore" resultType="java.lang.Double" >
+		select <![CDATA[case when a.score < 0 then 0 else a.score end]]> from (
+		SELECT
+	    	(sum(final_sales) - sum(final_operating_cost_plus))/(SELECT v_value from t_conf_variable WHERE v_code = '300935dbece5a1a1d98a9a2a34bc5215') * 40 score
+		FROM
+		t_team_intermediate
+		where class_id = #{hse.classId}
+		and team_id = #{hse.teamId}
+		and `year` = 2018
+		and vehicle_model = 'pickup') a
+    </select>
+    
+    <!-- 更改所得税费用 -->
+    <update id="updateTeamMonthlyProfitStatementSDSFY">
+    	update t_team_monthly_profit_statement  SET
+  		 <!-- 所得税费用 -->
+   		income_tax_expense=total_profit*0.15
+		WHERE class_id = #{classId} AND team_id = #{teamId} AND ym_date =#{ymDate}
+    </update>
+</mapper>

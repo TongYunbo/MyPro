@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.student.ReportCardMapper">
+	
+	<!-- 查看标题 -->
+	<select id="getTitle" parameterType="int" resultType="java.util.Map">
+		SELECT
+			CONCAT('teamId',t.id) AS teamId,
+			t.account AS `name`
+		FROM
+			t_team t
+		WHERE
+			t.class_id = #{classId}
+		GROUP BY
+			t.id
+	</select>
+
+	<!-- 查询角色得分列表 -->
+	<select id="getRoleScoreList" parameterType="int" resultType="com.tzcpa.model.teacher.RoleQuestionScore">
+		SELECT
+			t2.role_name as roleName,
+			CONCAT('teamId',t1.team_id) as teamId,
+			sum(t1.score) as score
+		FROM
+			t_stu_score t1
+		INNER JOIN t_stu_role t2 ON t1.class_id = t2.class_id
+		AND t1.role_id = t2.role_id
+		AND t1.team_id = t2.team_id
+		WHERE
+			t1.class_id = #{classId}
+		GROUP BY t1.team_id,t1.role_id
+		ORDER BY
+			t1.role_id
+	</select>
+
+	<!-- 查询学生成绩单 题目列表 -->
+	<select id="getQuestionScoreList" parameterType="int" resultType="com.tzcpa.model.teacher.RoleQuestionScore">
+		<!-- SELECT
+		t2.question_title AS questionName,
+		SUM(IFNULL(t4.score, 0)) AS score,
+		CONCAT('teamId', t3.team_id) AS teamId
+		FROM
+		t_class_event_flow t1
+		INNER JOIN t_class_question_desc t2 ON t1.event_id = t2.event_id
+		AND t1.class_id = t2.class_id
+		AND t2.parent_id = 0
+		INNER JOIN t_stu_answer t3 ON t2.class_id = t3.class_id
+		AND t2.question_id = t3.root_id
+		LEFT JOIN t_stu_score t4 ON t3.class_id = t4.class_id
+		AND t3.team_id = t4.team_id
+		AND t3.root_id = t4.root_id
+		AND t3.question_id = t4.question_id
+		WHERE
+		t1.class_id = #{classId}
+		AND t1.is_show = 0
+		GROUP BY
+		t3.team_id,
+		t3.root_id
+		ORDER BY
+		t1.event_order-->
+		SELECT
+			qd.question_title AS questionName,
+			IFNULL(SUM(ss.score), 0) AS score,
+			CONCAT('teamId',sa.team_id) as teamId
+		FROM
+			(
+				SELECT
+					root_id,
+					team_id
+				FROM
+					t_stu_answer
+				WHERE
+					class_id = #{classId}
+				GROUP BY
+					team_id,
+					root_id
+			) sa
+		LEFT JOIN (
+			SELECT
+				question_id,
+				event_id,
+				question_title
+			FROM
+				t_class_question_desc
+			WHERE
+				class_id = #{classId}
+		) qd ON sa.root_id = qd.question_id
+		LEFT JOIN (
+			SELECT
+				event_id,
+				event_order
+			FROM
+				t_class_event_flow
+			WHERE
+				class_id = #{classId}
+		) ef ON qd.event_id = ef.event_id
+		LEFT JOIN (
+			SELECT
+				root_id,
+				team_id,
+				score
+			FROM
+				t_stu_score
+			WHERE
+				class_id = #{classId}
+		) ss ON ss.root_id = qd.question_id
+		AND sa.team_id = ss.team_id
+		GROUP BY
+			sa.team_id,
+			qd.question_id
+		ORDER BY
+			ef.event_order
+	</select>
+	
+	<!-- 查看每个团队的总分 -->
+	<select id="getTotalScore" parameterType="int" resultType="com.tzcpa.model.teacher.RoleQuestionScore">
+		SELECT
+			'总分' AS roleName,
+			t2.team_name AS teamName,
+			CONCAT('teamId', t1.team_id) AS teamId,
+			sum(t1.score) AS score
+		FROM
+			t_stu_score t1
+		INNER JOIN t_team t2 ON t1.class_id = t2.class_id
+		AND t1.team_id = t2.id
+		WHERE
+			t1.class_id = #{classId}
+		GROUP BY
+			t1.team_id
+		ORDER BY
+			t1.team_id
+	</select>
+</mapper>

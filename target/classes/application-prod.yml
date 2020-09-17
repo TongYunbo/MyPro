@@ -1,0 +1,66 @@
+server:
+  port: 8090
+  tomcat.max-threads: 30
+  tomcat.uri-encoding: UTF-8
+#  servlet:
+#    context-path: /baker
+
+
+
+debug: true
+
+#logging:
+#    level:
+#      root: warn
+#      com.qdp.demo.mapper: trace
+
+jasypt:
+  encryptor:
+    password: cd6d68b3-f249-11ea-9199-00155dfbde21  //密钥
+
+spring:
+  application:
+    name: baker-tilly
+  redis:
+    database: 1  #数据库索引
+    host: 192.168.1.16  #服务地址
+    port: 6379   #端口
+    password:  #密码
+    timeout: 10000 #连接超时时间
+    jedis:
+      pool:
+        max-active: 100    #最大连接数
+        max-wait: -1     #最大阻塞等待时间(负数表示没限制)
+        max-idle: 8     #最大空闲
+        min-idle: 0     #最小空闲
+  datasource:
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://172.16.2.199:3306/bakerqa?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+      username: root
+      password: ENC(X6EPUoVHFg6RNJd0Vtjonw==)
+  jackson:
+    default-property-inclusion: ALWAYS
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+
+#定义日志文件名
+#logging.file=my.log
+#定义日志存放目录，如果没有定义file,则在path目录下生成 spring.log
+logging:
+  path: /deploy_log
+  config: classpath:log/logback-spring.xml
+mybatis:
+  mapper-locations: classpath*:mapper/*.xml
+  type-aliases-package: com.tzcpa.model
+  configuration:
+    #开启驼峰命名转换
+    map-underscore-to-camel-case: true
+    call-setters-on-nulls: true
+
+web:
+  upload-path: D:/images/
+
+

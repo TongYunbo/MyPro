@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.ClassBalancedScorecardTargetValueMapper" >
+  <resultMap id="BaseResultMap" type="com.tzcpa.model.treatment.ClassBalancedScorecardTargetValueDO" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="target_value_right" property="targetValueRight" jdbcType="VARCHAR" />
+    <result column="year" property="year" jdbcType="INTEGER" />
+    <result column="foreign_id" property="foreignId" jdbcType="INTEGER" />
+    <result column="class_id" property="classId" jdbcType="INTEGER" />
+  </resultMap>
+
+  <insert id="initClassBalancedScorecardTargetValue" parameterType="int">
+      INSERT INTO t_class_balanced_scorecard_target_value (
+          target_value_right,
+          YEAR,
+          foreign_id,
+          class_id
+      ) SELECT
+          target_value_right,
+          YEAR,
+          foreign_id,
+          #{classId}
+      FROM
+          t_conf_balanced_scorecard_target_value
+        </insert>
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.ClassIntermediateVariableMapper" >
+  <resultMap id="BaseResultMap" type="com.tzcpa.model.treatment.ClassIntermediateVariableDO" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="variable_name" property="variableName" jdbcType="VARCHAR" />
+    <result column="option_val" property="optionVal" jdbcType="VARCHAR" />
+    <result column="variable_val" property="variableVal" jdbcType="VARCHAR" />
+    <result column="strategic_choice" property="strategicChoice" jdbcType="CHAR" />
+    <result column="question_id" property="questionId" jdbcType="INTEGER" />
+    <result column="unit" property="unit" jdbcType="VARCHAR" />
+    <result column="compare_method" property="compareMethod" jdbcType="VARCHAR" />
+    <result column="class_id" property="classId" jdbcType="INTEGER" />
+  </resultMap>
+
+  <!-- 初始化班级中间变量表 -->
+  <insert id="initClassIntermediateVariable" parameterType="int">
+    INSERT INTO t_class_intermediate_variable (
+        variable_name,
+        option_val,
+        variable_val,
+        strategic_choice,
+        question_id,
+        unit,
+        compare_method,
+        class_id
+    ) SELECT
+        variable_name,
+        option_val,
+        variable_val,
+        strategic_choice,
+        question_id,
+        unit,
+        compare_method,
+        #{classId}
+    FROM
+        t_conf_intermediate_variable
+  </insert>
+</mapper>

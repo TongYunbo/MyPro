@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.student.RelativePlotMapper">
+	
+	<!-- 查询雷达图列表信息 -->
+	<select id="selectList" parameterType="com.tzcpa.model.treatment.StuScore" resultType="com.tzcpa.model.treatment.StuScore">
+		SELECT
+			r.role_name,
+			r.user_name,
+			SUM(s.score) AS score
+		FROM
+			t_stu_role r
+		LEFT JOIN t_stu_score s ON r.class_id = s.class_id
+		AND r.team_id = s.team_id
+		AND r.role_id = s.role_id
+		WHERE
+			r.class_id = #{classId}
+		AND r.team_id = #{teamId}
+		GROUP BY
+			r.role_name
+	</select>
+	
+	<!-- 查询总分 -->
+	<select id="selectTotalScore" parameterType="com.tzcpa.model.treatment.StuScore" resultType="map">
+		SELECT
+			SUM(s.score) AS score
+		FROM
+			t_stu_role r
+		LEFT JOIN t_stu_score s ON r.class_id = s.class_id
+		AND r.team_id = s.team_id
+		WHERE
+			r.role_id = s.role_id
+		AND r.class_id = #{classId}
+		AND r.team_id = #{teamId}
+	</select>
+	
+	<!-- 查询团队信息 -->
+	<select id="getTeamInfo"  parameterType="com.tzcpa.model.treatment.StuScore" resultType="map">
+		SELECT
+			team_name,
+			team_desc,
+			team_prospect
+		FROM
+			t_team
+		WHERE
+			class_id = #{classId}
+		AND id = #{teamId}
+	</select>
+</mapper>

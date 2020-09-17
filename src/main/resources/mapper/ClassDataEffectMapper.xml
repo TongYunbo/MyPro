@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.ClassDataEffectMapper" >
+  <resultMap id="BaseResultMap" type="com.tzcpa.model.treatment.ClassDataEffectDO" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="task_id" property="taskId" jdbcType="INTEGER" />
+    <result column="impact_study_desc" property="impactStudyDesc" jdbcType="VARCHAR" />
+    <result column="operation" property="operation" jdbcType="VARCHAR" />
+    <result column="is_year" property="isYear" jdbcType="INTEGER" />
+    <result column="impact_num" property="impactNum" jdbcType="INTEGER" />
+    <result column="table_name" property="tableName" jdbcType="VARCHAR" />
+    <result column="table_column" property="tableColumn" jdbcType="VARCHAR" />
+    <result column="condition" property="condition" jdbcType="VARCHAR" />
+    <result column="sort_num" property="sortNum" jdbcType="INTEGER" />
+    <result column="begin_date" property="beginDate" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- 初始化班级数据影响 -->
+  <insert id="initClassDataEffect" parameterType="int">
+    INSERT INTO t_class_data_effect (
+            task_id,
+            impact_study_desc,
+            operation,
+            is_year,
+            impact_num,
+            table_name,
+            table_column,
+            `condition`,
+            sort_num,
+            begin_date,
+            class_id
+        ) SELECT
+            task_id,
+            impact_study_desc,
+            operation,
+            is_year,
+            impact_num,
+            table_name,
+            table_column,
+            `condition`,
+            sort_num,
+            begin_date,
+            #{classId}
+        FROM
+            t_conf_data_effect
+  </insert>
+
+</mapper>

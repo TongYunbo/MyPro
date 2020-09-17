@@ -1,0 +1,1034 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.TeamIntermediateMapper">
+
+    <resultMap id="TeamIntermediateResultMap" type="com.tzcpa.model.treatment.TeamIntermediateDO">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="class_id" property="classId" jdbcType="INTEGER"/>
+        <result column="year" property="year" jdbcType="INTEGER"/>
+        <result column="month" property="month" jdbcType="INTEGER"/>
+        <result column="vehicle_model" property="vehicleModel" jdbcType="VARCHAR"/>
+        <result column="benchmark_sales" property="benchmarkSales" jdbcType="BIGINT"/>
+        <result column="benchmark_unit_price" property="benchmarkUnitPrice" jdbcType="BIGINT"/>
+        <result column="benchmark_sales_price" property="benchmarkSalesPrice" jdbcType="BIGINT"/>
+        <result column="benchmark_unit_material_cost" property="benchmarkUnitMaterialCost" jdbcType="BIGINT"/>
+        <result column="benchmark_materials_cost_total" property="benchmarkMaterialsCostTotal" jdbcType="BIGINT"/>
+        <result column="team_id" property="teamId" jdbcType="INTEGER"/>
+        <result column="strategy_select" property="strategySelect" jdbcType="VARCHAR"/>
+        <result column="strategy_benchmark_sales" property="strategyBenchmarkSales" jdbcType="BIGINT"/>
+        <result column="strategy_benchmark_unit_price" property="strategyBenchmarkUnitPrice" jdbcType="BIGINT"/>
+        <result column="strategy_benchmark_sales_price" property="strategyBenchmarkSalesPrice" jdbcType="BIGINT"/>
+        <result column="strategy_benchmark_unit_material_cost" property="strategyBenchmarkUnitMaterialCost" jdbcType="BIGINT"/>
+        <result column="strategy_benchmark_materials_cost_total" property="strategyBenchmarkMaterialsCostTotal" jdbcType="BIGINT"/>
+        <result column="adjusted_sales" property="adjustedSales" jdbcType="BIGINT"/>
+        <result column="adjusted_unit_price" property="adjustedUnitPrice" jdbcType="BIGINT"/>
+        <result column="final_sales" property="finalSales" jdbcType="BIGINT"/>
+        <!--<result column="sales_adjusted_unit_material_cost" property="salesAdjustedUnitMaterialCost" jdbcType="BIGINT"/>-->
+        <result column="adjusted_unit_material_cost" property="adjustedUnitMaterialCost" jdbcType="BIGINT"/>
+        <result column="final_material_cost" property="finalMaterialCost" jdbcType="BIGINT"/>
+        <result column="production_depreciation_expense" property="productionDepreciationExpense" jdbcType="BIGINT"/>
+        <result column="final_energy_cost" property="finalEnergyCost" jdbcType="BIGINT"/>
+        <result column="productive_labor_cost" property="productiveLaborCost" jdbcType="BIGINT"/>
+        <result column="final_operating_cost_plus" property="finalOperatingCostPlus" jdbcType="BIGINT"/>
+        <result column="final_gross_margin" property="finalGrossMargin" jdbcType="REAL"/>
+        <result column="final_operating_tax_surcharge" property="finalOperatingTaxSurcharge" jdbcType="BIGINT"/>
+        <result column="sales_promotional_expenses" property="salesPromotionalExpenses" jdbcType="BIGINT"/>
+        <result column="sales_after_sales_service_fee" property="salesAfterSalesServiceFee" jdbcType="BIGINT"/>
+        <result column="sales_other" property="salesOther" jdbcType="BIGINT"/>
+        <result column="sales_total" property="salesTotal" jdbcType="BIGINT"/>
+        <result column="management_development_cost" property="managementDevelopmentCost" jdbcType="BIGINT"/>
+        <result column="management_depreciation_cost" property="managementDepreciationCost" jdbcType="BIGINT"/>
+        <result column="adjusted_management_other" property="adjustedManagementOther" jdbcType="BIGINT"/>
+        <result column="management_other" property="managementOther" jdbcType="BIGINT"/>
+        <result column="management_total" property="managementTotal" jdbcType="BIGINT"/>
+        <result column="financial_cost" property="financialCost" jdbcType="BIGINT"/>
+        <result column="assets_impairment_loss_bad debt" property="assetsImpairmentLossBadDebt" jdbcType="BIGINT"/>
+        <result column="assets_impairment_loss_inventory" property="assetsImpairmentLossInventory" jdbcType="BIGINT"/>
+        <result column="assets_impairment_loss_fixed_assets" property="assetsImpairmentLossFixedAssets" jdbcType="BIGINT"/>
+        <!--<result column="assets_impairment_loss_total" property="assetsImpairmentLossTotal" jdbcType="BIGINT"/>-->
+        <result column="nonbusiness_income" property="nonbusinessIncome" jdbcType="BIGINT"/>
+        <result column="nonbusiness_expenditure" property="nonbusinessExpenditure" jdbcType="BIGINT"/>
+        <result column="ym_date" property="ymDate" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 初始化团队中间表信息 -->
+    <insert id="initTeamIntermediate">
+      INSERT INTO t_team_intermediate (
+            class_id,
+            team_id,
+            YEAR,
+            MONTH,
+            ym_date,
+            vehicle_model_group,
+            vehicle_model,
+            benchmark_sales,
+            benchmark_unit_price,
+            benchmark_sales_price,
+            benchmark_unit_material_cost,
+            benchmark_materials_cost_total,
+            production_depreciation_expense,
+            final_production_depreciation_expense,
+            benchmark_energy_cost,
+            productive_labor_cost,
+            final_productive_labor_cost,
+            benchmark_operating_cost_plus,
+            benchmark_gross_margin,
+            benchmark_final_operating_tax_surcharge,
+            sales_promotional_expenses,
+            sales_other,
+            final_promotional_expenses,
+            final_sales_other,
+            management_depreciation_cost,
+            adjusted_management_depreciation,
+            assets_impairment_loss_bad_debt,
+            final_assets_impairment_loss_bad_debt,
+            assets_impairment_loss_inventory,
+            final_assets_impairment_loss_inventory,
+            assets_impairment_loss_fixed_assets,
+            final_assets_impairment_loss_fixed_assets,
+            final_assets_impairment_loss_total,
+            nonbusiness_income,
+            final_nonbusiness_income,
+            nonbusiness_expenditure,
+            final_nonbusiness_expenditure,
+            management_development_cost,
+            adjusted_management_development_cost,
+            market_shares
+        ) SELECT
+            t1.class_id,
+            #{teamId},
+            t1. YEAR,
+            t1. MONTH,
+            CONCAT(
+                t1.`year`,
+                '-',
+            IF (
+                LENGTH(t1.`month`) = 1,
+                CONCAT('0', t1.`month`),
+                t1.`month`
+            )
+            ) AS ym_date,
+            t1.vehicle_model_group,
+            t1.vehicle_model,
+            t1.benchmark_sales,
+            t1.benchmark_unit_price,
+            t1.benchmark_sales_price,
+            t1.benchmark_unit_material_cost,
+            t1.benchmark_materials_cost_total,
+            -- 生产折旧费用
+            ROUND(
+                t2.production_depreciation_charge / 12
+            ) AS production_depreciation_expense,
+            -- 最终生产折旧
+            ROUND(
+                t2.production_depreciation_charge / 12
+            ) AS final_production_depreciation_expense,
+            -- 基准能耗成本
+            ROUND(
+                t1.benchmark_sales_price * t3.benchmark_energy_cost
+            ) AS benchmark_energy_cost,
+            -- 生产工人工资
+            ROUND(
+                t2.production_workers_salary / 12
+            ) AS productive_labor_cost,
+            -- 最终生产人工成本
+            ROUND(
+                t2.production_workers_salary / 12
+            ) AS final_productive_labor_cost,
+            -- 基准营业成本加总
+            ROUND(
+                t1.benchmark_materials_cost_total
+                + t2.production_depreciation_charge / 12
+                + t1.benchmark_sales_price * t3.benchmark_energy_cost
+                + t2.production_workers_salary / 12
+            ) AS benchmark_operating_cost_plus,
+            -- 基准毛利率
+            (
+                CASE
+                WHEN t1.benchmark_sales_price != 0 THEN
+                    ROUND(
+                        (
+                            1 -
+                                (
+                                    t1.benchmark_materials_cost_total
+                                    + t2.production_depreciation_charge / 12
+                                    + t1.benchmark_sales_price * t3.benchmark_energy_cost
+                                    + t2.production_workers_salary / 12
+                                ) / t1.benchmark_sales_price
+                        ),
+                        2
+                    )
+                ELSE
+                    0
+                END
+            ) AS benchmark_gross_margin,
+            -- 营业税金及附加（基准收入）
+            ROUND(
+                t1.benchmark_sales_price * t3.benchmark_final_operating_tax_surcharge
+            ) AS benchmark_final_operating_tax_surcharge,
+            -- 销售费用-宣传推广费
+            ROUND(
+                t2.sales_expenses_promotional_expenses / 12
+            ) AS sales_promotional_expenses,
+            -- 销售费用-其他
+            ROUND(t2.sales_expenses_other / 12) AS sales_other,
+            -- 最终宣传推广费
+            ROUND(
+                t2.sales_expenses_promotional_expenses / 12
+            ) AS final_promotional_expenses,
+            -- 最终销售费用-其他
+            ROUND(t2.sales_expenses_other / 12) AS final_sales_other,
+            -- 管理费用-折旧费
+            ROUND(
+                t2.administrative_expenses_depreciation_charge / 12
+            ) AS management_depreciation_cost,
+            -- 调整后管理费用-折旧费
+            ROUND(
+                t2.administrative_expenses_depreciation_charge / 12
+            ) AS adjusted_management_depreciation,
+            -- 资产减值损失-坏账
+            ROUND(
+                t2.impairment_loss_assets_bad_debts * t4.amortization_ratio
+            ) AS assets_impairment_loss_bad_debt,
+            -- 最终资产减值损失-坏账
+            ROUND(
+                t2.impairment_loss_assets_bad_debts * t4.amortization_ratio
+            ) AS final_assets_impairment_loss_bad_debt,
+            -- 资产减值损失-存货
+            ROUND(
+                t2.impairment_loss_assets_inventory * t4.amortization_ratio
+            ) AS assets_impairment_loss_inventory,
+            -- 最终资产减值损失-存货
+            ROUND(
+                t2.impairment_loss_assets_inventory * t4.amortization_ratio
+            ) AS final_assets_impairment_loss_inventory,
+            -- 资产减值损失-固定资产
+            ROUND(
+                t2.impairment_loss_assets_fixed_assets * t4.amortization_ratio
+            ) AS assets_impairment_loss_fixed_assets,
+            -- 最终资产减值损失-固定资产
+            ROUND(
+                t2.impairment_loss_assets_fixed_assets * t4.amortization_ratio
+            ) AS final_assets_impairment_loss_fixed_assets,
+            -- 最终资产减值损失合计
+            ROUND(
+                ROUND(
+                    t2.impairment_loss_assets_bad_debts * t4.amortization_ratio
+                ) + ROUND(
+                    t2.impairment_loss_assets_inventory * t4.amortization_ratio
+                ) + ROUND(
+                    t2.impairment_loss_assets_fixed_assets * t4.amortization_ratio
+                )
+            ) AS final_assets_impairment_loss_total,
+            -- 营业外收入
+            ROUND(t2.nonbusiness_income * t4.amortization_ratio) AS nonbusiness_income,
+            -- 最终营业外收入
+            ROUND(
+                t2.nonbusiness_income * t4.amortization_ratio
+            ) AS final_nonbusiness_income,
+            -- 营业外支出
+            ROUND(t2.nonbusiness_expenditure * t4.amortization_ratio) AS nonbusiness_expenditure,
+            -- 最终营业外支出
+            ROUND(t2.nonbusiness_expenditure * t4.amortization_ratio) AS final_nonbusiness_expenditure,
+            -- 管理费用-研发费
+            ROUND(t2.administrative_expenses_development_expense / 12) AS management_development_cost,
+            -- 调整后管理费用-研发费
+            ROUND(t2.administrative_expenses_development_expense / 12) AS adjusted_management_development_cost,
+            t1.market_shares
+        FROM
+            t_class_intermediate t1
+        INNER JOIN t_class_fixed_charge_amortization t2 ON t1.class_id = t2.class_id
+        AND t1.`year`=t2.`year`
+        AND t1.vehicle_model = t2.vehicle_model
+        INNER JOIN t_class_fixed_param t3 ON t1.class_id = t3.class_id
+        AND t1.`year` = t3.`year`
+        INNER JOIN t_conf_monthly_amortization_ratio t4
+		on t1.`month`=t4.`month`
+        WHERE
+            t1.class_id = #{classId}
+    </insert>
+
+    <!-- 选择自建的情况，h8的1~5月销量设置为0 -->
+    <select id="selectAdjustedSalesByH8" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select id from t_team_intermediate
+        where `year`=2015 and class_id=#{map.classId}
+        and team_id=#{map.teamId}
+        and vehicle_model='h8'
+        <![CDATA[and `month` <= #{map.month}]]>
+        <!-- and (adjusted_sales != 0 or adjusted_sales is not null)-->
+    </select>
+    <update id="updateAdjustedSalesByH8" parameterType="java.util.Map">
+        update t_team_intermediate set adjusted_sales = 0,strategy_benchmark_sales = 0
+        where id in 
+        <foreach collection="list" separator="," open="(" close=")" index="index" item="item">
+            #{item}
+        </foreach>
+    </update>
+
+
+    <!-- 插入团队临时表战略基准值临时表2 -->
+    <insert id="initTeamIntermediateTempTwo" parameterType="java.util.Map">
+            INSERT INTO ${map.tableName} (
+                class_id,
+                team_id,
+                `year`,
+                `month`,
+                vehicle_model,
+                strategy_select,
+                strategy_benchmark_sales,
+                strategy_benchmark_unit_price,
+                strategy_benchmark_sales_price,
+                strategy_benchmark_unit_material_cost,
+                strategy_benchmark_materials_cost_total,
+                strategy_benchmark_energy_cost
+            )SELECT t1.class_id,t1.team_id,t1.`year`,t1.`month`,t1.vehicle_model,t2.strategic_select as strategy_select,
+                    ROUND(t1.benchmark_sales * t2.sales / 100) as strategy_benchmark_sales,
+                    ROUND(t1.benchmark_unit_price * t2.unit_price / 100) as strategy_benchmark_unit_price,
+                    ROUND(t1.benchmark_sales * t2.sales / 100 * t1.benchmark_unit_price * t2.unit_price / 100) as strategy_benchmark_sales_price,
+                    ROUND(t3.unit_cost * t2.cost_plus / 100) as strategy_benchmark_unit_material_cost,
+                    ROUND(t1.benchmark_sales * t2.sales / 100) * ROUND(t3.unit_cost * t2.cost_plus / 100) as strategy_benchmark_materials_cost_total,
+                    ROUND(
+                        t1.benchmark_sales * t2.sales / 100 * t1.benchmark_unit_price * t2.unit_price / 100 * t4.strategy_benchmark_energy_cost
+                    ) AS strategy_benchmark_energy_cost
+        --             ROUND(t1.benchmark_sales * t2.sales / 100) as adjusted_sales,
+        -- 			ROUND(t1.benchmark_unit_price * t2.unit_price / 100) as adjusted_unit_price
+                    FROM
+                    t_team_intermediate t1
+                    INNER JOIN t_class_strategic_parameters t2
+                    ON t1.class_id = t2.class_id
+                    AND t1.`year` = t2.`year`
+                    AND t1.vehicle_model = t2.vehicle_model
+                    AND t2.strategic_select = #{map.strategicSelect}
+                    INNER JOIN t_class_fixed_param t4 ON t1.class_id = t4.class_id
+                    AND t1.`year` = t4.`year`
+                    INNER JOIN t_class_cost_quote t3
+                    ON t1.class_id = t3.class_id
+                    AND t1. YEAR = t3. YEAR
+                    AND t1.vehicle_model = t3.vehicle_model
+                    <![CDATA[
+                    AND (
+                    ROUND(t1.benchmark_sales * t2.sales / 100) >= t3.sales_range_min
+                    AND ROUND(t1.benchmark_sales * t2.sales / 100) < t3.sales_range_max
+                    )
+                    ]]>
+                    WHERE
+                    t1.class_id = #{map.classId}
+                    AND t1.team_id= #{map.teamId}
+                    AND t1.`year` = #{map.year}
+    </insert>
+
+	<!-- 批量更新战略基准数据临时表2 -->
+    <update id="updateTeamIntermediateTempTwo" parameterType="java.util.Map">
+        UPDATE t_team_intermediate t1,
+         ${map.tableName} t2
+        SET t1.strategy_benchmark_sales = t2.strategy_benchmark_sales,
+         t1.strategy_benchmark_unit_price = t2.strategy_benchmark_unit_price,
+         t1.strategy_benchmark_sales_price = t2.strategy_benchmark_sales_price,
+         t1.strategy_benchmark_unit_material_cost = t2.strategy_benchmark_unit_material_cost,
+         t1.strategy_benchmark_materials_cost_total = t2.strategy_benchmark_materials_cost_total,
+         t1.strategy_benchmark_energy_cost = t2.strategy_benchmark_energy_cost,
+         t1.strategy_select = t2.strategy_select
+        WHERE
+            t1.class_id = t2.class_id
+        AND t1.team_id = t2.team_id
+        AND t1. YEAR = t2. YEAR
+        AND t1. MONTH = t2. MONTH
+        AND t1.vehicle_model = t2.vehicle_model
+    </update>
+    
+    <!-- 清空临时表1 -->
+    <delete id="deleteTeamIntermediateTempOne" parameterType="java.lang.String">
+        <!-- DELETE from t_team_intermediate_temp_one where class_id=#{map.classId} and team_id=#{map.teamId} -->
+        drop temporary table ${tableName}
+    </delete>
+    
+    <!-- 销量修改 初始化到中间表 临时表3-->
+    <insert id="updateInitSalesDataByParamThree" parameterType="java.util.Map">
+        INSERT INTO ${map.tableName} (
+                id,
+                class_id,
+                team_id,
+                `year`,
+                `month`,
+                vehicle_model,
+                strategy_select,
+                adjusted_unit_material_cost,
+                final_sales,
+                final_material_cost,
+                adjusted_sales_after_sales_service_fee,
+                final_sales_total,
+                adjusted_management_other,
+                final_management_total,
+                final_operating_tax_surcharge,
+                final_energy_cost
+            )
+        SELECT
+        t1.id,
+        t1.class_id AS classId,
+        t1.team_id AS teamId,
+        t1.`year`,
+        t1.`month`,
+        t1.vehicle_model AS vehicleModel,
+        t1.strategy_select,
+        -- 调整后单位材料成本
+        ROUND(t3.unit_cost * t2.cost_plus / 100) AS adjusted_unit_material_cost,
+        -- 最终销售额
+        ROUND(
+        (
+        t1.adjusted_sales * t1.adjusted_unit_price
+        )
+        ) AS final_sales,
+        -- 最终材料成本
+        ROUND(
+        (
+        t1.adjusted_sales * ROUND(t3.unit_cost * t2.cost_plus / 100)
+        )
+        ) AS final_material_cost,
+        -- 调整后销售费用-售后服务费
+        ROUND(
+            (
+                t1.adjusted_sales * t1.adjusted_unit_price * t4.sales_expenses_after_sales_service_fee_benchmark_income
+            )
+        ) AS adjusted_sales_after_sales_service_fee,
+        -- 最终销售费用合计
+        ROUND(
+        (
+            t1.adjusted_sales * t1.adjusted_unit_price * t4.sales_expenses_after_sales_service_fee_benchmark_income
+            + t1.final_promotional_expenses + t1.final_sales_other
+        )
+        ) AS final_sales_total,
+        -- 调整后管理费用-其他
+        ROUND(
+            (
+                t1.adjusted_sales * t1.adjusted_unit_price * t4.administrative_expenses_other_income
+            )
+        ) AS adjusted_management_other,
+        -- 最终管理费用合计
+        ROUND(
+            IFNULL(t1.adjusted_management_depreciation,0)+IFNULL(t1.in_development_cost,0)+
+            t1.adjusted_sales * t1.adjusted_unit_price * t4.administrative_expenses_other_income +
+            IFNULL(adjusted_management_development_cost,0)) AS final_management_total,
+        -- 最终营业税金及附加
+        ROUND(t1.adjusted_sales * t1.adjusted_unit_price * t4.final_operating_tax_surcharge) as final_operating_tax_surcharge,
+        -- 最终能耗成本
+        ROUND(t1.adjusted_sales * t1.adjusted_unit_price * t4.sales_adjusted_unit_energy_cost) as final_energy_cost
+        FROM
+        t_team_intermediate t1
+        <![CDATA[
+        INNER JOIN t_class_strategic_parameters t2 ON t1.class_id = t2.class_id
+        AND t1.`year` = t2.`year`
+        AND t1.vehicle_model = t2.vehicle_model
+        AND t1.strategy_select = t2.strategic_select
+        INNER JOIN t_class_cost_quote t3 ON t1.class_id = t3.class_id
+        AND t1. YEAR = t3. YEAR
+        AND t1.vehicle_model = t3.vehicle_model
+        AND (
+        t1.adjusted_sales >= t3.sales_range_min
+        AND t1.adjusted_sales < t3.sales_range_max
+        )
+        INNER JOIN t_class_fixed_param t4 ON t1.class_id = t4.class_id
+        AND t1.`year` = t4.`year`
+        WHERE
+        t1.class_id = #{map.classId}
+        AND t1.team_id = #{map.teamId}
+        AND (
+        t1.ym_date >= #{map.bDate}
+        AND t1.ym_date < #{map.eDate}
+        )
+        ]]>
+        <if test="map.vehicleModel != null and map.vehicleModel.size()>0">
+            and t1.vehicle_model in
+            <foreach collection="map.vehicleModel" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </insert>
+    
+    <!-- 销量修改 从临时表3修改到中间表-->
+    <update id="updateSalesDataByParamThree">
+        UPDATE t_team_intermediate t1,
+        ${map.tableName} t2
+        SET t1.adjusted_unit_material_cost = t2.adjusted_unit_material_cost,
+        t1.final_sales = t2.final_sales,
+        t1.final_material_cost = t2.final_material_cost,
+        t1.adjusted_sales_after_sales_service_fee = t2.adjusted_sales_after_sales_service_fee,
+        t1.final_sales_total = t2.final_sales_total,
+        t1.adjusted_management_other = t2.adjusted_management_other,
+        t1.final_management_total = t2.final_management_total,
+        t1.final_operating_tax_surcharge = t2.final_operating_tax_surcharge,
+        t1.final_energy_cost = t2.final_energy_cost
+        WHERE
+        t1.id = t2.id
+    </update>
+
+    <!-- 查询资产减值损失-坏账 WTL -->
+    <select id="getLABD" resultType="java.lang.Double" >
+    	SELECT
+			SUM( final_sales ) * ${calNum} 
+		FROM
+			t_team_intermediate 
+		WHERE
+			class_id = #{classId} 
+			AND team_id = #{teamId} 
+			AND `year` = #{year} 
+			<![CDATA[ AND MONTH <= #{month} ]]>
+			AND vehicle_model = #{vehicleModel}
+    </select>
+    
+    <!-- 按年查询中间表 wangbj -->
+    <select id="selectTeamIntermediateYearSum" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        select sum(ifnull(final_sales, 0)) as sales -- 最终销售额
+        , sum(ifnull(final_material_cost, 0)) as materialCost -- 最终材料成本
+        , sum(ifnull(final_production_depreciation_expense, 0)) as productionDepreciationExpense -- 最终生产折旧
+        , sum(ifnull(final_energy_cost, 0)) as energyCost -- 最终能耗成本
+        , sum(ifnull(final_productive_labor_cost, 0)) as productiveLaborCost -- 最终生产人工成本
+        , sum(ifnull(final_operating_cost_plus, 0)) as operatingCostPlus -- 最终营业成本合计
+        , sum(ifnull(final_gross_margin, 0)) as grossMargin -- 最终毛利率
+        , sum(ifnull(final_operating_tax_surcharge, 0)) as operatingTaxSurcharge -- 最终营业税金及附加
+        , sum(ifnull(final_promotional_expenses, 0)) as promotionalExpenses -- 最终宣传推广费
+        , sum(ifnull(adjusted_sales_after_sales_service_fee, 0)) as aftersalesServiceFee -- 调整后销售费用-售后服务费
+        , sum(ifnull(final_sales_other, 0)) as salesOther -- 最终销售费用-其他
+        , sum(ifnull(final_sales_total, 0)) as salesTotal -- 最终销售费用合计
+        , sum(ifnull(final_management_total, 0)) as managementTotal -- 最终管理费用合计
+        , sum(ifnull(final_financial_cost, 0)) as financialCost -- 最终财务费用
+        , sum(ifnull(final_assets_impairment_loss_bad_debt, 0)) as lossBadDebt -- 最终资产减值损失-坏账
+        , sum(ifnull(final_assets_impairment_loss_inventory, 0)) as lossInventory -- 最终资产减值损失-存货
+        , sum(ifnull(final_assets_impairment_loss_fixed_assets, 0)) as lossFixedAssets -- 最终资产减值损失-固定资产
+        , sum(ifnull(final_assets_impairment_loss_total, 0)) as lossTotal -- 最终资产减值损失合计
+        , sum(ifnull(final_nonbusiness_income, 0)) as finalNonbusinessIncome -- 最终营业外收入
+        , sum(ifnull(final_nonbusiness_expenditure, 0)) as finalNonbusinessExpenditure -- 最终营业外支出
+
+        , sum(ifnull(adjusted_sales, 0)) as adjustedSales -- 调整后销量
+
+        , sum(ifnull(strategy_benchmark_sales, 0)) as strategySales -- 战略基准销量
+        , sum(ifnull(strategy_benchmark_sales_price, 0)) as strategySalesPrice -- 战略基准销售额
+        , sum(ifnull(strategy_benchmark_materials_cost_total, 0)) as strategyCostTotal -- 战略基准材料成本合计
+        , max(ifnull(strategy_benchmark_unit_price, 0)) as strategyUnitPrice -- 战略基准单价
+
+        from t_team_intermediate
+        where class_id = #{map.classId}
+        and team_id = #{map.teamId}
+        and `year` = #{map.year}
+        and vehicle_model = #{map.vehicleModel}
+    </select>
+
+    <!-- 查询调整后销量 wangbj -->
+    <select id="selectAdjustedSales" parameterType="java.util.HashMap" resultType="java.lang.Long">
+        select sum(adjusted_sales)
+        from t_team_intermediate
+        where class_id = #{map.classId}
+        and team_id = #{map.teamId}
+        and `year` = #{map.year}
+    </select>
+
+    <update id="createTempTable" parameterType="java.lang.String">
+        CREATE temporary TABLE ${tableName} (
+          `id` int(11) NOT NULL,
+          `class_id` int(11) DEFAULT NULL COMMENT '班级id',
+          `team_id` int(11) DEFAULT NULL COMMENT '团队id',
+          `year` int(12) DEFAULT NULL COMMENT '年份',
+          `month` int(11) DEFAULT NULL COMMENT '月份',
+          `vehicle_model` varchar(10) DEFAULT NULL COMMENT '车型',
+          `strategy_select` varchar(50) DEFAULT NULL COMMENT '战略选择',
+          `adjusted_sales` bigint(12) DEFAULT NULL COMMENT '调整后销量',
+          `adjusted_unit_price` bigint(14) DEFAULT NULL COMMENT '调整后单价',
+          `final_sales` bigint(14) DEFAULT NULL COMMENT '最终销售额',
+          `final_energy_cost` bigint(14) DEFAULT NULL COMMENT '最终能耗成本',
+          `final_operating_tax_surcharge` bigint(14) DEFAULT NULL COMMENT '最终营业税金及附加',
+          `adjusted_unit_material_cost` bigint(14) DEFAULT NULL COMMENT '调整后单位材料成本',
+          `final_material_cost` bigint(14) DEFAULT NULL COMMENT '最终材料成本',
+          `final_operating_cost_plus` bigint(14) DEFAULT NULL COMMENT '最终营业成本合计',
+          `sales_after_sales_service_fee` bigint(14) DEFAULT NULL COMMENT '销售费用-售后服务费',
+          `adjusted_sales_after_sales_service_fee` bigint(14) DEFAULT NULL COMMENT '调整后销售费用-售后服务费',
+          `final_sales_total` bigint(14) DEFAULT NULL COMMENT '最终销售费用合计',
+          `final_management_total` bigint(14) DEFAULT NULL COMMENT '最终管理费用合计',
+          `management_other` bigint(14) DEFAULT NULL COMMENT '管理费用-其他',
+          `adjusted_management_other` bigint(14) DEFAULT NULL COMMENT '调整后管理费用-其他'
+        )
+    </update>
+    <!-- 单位材料成本 修改后 最终材料成本 -->
+    <select id="selectTeamFinalMaterialCostSix" parameterType="java.util.Map" resultType="java.util.Map">
+      select id,ROUND(
+        adjusted_sales * adjusted_unit_material_cost
+        ) as final_material_cost from t_team_intermediate
+        WHERE
+        class_id = #{map.classId}
+        AND team_id = #{map.teamId}
+        <![CDATA[
+        AND (
+        ym_date >= #{map.bDate}
+        AND ym_date < #{map.eDate}
+        )
+        ]]>
+        <if test="map.vehicleModel != null and map.vehicleModel.size()>0">
+            and vehicle_model in
+            <foreach collection="map.vehicleModel" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <update id="updateTeamFinalMaterialCostSix" parameterType="java.util.Map">
+        <foreach collection="list" separator=";" item="map">
+            UPDATE t_team_intermediate
+            SET final_material_cost = #{map.final_material_cost}
+            WHERE
+            id = #{map.id}
+        </foreach>
+    </update>
+
+
+    <!-- 月底数据初始化 hanxf临时表1-->
+    <insert id="initTeamIntermediateTempSalesUnitPriceOne" parameterType="java.util.Map">
+        INSERT INTO ${map.tableName} (
+            id,
+            class_id,
+            team_id,
+            `year`,
+            `month`,
+            vehicle_model,
+            strategy_select,
+            adjusted_sales,
+            adjusted_unit_price,
+            final_sales,
+            final_energy_cost,
+            final_operating_tax_surcharge,
+           <!-- sales_adjusted_unit_material_cost, -->
+            adjusted_unit_material_cost,
+            final_material_cost,
+            final_operating_cost_plus,
+            sales_after_sales_service_fee,
+            adjusted_sales_after_sales_service_fee,
+            final_sales_total,
+            final_management_total,
+            management_other,
+            adjusted_management_other
+            ) SELECT
+            t1.id,
+            t1.class_id,
+            t1.team_id,
+            t1.`year`,
+            t1.`month`,
+            t1.vehicle_model,
+            t2.strategic_select AS strategy_select,
+            t1.strategy_benchmark_sales AS adjusted_sales,
+            t1.strategy_benchmark_unit_price AS adjusted_unit_price,
+            ROUND(
+            t1.strategy_benchmark_sales * t1.strategy_benchmark_unit_price
+            ) AS final_sales,
+            ROUND(t1.strategy_benchmark_sales * t1.strategy_benchmark_unit_price * t4.sales_adjusted_unit_energy_cost) as final_energy_cost,
+            ROUND(
+            t1.strategy_benchmark_sales * t1.strategy_benchmark_unit_price * t4.final_operating_tax_surcharge
+            ) AS final_operating_tax_surcharge,
+            <!-- ROUND(t3.unit_cost * t2.sales / 100) AS sales_adjusted_unit_material_cost,-->
+            ROUND(t3.unit_cost * t2.cost_plus / 100) AS adjusted_unit_material_cost,
+            ROUND(
+            t1.strategy_benchmark_sales * ROUND(t3.unit_cost * t2.cost_plus / 100)
+            ) AS final_material_cost,
+            -- 最终营业成本合计
+            ROUND(
+            t1.strategy_benchmark_sales * ROUND(t3.unit_cost * t2.cost_plus / 100) +
+            IFNULL(t1.final_production_depreciation_expense,0) + IFNULL(t1.final_energy_cost,0) + IFNULL(t1.final_productive_labor_cost,0)
+            ) AS final_operating_cost_plus,
+            -- 销售费用-售后服务费
+            ROUND(
+                (
+                    t1.strategy_benchmark_sales * t1.strategy_benchmark_unit_price * t4.sales_expenses_after_sales_service_fee_benchmark_income
+                )
+            ) AS sales_after_sales_service_fee,
+            -- 调整后销售费用-售后服务费
+            ROUND(
+                (
+                    t1.strategy_benchmark_sales * t1.strategy_benchmark_unit_price * t4.sales_expenses_after_sales_service_fee_benchmark_income
+                )
+            ) AS adjusted_sales_after_sales_service_fee,
+            -- 最终销售费用合计
+            ROUND(t1.strategy_benchmark_sales * t1.strategy_benchmark_unit_price * t4.sales_expenses_after_sales_service_fee_benchmark_income
+            + IFNULL(t1.final_promotional_expenses,0)
+            + IFNULL(t1.final_sales_other,0)) AS final_sales_total,
+            -- 最终管理费用合计
+            ROUND( IFNULL(in_development_cost, 0) +
+            IFNULL(adjusted_management_depreciation,0)+
+            t1.strategy_benchmark_sales * t1.strategy_benchmark_unit_price * t4.administrative_expenses_other_income +
+            IFNULL(adjusted_management_development_cost,0)) AS final_management_total,
+            -- 管理费用-其他
+            ROUND(
+                (
+                    t1.strategy_benchmark_sales * t1.strategy_benchmark_unit_price * t4.administrative_expenses_other_income
+                )
+            ) AS management_other,
+            -- 调整后管理费用-其他
+            ROUND(
+                (
+                    t1.strategy_benchmark_sales * t1.strategy_benchmark_unit_price * t4.administrative_expenses_other_income
+                )
+            ) AS adjusted_management_other
+            FROM
+            t_team_intermediate t1
+            INNER JOIN t_class_strategic_parameters t2 ON t1.class_id = t2.class_id
+            AND t1.`year` = t2.`year`
+            AND t1.vehicle_model = t2.vehicle_model
+            AND t1.strategy_select = t2.strategic_select
+            INNER JOIN t_class_cost_quote t3 ON t1.class_id = t3.class_id
+            AND t1. YEAR = t3. YEAR
+            AND t1.vehicle_model = t3.vehicle_model
+            <![CDATA[
+            AND (
+            t1.strategy_benchmark_sales >= t3.sales_range_min
+            AND t1.strategy_benchmark_sales < t3.sales_range_max
+            )
+            INNER JOIN t_class_fixed_param t4 ON t1.class_id = t4.class_id
+            AND t1.`year` = t4.`year`
+            WHERE
+            t1.class_id = #{map.classId}
+            AND t1.team_id = #{map.teamId}
+            AND t1.`year` = #{map.year}
+            AND t1.`month` <= #{map.month}
+            AND t1.adjusted_sales IS NULL
+            AND t1.adjusted_unit_price IS NULL
+            ]]>
+    </insert>
+    
+    <!-- 临时表1 -->
+    <update id="updateTeamIntermediateSalesUnitPriceOne">
+            UPDATE t_team_intermediate t1,
+             ${tableName} t2
+            SET t1.adjusted_sales = t2.adjusted_sales,
+             t1.adjusted_unit_price = t2.adjusted_unit_price,
+             t1.final_sales = t2.final_sales,
+             t1.final_energy_cost = t2.final_energy_cost,
+             t1.final_operating_tax_surcharge = t2.final_operating_tax_surcharge,
+            <!-- t1.sales_adjusted_unit_material_cost = t2.sales_adjusted_unit_material_cost, -->
+             t1.adjusted_unit_material_cost = t2.adjusted_unit_material_cost,
+             t1.final_material_cost = t2.final_material_cost,
+             t1.final_operating_cost_plus = t2.final_operating_cost_plus,
+             t1.sales_after_sales_service_fee = t2.sales_after_sales_service_fee,
+             t1.adjusted_sales_after_sales_service_fee = t2.adjusted_sales_after_sales_service_fee,
+             t1.final_sales_total = t2.final_sales_total,
+             t1.final_management_total = t2.final_management_total,
+             t1.management_other = t2.management_other,
+             t1.adjusted_management_other = t2.adjusted_management_other,
+             t1.strategy_select = t2.strategy_select
+            WHERE
+                t1.id = t2.id
+    </update>
+    
+    <!-- 最终营业成本合计 -->
+    <select id="selectFinalOperatingCostPlus" parameterType="java.util.Map" resultType="java.util.Map">
+        select id,ROUND(
+        IFNULL(final_material_cost,0) +
+        IFNULL(final_production_depreciation_expense,0) +
+        IFNULL(final_energy_cost,0) +
+        IFNULL(final_productive_labor_cost,0)
+        ) as final_operating_cost_plus from t_team_intermediate
+        WHERE
+        class_id = #{map.classId}
+        AND team_id = #{map.teamId}
+        <![CDATA[
+        AND (
+        ym_date >= #{map.bDate}
+        AND ym_date < #{map.eDate}
+        )
+        ]]>
+        <if test="map.vehicleModel != null and map.vehicleModel.size()>0">
+            and vehicle_model in
+            <foreach collection="map.vehicleModel" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <update id="updateFinalOperatingCostPlus" parameterType="java.util.Map">
+        <foreach collection="list" separator=";" item="map">
+            UPDATE t_team_intermediate
+            SET final_operating_cost_plus = #{map.final_operating_cost_plus}
+            WHERE
+            id = #{map.id}
+        </foreach>
+    </update>
+
+    <!-- 最终销售费用合计 -->
+    <select id="selectFinalSalesTotal" parameterType="java.util.Map" resultType="java.util.Map">
+        select id,ROUND(
+            IFNULL(final_promotional_expenses,0) +
+            IFNULL(adjusted_sales_after_sales_service_fee,0) +
+            IFNULL(final_sales_other,0)
+        ) as final_sales_total from t_team_intermediate
+        WHERE
+        class_id = #{map.classId}
+        AND team_id = #{map.teamId}
+        <![CDATA[
+        AND (
+        ym_date >= #{map.bDate}
+        AND ym_date < #{map.eDate}
+        )
+        ]]>
+        <if test="map.vehicleModel != null and map.vehicleModel.size()>0">
+            and vehicle_model in
+            <foreach collection="map.vehicleModel" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <update id="updateFinalSalesTotal" parameterType="java.util.Map">
+        <foreach collection="list" separator=";" item="map">
+            UPDATE t_team_intermediate
+            SET final_sales_total = #{map.final_sales_total}
+            where id = #{map.id}
+        </foreach>
+    </update>
+
+    
+    <!-- 管理费用合计 -->
+    <select id="selectManagementTotal" parameterType="java.util.Map" resultType="java.util.Map">
+        select id,ROUND(
+        IFNULL(adjusted_management_development_cost,0) +
+        IFNULL(management_depreciation_cost,0) +
+        IFNULL(management_other,0)
+        ) as management_total from t_team_intermediate
+        WHERE
+        class_id = #{map.classId}
+        AND team_id = #{map.teamId}
+        <![CDATA[
+        AND (
+        ym_date >= #{map.bDate}
+        AND ym_date < #{map.eDate}
+        )
+        ]]>
+        <if test="map.vehicleModel != null and map.vehicleModel.size()>0">
+            and vehicle_model in
+            <foreach collection="map.vehicleModel" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <update id="updateManagementTotal" parameterType="java.util.Map">
+        <foreach collection="list" separator=";" item="map">
+            UPDATE t_team_intermediate
+            SET management_total = #{map.management_total}
+            WHERE id= #{map.id}
+        </foreach>
+    </update>
+
+    <!-- 最终管理费用合计 -->
+    <select id="selectFinalManagementTotal" parameterType="java.util.Map" resultType="java.util.Map">
+        select id,ROUND(
+        IFNULL(in_development_cost, 0)+
+        IFNULL(adjusted_management_depreciation,0)+
+        IFNULL(adjusted_management_other,0)+
+        IFNULL(adjusted_management_development_cost,0)
+        ) as final_management_total from t_team_intermediate
+        WHERE
+        class_id = #{map.classId}
+        AND team_id = #{map.teamId}
+        <![CDATA[
+        AND (
+        ym_date >= #{map.bDate}
+        AND ym_date < #{map.eDate}
+        )
+        ]]>
+        <if test="map.vehicleModel != null and map.vehicleModel.size()>0">
+            and vehicle_model in
+            <foreach collection="map.vehicleModel" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <update id="updateFinalManagementTotal" parameterType="java.util.Map">
+        <foreach collection="list" separator=";" item="map">
+            UPDATE t_team_intermediate
+            SET final_management_total = #{map.final_management_total}
+            WHERE
+            id = #{map.id}
+        </foreach>
+    </update>
+
+    <!-- 最终资产减值损失合计 -->
+    <select id="selectFinalAssetsImpairmentLossTotal" parameterType="java.util.Map" resultType="java.util.Map">
+        select id,ROUND(
+        IFNULL(final_assets_impairment_loss_bad_debt, 0)+
+        IFNULL(final_assets_impairment_loss_inventory,0)+
+        IFNULL(final_assets_impairment_loss_fixed_assets,0)
+        ) as final_assets_impairment_loss_total from t_team_intermediate
+        WHERE
+        class_id = #{map.classId}
+        AND team_id = #{map.teamId}
+        <![CDATA[
+        AND (
+        ym_date >= #{map.bDate}
+        AND ym_date < #{map.eDate}
+        )
+        ]]>
+        <if test="map.vehicleModel != null and map.vehicleModel.size()>0">
+            and vehicle_model in
+            <foreach collection="map.vehicleModel" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <update id="updateFinalAssetsImpairmentLossTotal" parameterType="java.util.Map">
+        <foreach collection="list" separator=";" item="map">
+            UPDATE t_team_intermediate
+            SET final_assets_impairment_loss_total = #{map.final_assets_impairment_loss_total}
+            where id = #{map.id}
+        </foreach>
+    </update>
+
+    <!-- 研发费用填报 临时表4 -->
+    <insert id="initInDevelopmentCostTempFour" parameterType="java.util.Map">
+        INSERT INTO ${map.tableName} (
+            class_id,
+            team_id,
+            `year`,
+            `month`,
+            vehicle_model,
+            in_development_cost
+        ) SELECT
+            t1.class_id,
+            #{map.teamId},
+            t1.`year`,
+			t2.`month`,
+            t1.vehicle_model,
+            ROUND(
+                t1.administrative_expenses_development_expense * 1000000 * #{map.inDevelopmentCost} * t2.amortization_ratio
+            ) AS in_development_cost
+        FROM
+            t_class_fixed_charge_amortization_ratio t1 INNER JOIN t_conf_monthly_amortization_ratio t2
+        WHERE
+            t1.class_id = #{map.classId}
+        AND t1.`year` = #{map.year} + 1
+    </insert>
+    
+    <!-- 研发费用填报 临时表4 -->
+    <update id="updateInitInDevelopmentCostFour" parameterType="java.util.Map">
+        UPDATE t_team_intermediate t1,
+             ${map.tableName} t2
+            SET t1.in_development_cost = t2.in_development_cost
+            WHERE
+                t1.class_id = t2.class_id
+            AND t1.team_id = t2.team_id
+            AND t1. YEAR = t2. YEAR
+            AND t1. month = t2. month
+            AND t1.vehicle_model = t2.vehicle_model
+    </update>
+
+    <!-- 财务费用 临时表5-->
+    <insert id="updateInitFinancialCostFive" parameterType="java.util.Map">
+        INSERT INTO ${map.tableName} (
+            class_id,
+            team_id,
+            `year`,
+            `month`,
+            vehicle_model,
+            financial_cost
+        ) SELECT
+            -- 短期借款-货币资金
+            t1.class_id,
+            t1.team_id,
+            t1.`year` + 1,
+            t4.month,
+            t3.vehicle_model,
+            ROUND(
+                (
+                    IFNULL(t1.short_term_borrowing, 0) * t2.financial_cost_shortterm_borrowing -
+                    IFNULL(t1.monetary_capital, 0) * t2.financial_cost_monetary_capital
+                    + IFNULL(t1.long_term_loan, 0) * t2.long_term_loan
+                    + IFNULL(t1.bonds_payable, 0) * t2.bonds_payable
+                )  * t3.financial_cost * t4.amortization_ratio
+            ) AS financial_cost
+        FROM
+            t_team_balance_sheet t1
+        INNER JOIN t_class_fixed_param t2 ON t1.class_id = t2.class_id
+        AND t1.`year` + 1 = t2.`year`
+        INNER JOIN t_class_fixed_charge_amortization_ratio t3 ON t1.class_id = t3.class_id
+        AND t1.`year` + 1 = t3.`year`
+        INNER JOIN t_conf_monthly_amortization_ratio t4
+        WHERE
+            t1.class_id = #{map.classId}
+        AND t1.team_id = #{map.teamId}
+        AND t1.`year` = #{map.year}  - 1
+    </insert>
+    
+    <!-- 临时表5 -->
+    <update id="updateFinancialCostFive" parameterType="java.util.Map">
+        UPDATE t_team_intermediate t1,
+             ${map.tableName} t2
+            SET t1.financial_cost = t2.financial_cost,
+              t1.final_financial_cost = t2.financial_cost
+            WHERE
+                t1.class_id = t2.class_id
+            AND t1.team_id = t2.team_id
+            AND t1. YEAR = t2. YEAR
+            AND t1. month = t2. month
+            AND t1.vehicle_model = t2.vehicle_model
+    </update>
+    
+    <update id="createTempTableTwo" parameterType="java.lang.String">
+        CREATE temporary TABLE ${tableName} (
+          `year` int(12) DEFAULT NULL COMMENT '年份',
+          `month` int(11) DEFAULT NULL COMMENT '月份',
+          `vehicle_model` varchar(10) DEFAULT NULL COMMENT '车型',
+          `strategy_select` varchar(50) DEFAULT NULL COMMENT '战略选择',
+          `strategy_benchmark_sales` bigint(12) DEFAULT NULL COMMENT '战略基准销量 单位 辆',
+          `strategy_benchmark_unit_price` bigint(14) DEFAULT NULL COMMENT '战略基准单价',
+          `strategy_benchmark_sales_price` bigint(14) DEFAULT NULL COMMENT '战略基准销售额',
+          `strategy_benchmark_unit_material_cost` bigint(14) DEFAULT NULL COMMENT '战略基准单位材料成本',
+          `strategy_benchmark_materials_cost_total` bigint(14) DEFAULT NULL COMMENT '战略基准材料成本合计',
+          `strategy_benchmark_energy_cost` bigint(14) DEFAULT NULL COMMENT '战略基准能耗成本',
+          `class_id` int(11) DEFAULT NULL COMMENT '班级id',
+          `team_id` int(11) DEFAULT NULL COMMENT '团队id'
+        )
+    </update>
+    
+    <update id="createTempTableThree" parameterType="java.lang.String">
+        CREATE temporary TABLE ${tableName} (
+          `id` int(11) NOT NULL,
+          `year` int(12) DEFAULT NULL COMMENT '年份',
+          `month` int(11) DEFAULT NULL COMMENT '月份',
+          `vehicle_model` varchar(10) DEFAULT NULL COMMENT '车型',
+          `strategy_select` varchar(50) DEFAULT NULL COMMENT '战略选择',
+          `class_id` int(11) DEFAULT NULL COMMENT '班级id',
+          `team_id` int(11) DEFAULT NULL COMMENT '团队id',
+          `final_sales` bigint(14) DEFAULT NULL COMMENT '最终销售额',
+          `adjusted_unit_material_cost` bigint(14) DEFAULT NULL COMMENT '调整后单位材料成本',
+          `final_material_cost` bigint(14) DEFAULT NULL COMMENT '最终材料成本',
+          `adjusted_sales_after_sales_service_fee` bigint(14) DEFAULT NULL COMMENT '调整后销售费用-售后服务费',
+          `final_sales_total` bigint(14) DEFAULT NULL COMMENT '最终销售费用合计',
+          `adjusted_management_other` bigint(14) DEFAULT NULL COMMENT '调整后管理费用-其他',
+          `final_management_total` bigint(14) DEFAULT NULL COMMENT '最终管理费用合计',
+          `final_operating_tax_surcharge` bigint(14) DEFAULT NULL COMMENT '最终营业税金及附加',
+          `final_energy_cost` bigint(14) DEFAULT NULL COMMENT '最终能耗成本'
+        )
+    </update>
+    
+    <update id="createTempTableFour" parameterType="java.lang.String">
+        CREATE temporary TABLE ${tableName} (
+          `year` int(12) DEFAULT NULL COMMENT '年份',
+          `month` int(12) DEFAULT NULL COMMENT '月份',
+          `vehicle_model` varchar(10) DEFAULT NULL COMMENT '车型',
+          `class_id` int(11) DEFAULT NULL COMMENT '班级id',
+          `team_id` int(11) DEFAULT NULL COMMENT '团队id',
+          `in_development_cost` bigint(14) DEFAULT NULL COMMENT '填报的研发费用'
+        )
+    </update>
+    
+    <update id="createTempTableFive" parameterType="java.lang.String">
+        CREATE temporary TABLE ${tableName} (
+          `year` int(12) DEFAULT NULL COMMENT '年份',
+          `month` int(12) DEFAULT NULL COMMENT '月份',
+          `vehicle_model` varchar(10) DEFAULT NULL COMMENT '车型',
+          `class_id` int(11) DEFAULT NULL COMMENT '班级id',
+          `team_id` int(11) DEFAULT NULL COMMENT '团队id',
+          `financial_cost` bigint(14) DEFAULT NULL COMMENT '财务费用'
+        )
+    </update>
+
+    <select id="getH6Sale" resultType="map">
+        select
+         CAST(FORMAT(ROUND(SUM(IFNULL(tti.productive_labor_cost,0)) * 0.003,2),2 ) as CHAR(50)) fine,
+          CAST(ROUND(sum(IFNULL(tti.adjusted_sales,0))/0.998*0.002,0) as CHAR(50)) volume  from t_team_intermediate tti
+        where tti.class_id = #{classId}
+        and tti.team_id = #{teamId}
+        and tti.vehicle_model = 'h6'
+        and tti.`year` = 2012
+        <!-- and tti.`month` &gt; 7 -->
+    </select>
+</mapper>

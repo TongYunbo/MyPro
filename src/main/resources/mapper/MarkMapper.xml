@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tzcpa.mapper.teacher.MarkMapper">
+    <!-- resultMap是自定义的返回值类型       type:（一般）为实体类型  id:(自定义)唯一标识
+            <id>：主键标签     column:列（表）  property：属性（实体） javaType：对应的Java类型
+            <result/> :列标签      column:列（表）  property：属性（实体） javaType：对应的Java类型
+     -->
+    <!-- 查询学生答题信息 -->
+    <select id="findAnswer" parameterType="map" resultType="com.tzcpa.model.teacher.Mark">
+        SELECT A.QUESTION_ID,A.ANSWER,D.QUESTION_DESC,D.BACKGROUND_DESC, D.ID,D.question_type FROM t_stu_answer A LEFT JOIN  t_class_question_desc D ON A.QUESTION_ID = D.QUESTION_ID and A.CLASS_ID=D.CLASS_ID
+        where A.question_id=#{questionId}
+        <if test="teamId != null">
+                and A.team_id = #{teamId}
+        </if>
+        <if test="classId != null">
+                and A.class_id = #{classId}
+        </if>
+        
+    </select>
+    <!-- 查询学生答题信息 -->
+    <select id="findScoreList" parameterType="map" resultType="com.tzcpa.model.teacher.Mark">
+        select question_id,score from t_stu_score where question_id in(
+            SELECT question_id FROM t_class_question_desc where (parent_id=#{questionId} or question_id=#{questionId})
+            <if test="classId != null">
+                and class_id = #{classId}
+            </if>
+          ) 
+        <if test="teamId != null">
+               and team_id=#{teamId}
+        </if>
+        <if test="classId != null">
+                and class_id = #{classId}
+        </if>
+    </select>
+<!-- 新增学生分数表信息 -->
+    <insert id="addBatchMarkInfo">
+        INSERT INTO t_stu_score(score,root_id,question_id,role_id,team_id,class_id,year) VALUES
+        <foreach collection="scoreList" item="item" separator=",">
+            (${item.score},${item.rootId},${item.questionId},${item.roleId},${item.teamId},${item.classId},${item.year})
+        </foreach>
+    </insert>
+    <!-- 查询题干信息 -->
+    <select id="findQuestion" parameterType="map" resultType="com.tzcpa.model.teacher.Mark">
+        SELECT question_id,question_desc,question_type FROM t_class_question_desc where question_id=#{questionId}
+        <if test="classId != null">
+                and class_id = #{classId}
+        </if>
+    </select>
+     <!-- 查询子题信息 -->
+    <select id="findQuestionT" parameterType="map" resultType="com.tzcpa.model.teacher.Mark">
+        SELECT question_id,question_desc,question_type FROM t_class_question_desc where parent_id=#{questionId}
+        <if test="classId != null">
+                and class_id = #{classId}
+        </if>
+    </select>
+    <!-- 查询答案信息 -->
+    <select id="findAnswerList" parameterType="map" resultType="com.tzcpa.model.teacher.Mark">
+        SELECT question_id,answer FROM t_stu_answer where question_id in(
+          SELECT question_id FROM t_class_question_desc where (parent_id=#{questionId} or question_id=#{questionId} )
+          <if test="classId != null">
+                and class_id = #{classId}
+          </if>
+          )
+        <if test="teamId != null">
+                and team_id = #{teamId}
+        </if>
+        <if test="classId != null">
+                and class_id = #{classId}
+        </if>
+    </select>
+    <!-- 查询问题标准分数 -->
+    <select id="findScoreStandList" parameterType="map" resultType="com.tzcpa.model.teacher.Mark">
+        select question_id,score from t_class_answer_score where question_id=#{questionId}
+        <if test="classId != null">
+                and class_id = #{classId}
+        </if>
+    </select>
+    <!-- 查询问题标准分数 -->
+    <select id="findScoreStandControList" parameterType="com.tzcpa.model.teacher.Mark" resultType="com.tzcpa.model.teacher.Mark">
+	        SELECT
+	question_id,
+	
+		score
+	FROM
+		t_conf_answer_score
+	WHERE
+		question_id =(SELECT
+		question_id
+		
+	FROM
+		t_class_question_desc
+	WHERE
+		parent_id = (
+			SELECT
+				question_id
+			FROM
+				t_class_question_desc
+			WHERE
+				parent_id = #{questionId}
+			LIMIT 1
+		)
+	AND choose_a_few is null limit 1)
+    </select>
+    <!-- 查询内部审计答案信息 -->
+    <select id="findAnswerListThree" parameterType="map" resultType="com.tzcpa.model.teacher.Mark">
+        select a.question_id,a.parent_id,b.answer,b.team_id from t_class_question_desc a left join t_stu_answer b on a.question_id=b.question_id where a.parent_id in(
+        select question_id from t_class_question_desc where parent_id=#{questionId} and class_id=#{classId}
+        )  and a.choose_a_few is null and a.class_id=#{classId} and b.team_id=#{teamId}
+    </select>
+    <!-- 查询内部控制答案信息 -->
+    <select id="findAnswerListThreeControl" parameterType="map" resultType="com.tzcpa.model.teacher.Mark">
+        select a.question_id,a.parent_id,b.answer,b.team_id from t_class_question_desc a left join t_stu_answer b on a.question_id=b.question_id where a.parent_id in(
+        select question_id from t_class_question_desc where parent_id=#{questionId} and class_id=#{classId}
+        )  and a.choose_a_few is null and a.class_id=#{classId} and b.team_id=#{teamId}
+    </select>
+     <!-- 查询内部审计得过的分 -->
+    <select id="findScoreSJList" parameterType="map" resultType="com.tzcpa.model.teacher.Mark">
+        select question_id,score from t_stu_score where question_id in(
+           select question_id from t_class_question_desc where parent_id in(
+           select question_id from t_class_question_desc where parent_id=#{questionId} and class_id=#{classId}
+          ) <if test="classId != null">
+                and class_id = #{classId}
+        </if>
+          )  
+        <if test="teamId != null">
+               and team_id=#{teamId}
+        </if>
+        <if test="classId != null">
+                and class_id = #{classId}
+        </if>
+    </select>
+    <!-- 查询内部控制得过的分 -->
+    <select id="findScoreControlList" parameterType="map" resultType="com.tzcpa.model.teacher.Mark">
+        select question_id,score from t_stu_score where question_id in(
+           select question_id from t_class_question_desc where parent_id in(
+           select question_id from t_class_question_desc where parent_id=#{questionId} and class_id=#{classId}
+          ) <if test="classId != null">
+                and class_id = #{classId}
+        </if>and choose_a_few is null
+          )  
+        <if test="teamId != null">
+               and team_id=#{teamId}
+        </if>
+        <if test="classId != null">
+                and class_id = #{classId}
+        </if>
+    </select>
+    <!-- 查询总体战略标准分数 -->
+    <select id="findAnswerListAll" resultType="com.tzcpa.model.teacher.Mark">
+        select score from t_class_answer_score where question_id=#{thisItemId}
+        <if test="classId != null">
+                and class_id = #{classId}
+        </if>
+    </select>
+    <!-- 查询问题标准分数 -->
+    <select id="findAnswerStand" parameterType="com.tzcpa.model.treatment.QuestionAnswerdDTO" resultType="com.tzcpa.model.teacher.Mark">
+	        SELECT
+	question_id,
+	    score
+	FROM
+		t_conf_answer_score
+	WHERE
+		question_id in(SELECT
+		question_id
+		
+	FROM
+		t_class_question_desc
+	WHERE
+		parent_id in (
+			SELECT
+				question_id
+			FROM
+				t_class_question_desc
+			WHERE
+				parent_id = #{thisItemId} and class_id=#{classId}
+			
+		)and class_id=#{classId}
+	 )
+    </select>
+ </mapper>
+   

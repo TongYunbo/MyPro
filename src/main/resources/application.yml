@@ -1,0 +1,13 @@
+spring:
+   profiles.active: test
+
+logging:
+  level:
+    com.tzcpa.mapper: DEBUG
+    org.springframework: DEBUG
+
+#pagehelper:
+#    helperDialect: mysql
+#    reasonable: true
+#    supportMethodsArguments: true
+#    params: count=countSql

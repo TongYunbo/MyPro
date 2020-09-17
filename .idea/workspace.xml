@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="109cd476-0820-4110-9622-d1f0f789af33" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/tzcpa/utils/MD5UtilsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/config/DruidDataSourceConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/config/DruidDataSourceConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/controller/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/controller/question/QuestionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/controller/question/QuestionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/interceptor/MyInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/interceptor/MyInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/ARDEIService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/ARDEIService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/Marketing4PH6ServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/Marketing4PH6ServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/ProductAdjustmentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/ProductAdjustmentServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/ProfitJudgmentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/ProfitJudgmentServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/ProjectSelectionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/ProjectSelectionServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/QuetionCommonServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/QuetionCommonServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/SaleBudgetPickupServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/SaleBudgetPickupServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/ValueAnalysisServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/ValueAnalysisServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/student/AHseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/student/AHseService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/student/impl/QuestionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/service/student/impl/QuestionServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/utils/FileOperateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/utils/FileOperateUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/utils/ImgUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/utils/ImgUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tzcpa/utils/ListUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tzcpa/utils/ListUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-dev.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-test.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-test.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/generator/mybatisGeneratorinit.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/generator/mybatisGeneratorinit.properties" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JUnit3 Test Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="D:\Program Files\JetBrains\IntelliJ IDEA 2020.2.1\plugins\maven\lib\maven3" />
+        <option name="userSettingsFile" value="D:\soft\apache-maven-3.3.3\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1USpqiHHbZeJGuKSTDvc9nH2Siq" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="Downloaded.Files.Path.Enabled" value="false" />
+    <property name="Repository.Attach.Annotations" value="false" />
+    <property name="Repository.Attach.JavaDocs" value="false" />
+    <property name="Repository.Attach.Sources" value="false" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit3" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit3" value="junit.framework.TestCase" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Problems" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.54367816" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.tzcpa.utils" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="junit.framework.TestCase" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.BakerApplication">
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BakerApplicationTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="baker" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.tzcpa.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.tzcpa" />
+      <option name="MAIN_CLASS_NAME" value="com.tzcpa.BakerApplicationTests" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="JasyptTest.testEncrypt" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="baker" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="JasyptTest" />
+      <option name="METHOD_NAME" value="testEncrypt" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MD5UtilsTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="baker" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.tzcpa.utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.tzcpa.utils" />
+      <option name="MAIN_CLASS_NAME" value="com.tzcpa.utils.MD5UtilsTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MD5UtilsTest.encrypt" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="baker" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.tzcpa.utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.tzcpa.utils" />
+      <option name="MAIN_CLASS_NAME" value="com.tzcpa.utils.MD5UtilsTest" />
+      <option name="METHOD_NAME" value="encrypt" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BakerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="baker" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.tzcpa.BakerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="TestNG">
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.JasyptTest.testEncrypt" />
+        <item itemvalue="JUnit.MD5UtilsTest.encrypt" />
+        <item itemvalue="JUnit.MD5UtilsTest" />
+        <item itemvalue="JUnit.BakerApplicationTests" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="109cd476-0820-4110-9622-d1f0f789af33" name="Default" comment="" />
+      <created>1565172325819</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1565172325819</updated>
+      <workItem from="1565172340946" duration="987000" />
+      <workItem from="1565317463151" duration="848000" />
+      <workItem from="1569564389519" duration="1206000" />
+      <workItem from="1569724682875" duration="44000" />
+      <workItem from="1570674424529" duration="3536000" />
+      <workItem from="1570677991085" duration="2071000" />
+      <workItem from="1570759534042" duration="626000" />
+      <workItem from="1570763521495" duration="2485000" />
+      <workItem from="1570844181296" duration="1715000" />
+      <workItem from="1571987509804" duration="973000" />
+      <workItem from="1572573376615" duration="2335000" />
+      <workItem from="1572832738494" duration="651000" />
+      <workItem from="1575360046903" duration="726000" />
+      <workItem from="1575427201506" duration="1380000" />
+      <workItem from="1575531686568" duration="1829000" />
+      <workItem from="1575538609478" duration="1385000" />
+      <workItem from="1575603365213" duration="2115000" />
+      <workItem from="1575876363487" duration="1205000" />
+      <workItem from="1575956398306" duration="38000" />
+      <workItem from="1576214355164" duration="2129000" />
+      <workItem from="1578455107543" duration="631000" />
+      <workItem from="1589787747797" duration="1391000" />
+      <workItem from="1590631511665" duration="923000" />
+      <workItem from="1599123895846" duration="2580000" />
+      <workItem from="1599183919071" duration="6358000" />
+      <workItem from="1599195840848" duration="12775000" />
+      <workItem from="1599210356530" duration="691000" />
+      <workItem from="1599211083113" duration="50000" />
+      <workItem from="1599211152893" duration="542000" />
+      <workItem from="1599211839217" duration="1593000" />
+      <workItem from="1599529000298" duration="23466000" />
+      <workItem from="1599614685846" duration="5697000" />
+      <workItem from="1599620438241" duration="13578000" />
+      <workItem from="1599707247582" duration="4708000" />
+      <workItem from="1600135503869" duration="17034000" />
+      <workItem from="1600223663089" duration="1235000" />
+      <workItem from="1600322414828" duration="1777000" />
+      <workItem from="1600324781465" duration="612000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="539" y="218" key="#Inspections" timestamp="1599617259216">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state x="539" y="218" key="#Inspections/0.0.1827.1080@0.0.1827.1080" timestamp="1599617259216" />
+    <state x="393" y="114" key="#Project_Structure" timestamp="1600162628211">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state x="393" y="114" key="#Project_Structure/0.0.1827.1080@0.0.1827.1080" timestamp="1600162628211" />
+    <state x="367" y="195" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1599211584847">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state x="367" y="195" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1827.1080@0.0.1827.1080" timestamp="1599211584847" />
+    <state x="664" y="399" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1600322449524">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state x="664" y="399" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1827.1080@0.0.1827.1080" timestamp="1600322449524" />
+    <state x="12" y="100" key="#xdebugger.evaluate" timestamp="1600156433545">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state x="12" y="100" key="#xdebugger.evaluate/0.0.1827.1080@0.0.1827.1080" timestamp="1600156433545" />
+    <state width="1161" height="617" key="DebuggerActiveHint" timestamp="1600153151019">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state width="1161" height="617" key="DebuggerActiveHint/0.0.1827.1080@0.0.1827.1080" timestamp="1600153151019" />
+    <state x="693" y="295" key="FileChooserDialogImpl" timestamp="1600322493953">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state x="693" y="295" key="FileChooserDialogImpl/0.0.1827.1080@0.0.1827.1080" timestamp="1600322493953" />
+    <state width="1784" height="450" key="GridCell.Tab.0.bottom" timestamp="1600324221854">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state width="1784" height="450" key="GridCell.Tab.0.bottom/0.0.1827.1080@0.0.1827.1080" timestamp="1600324221854" />
+    <state width="1784" height="450" key="GridCell.Tab.0.center" timestamp="1600324221854">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state width="1784" height="450" key="GridCell.Tab.0.center/0.0.1827.1080@0.0.1827.1080" timestamp="1600324221854" />
+    <state width="1784" height="450" key="GridCell.Tab.0.left" timestamp="1600324221853">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state width="1784" height="450" key="GridCell.Tab.0.left/0.0.1827.1080@0.0.1827.1080" timestamp="1600324221853" />
+    <state width="1784" height="450" key="GridCell.Tab.0.right" timestamp="1600324221854">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state width="1784" height="450" key="GridCell.Tab.0.right/0.0.1827.1080@0.0.1827.1080" timestamp="1600324221854" />
+    <state width="1784" height="278" key="GridCell.Tab.1.bottom" timestamp="1600250575115">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state width="1784" height="278" key="GridCell.Tab.1.bottom/0.0.1827.1080@0.0.1827.1080" timestamp="1600250575115" />
+    <state width="1784" height="278" key="GridCell.Tab.1.center" timestamp="1600250575115">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state width="1784" height="278" key="GridCell.Tab.1.center/0.0.1827.1080@0.0.1827.1080" timestamp="1600250575115" />
+    <state width="1784" height="278" key="GridCell.Tab.1.left" timestamp="1600250575115">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state width="1784" height="278" key="GridCell.Tab.1.left/0.0.1827.1080@0.0.1827.1080" timestamp="1600250575115" />
+    <state width="1784" height="278" key="GridCell.Tab.1.right" timestamp="1600250575115">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state width="1784" height="278" key="GridCell.Tab.1.right/0.0.1827.1080@0.0.1827.1080" timestamp="1600250575115" />
+    <state width="1784" height="278" key="GridCell.Tab.2.bottom" timestamp="1600250575115">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state width="1784" height="278" key="GridCell.Tab.2.bottom/0.0.1827.1080@0.0.1827.1080" timestamp="1600250575115" />
+    <state width="1784" height="278" key="GridCell.Tab.2.center" timestamp="1600250575115">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state width="1784" height="278" key="GridCell.Tab.2.center/0.0.1827.1080@0.0.1827.1080" timestamp="1600250575115" />
+    <state width="1784" height="278" key="GridCell.Tab.2.left" timestamp="1600250575115">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state width="1784" height="278" key="GridCell.Tab.2.left/0.0.1827.1080@0.0.1827.1080" timestamp="1600250575115" />
+    <state width="1784" height="278" key="GridCell.Tab.2.right" timestamp="1600250575115">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state width="1784" height="278" key="GridCell.Tab.2.right/0.0.1827.1080@0.0.1827.1080" timestamp="1600250575115" />
+    <state x="788" y="390" key="Maven.ArtifactSearchDialog" timestamp="1599622090918">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state x="788" y="390" key="Maven.ArtifactSearchDialog/0.0.1827.1080@0.0.1827.1080" timestamp="1599622090918" />
+    <state x="414" y="184" key="SettingsEditor" timestamp="1600323016657">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state x="414" y="184" key="SettingsEditor/0.0.1827.1080@0.0.1827.1080" timestamp="1600323016657" />
+    <state width="921" height="548" key="XDebugger.FullValuePopup" timestamp="1599645650467">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state width="921" height="548" key="XDebugger.FullValuePopup/0.0.1827.1080@0.0.1827.1080" timestamp="1599645650467" />
+    <state x="632" y="501" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1599618879859">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state x="632" y="501" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/0.0.1827.1080@0.0.1827.1080" timestamp="1599618879859" />
+    <state x="684" y="309" key="com.intellij.testIntegration.createTest.CreateTestDialog" timestamp="1599536304825">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state x="684" y="309" key="com.intellij.testIntegration.createTest.CreateTestDialog/0.0.1827.1080@0.0.1827.1080" timestamp="1599536304825" />
+    <state x="608" y="514" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1600136290065">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state x="608" y="514" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1827.1080@0.0.1827.1080" timestamp="1600136290065" />
+    <state x="460" y="77" width="596" height="804" key="find.popup" timestamp="1599643435238">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state x="460" y="77" width="596" height="804" key="find.popup/0.0.1827.1080@0.0.1827.1080" timestamp="1599643435238" />
+    <state x="288" y="150" key="new project wizard" timestamp="1599619882330">
+      <screen x="0" y="0" width="1827" height="1080" />
+    </state>
+    <state x="288" y="150" key="new project wizard/0.0.1827.1080@0.0.1827.1080" timestamp="1599619882330" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/interceptor/MyAdapter.java</url>
+          <line>38</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/interceptor/MyInterceptor.java</url>
+          <line>23</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/interceptor/MyInterceptor.java</url>
+          <line>28</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/config/DruidDataSourceConfig.java</url>
+          <line>62</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/controller/teacher/TeamController.java</url>
+          <line>59</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/student/impl/QuestionServiceImpl.java</url>
+          <line>777</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/student/impl/QuestionServiceImpl.java</url>
+          <line>115</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/student/impl/QuestionServiceImpl.java</url>
+          <line>114</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/student/impl/QuestionServiceImpl.java</url>
+          <line>273</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/student/impl/QuestionServiceImpl.java</url>
+          <line>385</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/student/impl/QuestionServiceImpl.java</url>
+          <line>636</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/QuetionCommonServiceImpl.java</url>
+          <line>191</line>
+          <option name="timeStamp" value="36" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/QuetionCommonServiceImpl.java</url>
+          <line>161</line>
+          <option name="timeStamp" value="37" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/student/impl/QuestionServiceImpl.java</url>
+          <line>371</line>
+          <option name="timeStamp" value="42" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/CommonServiceImpl.java</url>
+          <line>46</line>
+          <option name="timeStamp" value="43" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/CommonServiceImpl.java</url>
+          <line>55</line>
+          <option name="timeStamp" value="45" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/CommonServiceImpl.java</url>
+          <line>54</line>
+          <option name="timeStamp" value="46" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/ReseDevelopTServiceImpl.java</url>
+          <line>42</line>
+          <option name="timeStamp" value="47" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/RDEIFiveServiceImpl.java</url>
+          <line>43</line>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/RDEISixServiceImpl.java</url>
+          <line>43</line>
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/RDEISevenServiceImpl.java</url>
+          <line>42</line>
+          <option name="timeStamp" value="51" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/ARDEIService.java</url>
+          <line>48</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/ARDEIService.java</url>
+          <line>57</line>
+          <option name="timeStamp" value="53" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/BiddingEffectServiceImpl.java</url>
+          <line>57</line>
+          <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/BiddingEffectServiceImpl.java</url>
+          <line>75</line>
+          <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/question/impl/RDEIEightServiceImpl.java</url>
+          <line>49</line>
+          <option name="timeStamp" value="56" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/main/java/com/tzcpa/service/treatment/InitTeamIntermediateService.java</url>
+          <line>26</line>
+          <properties class="com.tzcpa.service.treatment.InitTeamIntermediateService" method="initTeamIntermediate" />
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="java.lang.String" memberName="value" />
+      </pinned-members>
+    </pin-to-top-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/baker$BakerApplication.ic" NAME="BakerApplication Coverage Results" MODIFIED="1599643972554" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>

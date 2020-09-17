@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.ClassEventFlowMapper">
+
+    <resultMap id="ClassEventFlowResultMap" type="com.tzcpa.model.treatment.ClassEventFlowDO">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="event_name" property="eventName" jdbcType="VARCHAR"/>
+        <result column="event_type" property="eventType" jdbcType="INTEGER"/>
+        <result column="event_order" property="eventOrder" jdbcType="INTEGER"/>
+        <result column="is_show" property="isShow" jdbcType="INTEGER"/>
+        <result column="time_line" property="timeLine" jdbcType="TIMESTAMP"/>
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP"/>
+        <result column="duration" property="duration" jdbcType="INTEGER"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="role_id" property="roleId" jdbcType="INTEGER"/>
+        <result column="role_value" property="roleValue" jdbcType="VARCHAR"/>
+        <result column="full_mark" property="fullMark" jdbcType="INTEGER"/>
+        <result column="weight" property="weight" jdbcType="REAL"/>
+        <result column="class_id" property="classId" jdbcType="INTEGER"/>
+        <result column="event_code" property="eventCode" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <!-- 插入事件流程 -->
+    <insert id="insertClassEventFlow" parameterType="com.tzcpa.model.treatment.ClassEventFlowDO">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_class_event_flow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="eventName != null">
+                event_name,
+            </if>
+            <if test="eventId != null">
+                event_id,
+            </if>
+            <if test="eventCode != null">
+                event_code,
+            </if>
+            <if test="eventType != null">
+                event_type,
+            </if>
+            <if test="eventOrder != null">
+                event_order,
+            </if>
+            <if test="isShow != null">
+                is_show,
+            </if>
+            <if test="timeLine != null">
+                time_line,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="duration != null">
+                duration,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="roleValue != null">
+                role_value,
+            </if>
+            <if test="fullMark != null">
+                full_mark,
+            </if>
+            <if test="weight != null">
+                weight,
+            </if>
+            <if test="classId != null">
+                class_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="eventName != null">
+                #{eventName,jdbcType=VARCHAR},
+            </if>
+            <if test="eventId != null">
+                #{eventId,jdbcType=INTEGER},
+            </if>
+            <if test="eventCode != null">
+                #{eventCode,jdbcType=VARCHAR},
+            </if>
+            <if test="eventType != null">
+                #{eventType,jdbcType=INTEGER},
+            </if>
+            <if test="eventOrder != null">
+                #{eventOrder,jdbcType=INTEGER},
+            </if>
+            <if test="isShow != null">
+                #{isShow,jdbcType=INTEGER},
+            </if>
+            <if test="timeLine != null">
+                #{timeLine,jdbcType=TIMESTAMP},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="duration != null">
+                #{duration,jdbcType=INTEGER},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="roleId != null">
+                #{roleId,jdbcType=INTEGER},
+            </if>
+            <if test="roleValue != null">
+                #{roleValue,jdbcType=VARCHAR},
+            </if>
+            <if test="fullMark != null">
+                #{fullMark,jdbcType=INTEGER},
+            </if>
+            <if test="weight != null">
+                #{weight,jdbcType=INTEGER},
+            </if>
+            <if test="classId != null">
+                #{classId,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 初始化事件流程 -->
+    <insert id="initEventFlow" parameterType="int">
+        INSERT INTO t_class_event_flow (
+            event_id,
+            event_name,
+            event_code,
+            event_type,
+            event_order,
+            is_show,
+            time_line,
+            start_time,
+            duration,
+            end_time,
+            role_Id,
+            role_value,
+            full_mark,
+            weight,
+            class_id
+        ) SELECT
+            id,
+            event_name,
+            event_code,
+            event_type,
+            event_order,
+            is_show,
+            time_line,
+            start_time,
+            duration,
+            end_time,
+            role_Id,
+            role_value,
+            full_mark,
+            weight,
+            #{classId}
+        FROM
+            t_conf_event_flow
+    </insert>
+
+    <!-- 获取下一个事件 wangbj -->
+    <select id="getNextEvent" resultMap="ClassEventFlowResultMap"
+            parameterType="com.tzcpa.model.treatment.ClassEventFlowDO">
+        select id, event_name,event_code, event_type, event_order, is_show
+        , time_line, start_time, duration, end_time, role_id
+        , role_value, full_mark, weight, class_id
+        from t_class_event_flow
+        where is_show = 1
+        and class_id = #{classId}
+        and event_order > #{eventOrder}
+        limit 1
+    </select>
+
+	<!-- 添加模板的背景资料或题干描述 -->
+    <insert id="insertQuestionConf" parameterType="com.tzcpa.model.treatment.ClassQuestionDescDO">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_conf_question_desc
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="eventId != null">
+                event_id,
+            </if>
+            <if test="questionTitle != null">
+                question_title,
+            </if>
+            <if test="questionDesc != null">
+                question_desc,
+            </if>
+            <if test="questionYear != null">
+                question_year,
+            </if>
+            <if test="questionType != null">
+                question_type,
+            </if>
+            <if test="duration != null">
+                duration,
+            </if>
+            <if test="backgroundDesc != null">
+                background_desc,
+            </if>
+            <if test="isShow != null">
+                is_show,
+            </if>
+            <if test="questionId != null">
+                question_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="eventId != null">
+                #{eventId,jdbcType=VARCHAR},
+            </if>
+            <if test="questionTitle != null">
+                #{questionTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="questionDesc != null">
+                #{questionDesc,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="questionYear != null">
+                #{questionYear,jdbcType=INTEGER},
+            </if>
+            <if test="questionType != null">
+                #{questionType,jdbcType=INTEGER},
+            </if>
+            <if test="duration != null">
+                #{duration,jdbcType=INTEGER},
+            </if>
+            <if test="backgroundDesc != null">
+                #{backgroundDesc,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="isShow != null">
+                #{isShow,jdbcType=INTEGER},
+            </if>
+            <if test="questionId != null">
+                #{questionId,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 添加背景资料或题干描述 -->
+    <insert id="insertQuestion" parameterType="com.tzcpa.model.treatment.ClassQuestionDescDO">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_class_question_desc
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="eventId != null">
+                event_id,
+            </if>
+            <if test="questionTitle != null">
+                question_title,
+            </if>
+            <if test="questionDesc != null">
+                question_desc,
+            </if>
+            <if test="questionYear != null">
+                question_year,
+            </if>
+            <if test="questionType != null">
+                question_type,
+            </if>
+            <if test="duration != null">
+                duration,
+            </if>
+            <if test="backgroundDesc != null">
+                background_desc,
+            </if>
+            <if test="classId != null">
+                class_id,
+            </if>
+            <if test="isShow != null">
+                is_show,
+            </if>
+            <if test="questionId != null">
+                question_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="eventId != null">
+                #{eventId,jdbcType=VARCHAR},
+            </if>
+            <if test="questionTitle != null">
+                #{questionTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="questionDesc != null">
+                #{questionDesc,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="questionYear != null">
+                #{questionYear,jdbcType=INTEGER},
+            </if>
+            <if test="questionType != null">
+                #{questionType,jdbcType=INTEGER},
+            </if>
+            <if test="duration != null">
+                #{duration,jdbcType=INTEGER},
+            </if>
+            <if test="backgroundDesc != null">
+                #{backgroundDesc,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="classId != null">
+                #{classId,jdbcType=INTEGER},
+            </if>
+            <if test="isShow != null">
+                #{isShow,jdbcType=INTEGER},
+            </if>
+            <if test="questionId != null">
+                #{questionId,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 查询模板流程列表的总条数 -->
+    <select id="selectCount" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM
+			t_conf_event_flow f
+		INNER JOIN t_conf_question_desc d ON f.id = d.event_id
+		WHERE
+			d.parent_id = 0
+    </select>
+
+    <!-- 查询模板流程列表 -->
+    <select id="getConfEventFlow" parameterType="map" resultType="map">
+		SELECT
+			f.id,
+			f.event_name AS eventName,
+			f.is_show AS questionIsShow,
+			f.time_line AS timeLine,
+			d.duration AS duration,
+			d.background_desc AS backgroundDesc,
+			d.question_desc AS questionDesc,
+			d.is_show AS backgroundIsShow
+		FROM
+			t_conf_event_flow f
+		INNER JOIN t_conf_question_desc d ON f.id = d.event_id
+		WHERE
+			d.parent_id = 0
+		ORDER BY
+			event_order ASC
+        <if test="start!=null and size!=null">
+            limit #{start},#{size}
+        </if>
+    </select>
+    
+    <!-- 修改班级的背景资料或者题干描述 -->
+    <update id="updateQuestion" parameterType="com.tzcpa.model.treatment.ClassQuestionDescDO">
+        update t_class_question_desc
+        <set>
+             question_desc = #{questionDesc,jdbcType=LONGVARCHAR},
+             background_desc = #{backgroundDesc,jdbcType=LONGVARCHAR},
+        </set>
+        where question_id = #{questionId,jdbcType=INTEGER} and class_id = #{classId,jdbcType=INTEGER}
+    </update>
+    
+    <!-- 修改模板的背景资料或者题干描述 -->
+    <update id="updateConfQuestion" parameterType="com.tzcpa.model.treatment.ClassQuestionDescDO">
+        update t_conf_question_desc
+        <set>
+             question_desc = #{questionDesc,jdbcType=LONGVARCHAR},
+             background_desc = #{backgroundDesc,jdbcType=LONGVARCHAR},
+        </set>
+        where event_id = #{eventId,jdbcType=INTEGER} and parent_id = 0
+    </update>
+    
+    <!-- 修改答题时限（分） 和停用/启用模板流程的背景资料-->
+    <update id="updateDuration" parameterType="com.tzcpa.model.treatment.ClassQuestionDescDO">
+    	update t_conf_question_desc
+    	<set>
+    		<if test="duration!=null">
+	        	duration = #{duration}
+	        </if>
+	        <if test="isShow!=null">
+	        	is_show=#{isShow}
+	        </if>
+    	</set>
+        where event_id = #{id,jdbcType=INTEGER} and parent_id= 0
+    </update>
+    
+    <!-- 停用/启用班级的背景资料和班级的答题时限 -->
+	<update id="updateClassDuration" parameterType="com.tzcpa.model.treatment.ClassQuestionDescDO">
+    	update t_class_question_desc
+    	<set>
+    		<if test="duration!=null">
+	        	duration = #{duration}
+	        </if>
+	        <if test="isShow!=null">
+	        	is_show=#{isShow}
+	        </if>
+    	</set>
+        where question_id = #{questionId,jdbcType=INTEGER} and class_id = #{classId}
+    </update>
+	
+	<!-- 停用/启用班级流程的题干 -->
+    <update id="updateClassFlow" parameterType="com.tzcpa.model.treatment.ClassEventFlowDO">
+    	update t_class_event_flow set is_show=#{isShow} where id=#{id} and class_id = #{classId}
+    </update>
+	
+    <!-- 停用/启用模板流程的题干 -->
+    <update id="updateDescDo" parameterType="com.tzcpa.model.treatment.ClassEventFlowDO">
+    	update t_conf_event_flow set is_show=#{isShow} where id=#{id}
+    </update>
+
+    <!-- 查询班级流程的总记录数 -->
+    <select id="selectClassEventCount" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM
+			t_class_event_flow f
+		INNER JOIN t_class_question_desc d ON f.event_name = d.question_title
+		AND f.class_id = d.class_id
+		WHERE
+			d.parent_id = 0
+		AND f.class_id = #{classId}
+    </select>
+
+    <!-- 初始化班级流程配置信息 -->
+    <select id="getIndexClassFlowInfo" resultType="com.tzcpa.model.teacher.Clazz">
+		SELECT DISTINCT
+			c.id,
+			c.class_name
+		FROM
+			t_class c
+		INNER JOIN t_class_event_flow e ON e.class_id = c.id
+		AND c.is_del IN (0, 2)
+		ORDER BY
+			input_time DESC
+    </select>
+
+	<!-- 查询班级流程列表 -->
+    <select id="getClassFlowInfoByClassId" parameterType="map" resultType="map">
+		SELECT
+			f.id,
+			f.event_name AS eventName,
+			f.is_show AS questionIsShow,
+			f.time_line AS timeLine,
+			d.duration AS duration,
+			d.background_desc AS backgroundDesc,
+			d.question_desc AS questionDesc,
+			d.is_show AS backgroundIsShow,
+			d.question_id AS questionId,
+			d.event_id AS eventId,
+			c.answer_state AS answerState
+		FROM
+			t_class_event_flow f
+		INNER JOIN t_class_question_desc d ON f.event_name = d.question_title
+		AND f.class_id = d.class_id
+		INNER JOIN t_class c ON c.id = f.class_id
+		WHERE
+			d.parent_id = 0
+		AND f.class_id = #{classId}
+		ORDER BY
+			event_order ASC
+        <if test="start!=null and size!=null">
+            limit #{start},#{size}
+        </if>
+    </select>
+    
+    <!-- 根据eventId和classId判断在问题描述表中eventId是否存在 -->
+    <select id="getEventKeyByEidAndCid" parameterType="com.tzcpa.model.treatment.ClassQuestionDescDO" resultType="String">
+    	select event_id from t_class_question_desc where event_id = #{eventId} and class_id = #{classId}
+    </select>
+    
+    <!-- 根据问题名称查询conf_desc表中的id作为questionId -->
+    <select id="getEventKeyByEidAndCidAndId" parameterType="String" resultType="int">
+    	select id from t_conf_question_desc where question_title = #{eventName} and parent_id = 0
+    </select>
+    
+    <!-- 根据问题名称查询conf表中的id -->
+    <select id="getEventIdFromConfByTitle" parameterType="String" resultType="int">
+    	SELECT id FROM t_conf_event_flow WHERE event_name = #{eventName}
+    </select>
+    
+    <!-- 根据eventId判断在问题描述表中event_id是否存在 -->
+    <select id="getEventKeyByEid" parameterType="com.tzcpa.model.treatment.ClassQuestionDescDO" resultType="String">
+    	select event_id from t_conf_question_desc where event_id = #{eventId} and parent_id = 0
+    </select>
+    
+    <!-- 查询该老师下的班级 -->
+    <select id="getTeacherClassFlowInfo" parameterType="int" resultType="com.tzcpa.model.teacher.Clazz">
+		SELECT
+			c.id,
+			c.class_name
+		FROM
+			t_class c
+		INNER JOIN t_class_teacher ct ON c.id = ct.class_id
+		INNER JOIN t_teacher t ON ct.teacher_id = t.id
+		WHERE
+			t.id = #{teacherId}
+		ORDER BY
+			c.input_time DESC
+    </select>
+</mapper>

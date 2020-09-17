@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.ClassStrategicParametersMapper" >
+  <resultMap id="BaseResultMap" type="com.tzcpa.model.treatment.ClassStrategicParametersDO" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="year" property="year" jdbcType="INTEGER" />
+    <result column="strategic_select" property="strategicSelect" jdbcType="VARCHAR" />
+    <result column="vehicle_model" property="vehicleModel" jdbcType="VARCHAR" />
+    <result column="sales" property="sales" jdbcType="REAL" />
+    <result column="unit_price" property="unitPrice" jdbcType="REAL" />
+    <result column="cost_plus" property="costPlus" jdbcType="REAL" />
+    <result column="class_id" property="classId" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="com.tzcpa.model.treatment.ClassStrategicParametersDO" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_class_strategic_parameters (`year`, strategic_select, vehicle_model, 
+      sales, unit_price, cost_plus, 
+      class_id)
+    values (#{year,jdbcType=INTEGER}, #{strategicSelect,jdbcType=VARCHAR}, #{vehicleModel,jdbcType=VARCHAR}, 
+      #{sales,jdbcType=REAL}, #{unitPrice,jdbcType=REAL}, #{costPlus,jdbcType=REAL}, 
+      #{classId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tzcpa.model.treatment.ClassStrategicParametersDO" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_class_strategic_parameters
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="year != null" >
+        `year`,
+      </if>
+      <if test="strategicSelect != null" >
+        strategic_select,
+      </if>
+      <if test="vehicleModel != null" >
+        vehicle_model,
+      </if>
+      <if test="sales != null" >
+        sales,
+      </if>
+      <if test="unitPrice != null" >
+        unit_price,
+      </if>
+      <if test="costPlus != null" >
+        cost_plus,
+      </if>
+      <if test="classId != null" >
+        class_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="year != null" >
+        #{year,jdbcType=INTEGER},
+      </if>
+      <if test="strategicSelect != null" >
+        #{strategicSelect,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleModel != null" >
+        #{vehicleModel,jdbcType=VARCHAR},
+      </if>
+      <if test="sales != null" >
+        #{sales,jdbcType=REAL},
+      </if>
+      <if test="unitPrice != null" >
+        #{unitPrice,jdbcType=REAL},
+      </if>
+      <if test="costPlus != null" >
+        #{costPlus,jdbcType=REAL},
+      </if>
+      <if test="classId != null" >
+        #{classId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <!-- 初始化班级战略参数 -->
+  <insert id="initClassStrategicParameters" parameterType="int">
+    INSERT INTO t_class_strategic_parameters (
+          YEAR,
+          strategic_select,
+          vehicle_model,
+          sales,
+          unit_price,
+          cost_plus,
+          class_id
+      ) SELECT
+          YEAR,
+          strategic_select,
+          vehicle_model,
+          sales,
+          unit_price,
+          cost_plus,
+          #{classId}
+      FROM
+          t_conf_strategic_parameters
+  </insert>
+  
+  <!-- 根据id查询班级战略参数 -->
+  <select id="selectClassStrategicParametersByClassYearStrategic" parameterType="int" resultType="java.util.HashMap">
+    SELECT
+      CONCAT(strategic_select,'_',vehicle_model) as groupKey,
+      sales,
+      unit_price as unitPrice,
+      cost_plus as costPlus
+      FROM
+          t_class_strategic_parameters
+      WHERE
+          class_id = #{classId}
+          AND `year` = #{year}
+          AND strategic_select = #{strategicSelect}
+  </select>
+</mapper>

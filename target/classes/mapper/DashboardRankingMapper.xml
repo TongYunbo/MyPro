@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.student.DashboardRankingMapper">
+	<!-- 月销量列表信息 -->
+	<select id="getMonthlySalesList" resultType="com.tzcpa.model.student.MonthlySales">
+		SELECT
+			t.vehicle_model AS vehicleModel,
+			t.`month`,
+			SUM(t.adjusted_sales) AS adjustedSales,
+			SUM(t.strategy_benchmark_sales) AS strategyBenchmarkSales,
+			t.`year`
+		FROM
+			t_team_intermediate t
+		WHERE
+			t.class_id = #{intermediateDO.classId}
+		AND t.team_id = #{intermediateDO.teamId}
+		AND t.`year` = #{intermediateDO.year}
+		AND t.vehicle_model_group = 'suv'
+		<if test="intermediateDO.year ==2011 or intermediateDO.year ==2012 or intermediateDO.year ==2013">
+			AND t.vehicle_model in('h6')
+		</if>
+		<if test="intermediateDO.year ==2014 or intermediateDO.year ==2015 or intermediateDO.year ==2016">
+			AND t.vehicle_model in('h6','h8')
+		</if>
+		<if test="intermediateDO.vehicleModel == 'h8'">
+			and t.vehicle_model in('h6','limousine','pickup','wey')
+		</if>
+		AND `month` &lt;= #{intermediateDO.month}
+		GROUP BY
+			t.vehicle_model,
+			t.`month`
+	</select>
+	
+	<!-- 团队价格列表信息 -->
+	<select id="getTeamPriceList" resultType="com.tzcpa.model.student.TeamPrice">
+		SELECT
+			t.vehicle_model AS vehicleModel,
+			t.`month`,
+			CASE
+		WHEN t.`year` = 2014 and vehicle_model='h8' AND t.`month` &lt;= 10
+		AND SUM(IFNULL(t.adjusted_sales,0)) = 0 THEN
+			null
+		ELSE
+			SUM(t.strategy_benchmark_unit_price)
+		END AS benchmarkUnitPrice,
+		 	CASE
+		WHEN ((t.`year` = 2014 and vehicle_model='h8' AND t.`month` &lt;= 10) or
+				(t.`year` = 2015 and t.`month` &lt;= 5 and vehicle_model='h8'))
+		AND SUM(IFNULL(t.adjusted_sales,0)) = 0 THEN
+			null
+		ELSE
+			SUM(t.adjusted_unit_price)
+		END AS adjustedUnitPrice,
+		t.`year`
+		FROM
+			t_team_intermediate t
+		WHERE
+			t.class_id = #{intermediateDO.classId}
+		AND t.team_id = #{intermediateDO.teamId}
+		AND t.`year` = #{intermediateDO.year}
+		AND t.vehicle_model_group = 'suv'
+		<if test="intermediateDO.year ==2011 or intermediateDO.year ==2012 or intermediateDO.year ==2013">
+			AND t.vehicle_model in('h6')
+		</if>
+		<if test="intermediateDO.year ==2014 or intermediateDO.year ==2015 or intermediateDO.year ==2016">
+			AND t.vehicle_model in('h6','h8')
+		</if>
+		<if test="intermediateDO.vehicleModel == 'h8'">
+			and t.vehicle_model in('h6','limousine','pickup','wey')
+		</if>
+		AND t.`month` &lt;= #{intermediateDO.month}
+		GROUP BY
+			t.vehicle_model,
+			t.`month`
+	</select>
+	
+	<!-- 单车材料成本列表信息 -->
+	<select id="getSingleMaterialCostList" resultType="com.tzcpa.model.student.SingleMaterialCost">
+		SELECT
+			t.vehicle_model AS vehicleModel,
+			t.`month`,
+			CASE
+		WHEN t.`year` = 2014 and vehicle_model='h8'
+		AND t.`month` &lt;= 10
+		AND SUM(IFNULL(t.adjusted_sales,0)) = 0 THEN
+			0
+		ELSE
+			SUM(t.strategy_benchmark_unit_material_cost)
+		END AS benchmarkUnitMaterialCost,
+		 	CASE
+		WHEN t.`year` = 2014 and vehicle_model='h8'
+		AND t.`month` &lt;= 10
+		AND SUM(IFNULL(t.adjusted_sales,0)) = 0 THEN
+			0
+		ELSE
+			SUM(t.adjusted_unit_material_cost)
+		END AS adjustedUnitMaterialCost,
+		 t.`year`
+		FROM
+			t_team_intermediate t
+		WHERE
+			t.class_id = #{intermediateDO.classId}
+		AND t.team_id = #{intermediateDO.teamId}
+		AND t.`year` = #{intermediateDO.year}
+		AND t.vehicle_model_group = 'suv'
+		<if test="intermediateDO.vehicleModel == '2013h8'">
+			and t.vehicle_model in('h6','limousine','pickup')
+		</if>
+		<if test="intermediateDO.vehicleModel == 'h8'">
+			and t.vehicle_model in('h6','limousine','pickup','wey')
+		</if>
+		<if test="intermediateDO.vehicleModel == 'wey'">
+			and t.vehicle_model in('h6','limousine','pickup','h8')
+		</if>
+		AND t.`month` &lt;= #{intermediateDO.month}
+		GROUP BY
+			t.vehicle_model,
+			t.`month`
+	</select>
+	
+	<!-- 市场份额占比根据车型分组 -->
+	<select id="getMarketShareByGroup" parameterType="com.tzcpa.model.treatment.TeamIntermediateDO" resultType="java.util.HashMap">
+		SELECT
+			vehicle_model_group AS vehicleModelGroup,
+			SUM(IFNULL(adjusted_sales,0)) AS adjustedSales,
+			SUM(IFNULL(market_shares,0)-IFNULL(adjusted_sales,0)) AS otherMarketShares
+		FROM
+			t_team_intermediate
+		WHERE
+			class_id = #{classId}
+		AND team_id = #{teamId}
+		AND `year` = #{year}
+		<![CDATA[
+		and month <= #{month}
+		]]>
+		GROUP BY
+			vehicle_model_group
+	</select>
+	
+	<!-- 市场份额占比 -->
+	<select id="getMarketShare" parameterType="com.tzcpa.model.treatment.TeamIntermediateDO" resultType="java.util.HashMap">
+		SELECT
+			SUM(IFNULL(adjusted_sales,0)) AS adjustedSales,
+			SUM(IFNULL(market_shares,0)-IFNULL(adjusted_sales,0)) AS otherMarketShares
+		FROM
+			t_team_intermediate
+		WHERE
+			class_id = #{classId}
+		AND team_id = #{teamId}
+		AND `year` = #{year}
+		<![CDATA[
+		and month <= #{month}
+		]]>
+	</select>
+	
+	<!-- 产品销售收入占比 -->
+	<select id="getSalesRevenue" parameterType="com.tzcpa.model.treatment.TeamIntermediateDO" resultType="java.util.HashMap">
+		SELECT
+			vehicle_model as vehicleModel,
+			SUM(IFNULL(final_sales,0)) as finalSales
+		FROM
+			t_team_intermediate
+		WHERE
+			class_id = #{classId}
+		AND team_id = #{teamId}
+		AND `year` = #{year}
+		GROUP BY
+			vehicle_model
+	</select>
+	
+	<!-- 产品累计营业利润占比 -->
+	<select id="getOperatingProfit" parameterType="com.tzcpa.model.treatment.TeamIntermediateDO" resultType="java.util.HashMap">
+		SELECT
+			vehicle_model as vehicleModel,
+			SUM(IFNULL(final_sales,0)) - SUM(IFNULL(final_operating_cost_plus,0)) - SUM(
+				IFNULL(final_operating_tax_surcharge,0)
+			) - SUM(IFNULL(final_management_total,0)) - SUM(IFNULL(final_financial_cost,0)) - SUM(
+				IFNULL(final_assets_impairment_loss_total,0)
+			)
+			AS operatingProfit
+		FROM
+			t_team_intermediate
+		WHERE
+			class_id = #{classId}
+		AND team_id = #{teamId}
+		AND `year` = #{year}
+		<if test="vehicleModel == '2013h8'">
+			and vehicle_model in('h6','limousine','pickup')
+		</if>
+		<if test="vehicleModel == 'h8'">
+			and vehicle_model in('h6','limousine','pickup','wey')
+		</if>
+		<if test="vehicleModel == 'wey'">
+			and vehicle_model in('h6','limousine','pickup','h8')
+		</if>
+		and final_sales is not null
+		GROUP BY
+			vehicle_model
+	</select>
+	
+	<!-- 月净利润、营业收入、销售毛利图表 -->
+	<select id="getMonthlyOperatingIncome" resultType="java.util.HashMap">
+		SELECT
+			`month`,
+		    SUM(IFNULL(retained_profits,0)) AS retainedProfits, 
+			SUM(IFNULL(gross_revenue,0)) AS grossRevenue,
+			SUM(IFNULL(gross_revenue,0))-SUM(IFNULL(operating_cost,0)) AS salesMargin
+		FROM
+			t_team_monthly_profit_statement
+		WHERE
+			class_id = #{monthlyProfitStatementDO.classId}
+		AND team_id = #{monthlyProfitStatementDO.teamId}
+		AND `year` = #{monthlyProfitStatementDO.year}
+		AND `month` &lt;= #{monthlyProfitStatementDO.month}
+		GROUP BY
+			`month`
+	</select>
+	
+	<!-- 月销售毛利率，销售净利率，营业利润率图表 -->
+	<select id="getMonthlyGrossMargin" resultType="java.util.HashMap">
+		SELECT
+			`month`,
+			(SUM(IFNULL(gross_revenue,0))-SUM(IFNULL(operating_cost,0)))/SUM(IFNULL(gross_revenue,0)) AS grossMargin,
+			SUM(IFNULL(retained_profits,0))/SUM(IFNULL(gross_revenue,0)) AS profitMargin,
+			SUM(IFNULL(operating_profit,0))/SUM(IFNULL(gross_revenue,0)) AS operatingProfitRatio
+		FROM
+			t_team_monthly_profit_statement
+		WHERE
+			class_id = #{monthlyProfitStatementDO.classId}
+		AND team_id = #{monthlyProfitStatementDO.teamId}
+		AND `year` = #{monthlyProfitStatementDO.year}
+		AND `month` &lt;= #{monthlyProfitStatementDO.month}
+		GROUP BY
+			`month`
+	</select>
+</mapper>

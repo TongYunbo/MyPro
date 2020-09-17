@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.ClassAnswerImfactMapper" >
+  <resultMap id="BaseResultMap" type="com.tzcpa.model.treatment.ClassAnswerImfactDO" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="answer" property="answer" jdbcType="VARCHAR" />
+    <result column="question_id" property="questionId" jdbcType="INTEGER" />
+    <result column="strategic_choice" property="strategicChoice" jdbcType="CHAR" />
+    <result column="is_select" property="isSelect" jdbcType="INTEGER" />
+    <result column="class_id" property="classId" jdbcType="INTEGER" />
+    <result column="task_id" property="taskId" jdbcType="INTEGER" />
+  </resultMap>
+
+  <insert id="initClassAnswerImfact" parameterType="int">
+      INSERT INTO t_class_answer_imfact (
+            task_id,
+            answer,
+            question_id,
+            strategic_choice,
+            is_select,
+            is_delayed,
+            execution_times,
+            b_time,
+            vehicle_model,
+            sort_num,
+            class_id
+        ) SELECT
+            id,
+            answer,
+            question_id,
+            strategic_choice,
+            is_select,
+            is_delayed,
+            execution_times,
+            b_time,
+            vehicle_model,
+            sort_num,
+            #{classId}
+        FROM
+            t_conf_answer_imfact
+  </insert>
+</mapper>

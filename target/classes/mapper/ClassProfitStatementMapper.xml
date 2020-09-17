@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.ClassProfitStatementMapper" >
+  <resultMap id="BaseResultMap" type="com.tzcpa.model.treatment.ClassProfitStatementDO" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="year" property="year" jdbcType="INTEGER" />
+    <result column="gross_revenue" property="grossRevenue" jdbcType="BIGINT" />
+    <result column="operation_revenue" property="operationRevenue" jdbcType="BIGINT" />
+    <result column="total_operating_cost" property="totalOperatingCost" jdbcType="BIGINT" />
+    <result column="operating_cost" property="operatingCost" jdbcType="BIGINT" />
+    <result column="sale_tax_addict" property="saleTaxAddict" jdbcType="BIGINT" />
+    <result column="selling_expenses" property="sellingExpenses" jdbcType="BIGINT" />
+    <result column="administrative_cost" property="administrativeCost" jdbcType="BIGINT" />
+    <result column="development_expenditure" property="developmentExpenditure" jdbcType="BIGINT" />
+    <result column="financial_cost" property="financialCost" jdbcType="BIGINT" />
+    <result column="assets_impairment_loss" property="assetsImpairmentLoss" jdbcType="BIGINT" />
+    <result column="operating_profit" property="operatingProfit" jdbcType="BIGINT" />
+    <result column="nonbusiness_income" property="nonbusinessIncome" jdbcType="BIGINT" />
+    <result column="nonbusiness_expenditure" property="nonbusinessExpenditure" jdbcType="BIGINT" />
+    <result column="total_profit" property="totalProfit" jdbcType="BIGINT" />
+    <result column="income_tax_expense" property="incomeTaxExpense" jdbcType="BIGINT" />
+    <result column="retained_profits" property="retainedProfits" jdbcType="BIGINT" />
+    <result column="class_id" property="classId" jdbcType="INTEGER" />
+    <result column="end_year_undistributed_profits" property="endYearUndistributedProfits" jdbcType="BIGINT" />
+    <result column="begin_year_undistributed_profits" property="beginYearUndistributedProfits" jdbcType="BIGINT" />
+    <result column="current_year_undistributed_profits_change" property="currentYearUndistributedProfitsChange" jdbcType="BIGINT" />
+    <result column="undistributed_profits_net_profit" property="undistributedProfitsNetProfit" jdbcType="BIGINT" />
+    <result column="undistributed_profits_withdrawal_surplus_reserves" property="undistributedProfitsWithdrawalSurplusReserves" jdbcType="BIGINT" />
+    <result column="undistributed_profits_distribution_shareholders" property="undistributedProfitsDistributionShareholders" jdbcType="BIGINT" />
+    <result column="undistributed_profits_other" property="undistributedProfitsOther" jdbcType="BIGINT" />
+  </resultMap>
+  
+  <!-- 初始化班级利润表 -->
+  <insert id="initClassProfitStatement" parameterType="int">
+	INSERT INTO t_class_profit_statement (
+		`year`,
+		gross_revenue,
+		operation_revenue,
+		total_operating_cost,
+		operating_cost,
+		sale_tax_addict,
+		selling_expenses,
+		administrative_cost,
+		development_expenditure,
+		financial_cost,
+		assets_impairment_loss,
+		operating_profit,
+		nonbusiness_income,
+		nonbusiness_expenditure,
+		total_profit,
+		income_tax_expense,
+		retained_profits,
+		begin_year_undistributed_profits,
+		current_year_undistributed_profits_change,
+		undistributed_profits_net_profit,
+		undistributed_profits_withdrawal_surplus_reserves,
+		undistributed_profits_distribution_shareholders,
+		undistributed_profits_other,
+		end_year_undistributed_profits,
+		class_id
+	) SELECT
+		`year`,
+		gross_revenue,
+		operation_revenue,
+		total_operating_cost,
+		operating_cost,
+		sale_tax_addict,
+		selling_expenses,
+		administrative_cost,
+		development_expenditure,
+		financial_cost,
+		assets_impairment_loss,
+		operating_profit,
+		nonbusiness_income,
+		nonbusiness_expenditure,
+		total_profit,
+		income_tax_expense,
+		retained_profits,
+		begin_year_undistributed_profits,
+		current_year_undistributed_profits_change,
+		undistributed_profits_net_profit,
+		undistributed_profits_withdrawal_surplus_reserves,
+		undistributed_profits_distribution_shareholders,
+		undistributed_profits_other,
+		end_year_undistributed_profits,
+		#{classId}
+	FROM
+		t_conf_profit_statement    
+  </insert>
+</mapper>

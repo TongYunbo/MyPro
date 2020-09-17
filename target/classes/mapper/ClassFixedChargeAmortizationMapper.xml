@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.ClassFixedChargeAmortizationMapper" >
+  <resultMap id="BaseResultMap" type="com.tzcpa.model.treatment.ClassFixedChargeAmortizationDO" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="year" property="year" jdbcType="INTEGER" />
+    <result column="vehicle_model" property="vehicleModel" jdbcType="VARCHAR" />
+    <result column="depreciation_charge" property="depreciationCharge" jdbcType="REAL" />
+    <result column="production_depreciation_charge" property="productionDepreciationCharge" jdbcType="REAL" />
+    <result column="production_workers_salary" property="productionWorkersSalary" jdbcType="REAL" />
+    <result column="sales_expenses_promotional_expenses" property="salesExpensesPromotionalExpenses" jdbcType="REAL" />
+    <result column="sales_expenses_after_sales_service_fee_benchmark_income" property="salesExpensesAfterSalesServiceFeeBenchmarkIncome" jdbcType="REAL" />
+    <result column="sales_expenses_other" property="salesExpensesOther" jdbcType="REAL" />
+    <result column="financial_cost" property="financialCost" jdbcType="REAL" />
+    <result column="administrative_expenses_development_expense" property="administrativeExpensesDevelopmentExpense" jdbcType="REAL" />
+    <result column="administrative_expenses_depreciation_charge" property="administrativeExpensesDepreciationCharge" jdbcType="REAL" />
+    <result column="administrative_expenses_other_income" property="administrativeExpensesOtherIncome" jdbcType="REAL" />
+    <result column="impairment_loss_assets_bad_debts" property="impairmentLossAssetsBadDebts" jdbcType="REAL" />
+    <result column="impairment_loss_assets_inventory" property="impairmentLossAssetsInventory" jdbcType="REAL" />
+    <result column="impairment_loss_assets_fixed_assets" property="impairmentLossAssetsFixedAssets" jdbcType="REAL" />
+    <result column="nonbusiness_income" property="nonbusinessIncome" jdbcType="REAL" />
+    <result column="nonbusiness_expenditure" property="nonbusinessExpenditure" jdbcType="REAL" />
+    <result column=" class_id" property="classId" jdbcType="INTEGER" />
+  </resultMap>
+
+  <insert id="initClassFixedChargeAmortization" parameterType="int" >
+	INSERT INTO t_class_fixed_charge_amortization (
+		`year`,
+		vehicle_model,
+		depreciation_charge,
+		production_depreciation_charge,
+		production_workers_salary,
+		sales_expenses_promotional_expenses,
+		sales_expenses_other,
+		administrative_expenses_depreciation_charge,
+		impairment_loss_assets_bad_debts,
+		impairment_loss_assets_inventory,
+		impairment_loss_assets_fixed_assets,
+		nonbusiness_income,
+		nonbusiness_expenditure,
+		class_id
+	) SELECT
+		t1.`year`,
+		t2.vehicle_model,
+		ROUND(
+			t1.depreciation_charge * t2.depreciation_charge
+		) AS depreciation_charge,
+		ROUND(
+			t1.production_depreciation_charge * t2.depreciation_charge
+		) AS production_depreciation_charge,
+		ROUND(
+			t1.production_workers_salary * t2.production_workers_salary
+		) AS production_workers_salary,
+		ROUND(
+			t1.sales_expenses_promotional_expenses * t2.sales_expenses_promotional_expenses
+		) AS sales_expenses_promotional_expenses,
+		ROUND(
+			t1.sales_expenses_other * t2.sales_expenses_other
+		) AS sales_expenses_other,
+		ROUND(
+			t1.administrative_expenses_depreciation_charge * t2.depreciation_charge
+		) AS administrative_expenses_depreciation_charge,
+		ROUND(
+			t1.impairment_loss_assets_bad_debts * t2.impairment_loss_assets_bad_debts
+		) AS impairment_loss_assets_bad_debts,
+		ROUND(
+			t1.impairment_loss_assets_inventory * t2.impairment_loss_assets_inventory
+		) AS impairment_loss_assets_inventory,
+		ROUND(
+			t1.impairment_loss_assets_fixed_assets * t2.impairment_loss_assets_fixed_assets
+		) AS impairment_loss_assets_fixed_assets,
+		ROUND(
+			t1.nonbusiness_income * t2.nonbusiness_income
+		) AS nonbusiness_income,
+		ROUND(
+			t1.nonbusiness_expenditure * t2.nonbusiness_expenditure
+		) AS nonbusiness_expenditure,
+		#{classId}
+	FROM
+		t_class_fixed_charge t1
+	INNER JOIN t_class_fixed_charge_amortization_ratio t2 ON t1.class_id = t2.class_id
+	AND t1.`year` = t2.`year`
+	where t1.class_id=#{classId}
+  </insert>
+</mapper>

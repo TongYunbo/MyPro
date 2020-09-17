@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.student.BalancedScorecardMapper">
+
+    <resultMap id="BaseResultMap" type="com.tzcpa.model.student.BalancedScorecard">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="angle" property="angle" jdbcType="VARCHAR"/>
+        <result column="option" property="option" jdbcType="INTEGER"/>
+        <result column="quesion_option" property="quesionOption" jdbcType="VARCHAR"/>
+        <result column="question_option_value" property="questionOptionValue" jdbcType="VARCHAR"/>
+        <result column="target_value" property="targetValue" jdbcType="VARCHAR"/>
+        <result column="target_value_right" property="targetValueRight" jdbcType="VARCHAR"/>
+        <result column="unit" property="unit" jdbcType="VARCHAR"/>
+        <result column="standard_score" property="standardScore" jdbcType="INTEGER"/>
+        <result column="weight_coefficient" property="weightCoefficient" jdbcType="FLOAT"/>
+        <result column="actual_value" property="actualValue" jdbcType="VARCHAR"/>
+        <result column="final_score" property="finalScore" jdbcType="FLOAT"/>
+        <result column="score_standard" property="scoreStandard" jdbcType="VARCHAR"/>
+        <result column="question_id" property="questionId" jdbcType="INTEGER"/>
+        <result column="class_id" property="classId" jdbcType="INTEGER"/>
+        <result column="infact_id" property="infactId" jdbcType="INTEGER"/>
+        <result column="team_id" property="teamId" jdbcType="INTEGER"/>
+        <result column="year" property="year" jdbcType="INTEGER"/>
+        <result column="unit_right" property="unitRight" jdbcType="VARCHAR"/>
+        <result column="balance_score_func" property="balanceScoreFunc" jdbcType="VARCHAR"/>
+        <result column="balance_score_func_right" property="balanceScoreFuncRight" jdbcType="VARCHAR"/>
+        <result column="matching_degree" property="matchingDegree" jdbcType="FLOAT"/>
+        <result column="weight_coefficient_right" property="weightCoefficientRight" jdbcType="FLOAT"/>
+        <result column="order" property="order" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 查看团队的平衡记分卡答题卡 -->
+    <select id="getBalancedScList" parameterType="com.tzcpa.model.student.BalancedScorecard" resultType="com.tzcpa.model.student.BalancedScorecard">
+		SELECT
+			id,
+			angle,
+			`options`,
+			`option`,
+			standard_score,
+			weight_coefficient,
+			score_standard,
+			question_id,
+			infact_id,
+			`order`,
+			quesion_option_right,
+			target_value_right,
+			unit_right,
+			weight_coefficient_right,
+			balance_score_func_right,
+			strategy
+		FROM
+			t_class_balanced_scorecard
+		WHERE
+			class_id = #{classId}
+		AND question_id = #{questionId}
+		AND strategy IN ('A', '0')
+		ORDER BY
+			`order`
+    </select>
+
+    <!-- 查询每年年底平衡记分卡列表 -->
+    <select id="getTeamList" parameterType="com.tzcpa.model.student.BalancedScorecard" resultType="map">
+		SELECT
+			id,
+			angle,
+			`option`,
+			quesion_option,
+			question_option_value,
+			CONCAT(target_value, IFNULL(unit,'')) AS target_value,
+			unit,
+			standard_score,
+			weight_coefficient,
+			actual_value,
+			final_score,
+			score_standard,
+			question_id,
+			class_id,
+			infact_id,
+			team_id,
+			`year`,
+			balance_score_func,
+			`order`
+		FROM
+			t_team_balanced_scorecard
+		WHERE
+			class_id = #{classId}
+		AND team_id = #{teamId}
+		AND `year` = #{year}
+		AND quesion_option IS NOT NULL
+		ORDER BY
+			`order`
+    </select>
+
+    <!-- 查询团队平衡积分卡 为计算平衡记分卡实际值 wangbj -->
+    <select id="selectTeamBalancedScorecard" parameterType="com.tzcpa.model.student.BalancedScorecard" resultMap="BaseResultMap">
+        SELECT id, angle, `option`, quesion_option, question_option_value
+  		, target_value, unit, standard_score, weight_coefficient, actual_value
+  		, final_score, score_standard, question_id, class_id, infact_id
+  		, team_id, `year`, balance_score_func,balance_score_func_right,target_value_right,matching_degree,weight_coefficient_right,`order`,unit_right
+		FROM t_team_balanced_scorecard
+		WHERE class_id = #{classId}
+		AND team_id = #{teamId}
+		AND `year` = #{year}
+    </select>
+
+    <!-- 更新平衡计分卡 实际值和最终得分 wangbj -->
+    <update id="updateTeamBalancedScorecard" parameterType="com.tzcpa.model.student.BalancedScorecard">
+        update t_team_balanced_scorecard
+        set actual_value = #{actualValue}
+        , final_score = #{finalScore}, check_score = #{checkScore}, actual_value_right = #{actualValueRight}
+        where id = #{id}
+    </update>
+
+	<!-- 获取年份 -->
+	<select id="getBalancedScorecardYear" parameterType="com.tzcpa.model.student.BalancedScorecard" resultType="map">
+		SELECT DISTINCT
+			`year`
+		FROM
+			t_team_balanced_scorecard
+		WHERE
+			class_id = #{classId}
+		AND team_id = #{teamId}
+		and `year` &lt;= #{year}
+		and quesion_option is not NULL
+		<!-- AND actual_value IS NOT NULL-->
+		ORDER BY
+			`year`
+	</select>
+</mapper>

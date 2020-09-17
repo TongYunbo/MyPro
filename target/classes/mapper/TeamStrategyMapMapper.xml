@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.TeamStrategyMapMapper" >
+  <resultMap id="BaseResultMap" type="com.tzcpa.model.treatment.TeamStrategyMapDO" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="year" property="year" jdbcType="INTEGER" />
+    <result column="strategic_select" property="strategicSelect" jdbcType="VARCHAR" />
+    <result column="map_url" property="mapUrl" jdbcType="VARCHAR" />
+    <result column="class_id" property="classId" jdbcType="INTEGER" />
+    <result column="team_id" property="teamId" jdbcType="INTEGER" />
+  </resultMap>
+
+  <insert id="initTeamStrategyMap" parameterType="map">
+      INSERT INTO t_team_strategy_map (
+            `year`,
+            strategic_select,
+            map_url,
+            class_id,
+            team_id
+        ) SELECT
+            `year`,
+            strategic_select,
+            map_url,
+            class_id,
+            #{map.teamId}
+        FROM
+            t_class_strategy_map
+        WHERE
+            class_id = #{map.classId}
+        AND `year` = #{map.year}
+        <if test="map.strategicSelect != null and map.strategicSelect != ''">
+          AND strategic_select = #{map.strategicSelect}
+        </if>
+  </insert>
+
+</mapper>

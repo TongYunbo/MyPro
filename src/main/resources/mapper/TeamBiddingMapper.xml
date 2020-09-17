@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.question.TeamBiddingMapper">
+
+    <resultMap id="TeamBiddingMap" type="com.tzcpa.model.question.TeamBidding">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="class_id" property="classId" jdbcType="INTEGER"/>
+        <result column="team_id" property="teamId" jdbcType="INTEGER"/>
+        <result column="vehicle_type" property="vehicleType" jdbcType="VARCHAR"/>
+        <result column="unit_price" property="unitPrice" jdbcType="INTEGER"/>
+        <result column="warranty" property="warranty" jdbcType="INTEGER"/>
+        <result column="total_price" property="totalPrice" jdbcType="BIGINT"/>
+        <result column="input_time" property="inputTime" jdbcType="TIMESTAMP"/>
+        <result column="qualitypriod_score" property="qualitypriodScore" jdbcType="INTEGER"/>
+        <result column="quality_score" property="qualityScore" jdbcType="INTEGER"/>
+        <result column="assets_score" property="assetsScore" jdbcType="INTEGER"/>
+        <result column="sales_score" property="salesScore" jdbcType="INTEGER"/>
+        <result column="price_score" property="priceScore" jdbcType="INTEGER"/>
+        <result column="final_score" property="finalScore" jdbcType="VARCHAR"/>
+        <result column="vm_score" property="vmScore" jdbcType="INTEGER" />
+    </resultMap>
+
+    <insert id="insertTeamBidding" parameterType="com.tzcpa.model.question.TeamBidding">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_team_bidding
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="classId != null">
+                class_id,
+            </if>
+            <if test="teamId != null">
+                team_id,
+            </if>
+            <if test="vehicleType != null">
+                vehicle_type,
+            </if>
+            <if test="unitPrice != null">
+                unit_price,
+            </if>
+            <if test="warranty != null">
+                warranty,
+            </if>
+            <if test="totalPrice != null">
+                total_price,
+            </if>
+            <if test="qualitypriodScore != null">
+                qualitypriod_score,
+            </if>
+            <if test="qualityScore != null">
+                quality_score,
+            </if>
+            <if test="assetsScore != null">
+                assets_score,
+            </if>
+            <if test="salesScore != null">
+                sales_score,
+            </if>
+            <if test="priceScore != null">
+                price_score,
+            </if>
+            <if test="finalScore != null">
+                final_score,
+            </if>
+            <if test="vmScore != null">
+            	vm_score,
+            </if>
+            input_time,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="classId != null">
+                #{classId,jdbcType=INTEGER},
+            </if>
+            <if test="teamId != null">
+                #{teamId,jdbcType=INTEGER},
+            </if>
+            <if test="vehicleType != null">
+                #{vehicleType,jdbcType=VARCHAR},
+            </if>
+            <if test="unitPrice != null">
+                #{unitPrice,jdbcType=INTEGER},
+            </if>
+            <if test="warranty != null">
+                #{warranty,jdbcType=INTEGER},
+            </if>
+            <if test="totalPrice != null">
+                #{totalPrice,jdbcType=BIGINT},
+            </if>
+            <if test="qualitypriodScore != null">
+                #{qualitypriodScore,jdbcType=INTEGER},
+            </if>
+            <if test="qualityScore != null">
+                #{qualityScore,jdbcType=INTEGER},
+            </if>
+            <if test="assetsScore != null">
+                #{assetsScore,jdbcType=INTEGER},
+            </if>
+            <if test="salesScore != null">
+                #{salesScore,jdbcType=INTEGER},
+            </if>
+            <if test="priceScore != null">
+                #{priceScore,jdbcType=INTEGER},
+            </if>
+            <if test="finalScore != null">
+                #{finalScore,jdbcType=VARCHAR},
+            </if>
+            <if test="vmScore != null">
+            	#{vmScore,jdbcType=INTEGER},
+            </if>
+            CURRENT_TIMESTAMP(),
+        </trim>
+    </insert>
+
+    <update id="updateTeamBidding" parameterType="com.tzcpa.model.question.TeamBidding">
+        update t_team_bidding
+        <set>
+            <if test="qualitypriodScore != null">
+                qualitypriod_score = #{qualitypriodScore},
+            </if>
+            <if test="qualityScore != null">
+                quality_score = #{qualityScore},
+            </if>
+            <if test="assetsScore != null">
+                assets_score = #{assetsScore},
+            </if>
+            <if test="salesScore != null">
+                sales_score = #{salesScore},
+            </if>
+            <if test="priceScore != null">
+                price_score = #{priceScore},
+            </if>
+            <if test="finalScore != null">
+                final_score = #{finalScore},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!-- 查询投标信息 wangbj -->
+    <select id="selectTeamBidding" parameterType="int" resultMap="TeamBiddingMap">
+        select id, class_id, team_id
+        , vehicle_type, unit_price, warranty, total_price, input_time
+        , qualitypriod_score, quality_score, assets_score, sales_score, price_score, final_score
+        from t_team_bidding
+        where class_id = #{classId}
+    </select>
+
+    <!-- 查询未完成投标竞争答题的团队数量 wangbj -->
+    <select id="getUnQuestionCount" resultType="int">
+        select count(tt.id)
+        from t_team tt
+        left join t_stu_answer tsa on tt.id = tsa.team_id and tsa.question_id = 274
+        where tt.class_id = #{classId} and tt.is_del = 0
+        AND tsa.id is null
+    </select>
+
+    <!-- 查询车型分值 wangbj -->
+    <select id="getBaseScore" resultType="integer">
+        select power_system + oil_wear + size_technical + vehicle_technology
+        from t_conf_modelscore
+        where motorcycle_type = #{type}
+    </select>
+
+    <!-- 获取汽车制造商实力分值 wangbj -->
+    <select id="getShtrengtScore" resultType="integer">
+    <!-- 解决并列排名得分需要一样问题 WTL 2019-08-13-->
+	<![CDATA[SELECT case when tti.ord <= 1 then 5 when tti.ord <= 2 then 3 when tti.ord <= 4 then 2 else 0 end ]]> 
+	 from (SELECT *, @rownum := @rownum + 1 AS ord from (select DISTINCT ttbs.total_assets asset
+	            from t_team_balance_sheet ttbs
+	            where ttbs.class_id = #{classId}
+	            and ttbs.year = 2017) a, (SELECT @rownum := 0) b
+	            ORDER BY a.asset desc)tti WHERE tti.asset = (SELECT total_assets from t_team_balance_sheet 
+	            WHERE team_id = #{teamId} AND `year` = 2017)
+
+    
+        <!-- SELECT case when ttbs.ord &lt;= 1 then 5 when ttbs.ord &lt;= 2 then 3 when ttbs.ord &lt;= 4 then 2 else 0 end
+        from (
+            select ttbs.total_assets asset, ttbs.team_id, @rownum := @rownum + 1 AS ord
+            from t_team_balance_sheet ttbs, (SELECT @rownum := 0) b
+            where ttbs.class_id = #{classId}
+            and ttbs.year = 2017
+            ORDER BY ttbs.total_assets desc
+        ) ttbs
+        where ttbs.team_id = #{teamId} -->
+    </select>
+
+    <!-- 获取投标车型销售业绩分值 wangbj -->
+    <select id="getPerformanceScoreScore" resultType="integer">
+    <!-- 解决并列排名得分需要一样问题 WTL 2019-08-13-->
+    	<![CDATA[ SELECT case when tti.ord <= 1 then 5 when tti.ord <= 2 then 3 when tti.ord <= 4 then 2 else 0 end ]]> 
+		 from (SELECT *, @rownum := @rownum + 1 AS ord from (select DISTINCT sum(tti.adjusted_sales) sale
+		            from t_team_intermediate tti
+		            where tti.class_id = #{classId}
+		            and tti.vehicle_model = #{type} 
+		            and tti.year = 2017
+		            GROUP BY tti.team_id) a, (SELECT @rownum := 0) b
+		            ORDER BY a.sale desc)tti WHERE tti.sale = (SELECT sum(adjusted_sales) from t_team_intermediate 
+		            where team_id = #{teamId} and vehicle_model = #{type} 
+		            and year = 2017)
+    
+        <!-- select case when tti.ord &lt;= 1 then 5 when tti.ord &lt;= 2 then 3 when tti.ord &lt;= 4 then 2 else 0 end
+        from (
+            select sum(tti.adjusted_sales) sale, tti.team_id, @rownum := @rownum + 1 AS ord
+            from t_team_intermediate tti, (SELECT @rownum := 0) b
+            where tti.class_id = #{classId}
+            and tti.vehicle_model = #{type}
+            and tti.year = 2017
+            GROUP BY tti.team_id
+            ORDER BY sum(tti.adjusted_sales) desc
+        ) tti
+        where tti.team_id = #{teamId} -->
+    </select>
+
+    <!-- 计算投标价格得分 wangbj -->
+    <select id="selectPriceScore" resultType="int">
+        SELECT price.ord, CASE WHEN 20 - (price.ord - 1) * 5 &lt; 0 THEN 0 ELSE 20 - (price.ord - 1) * 5 END price_score
+        FROM (
+            SELECT price.team_id, @rownum :=@rownum + 1 AS ord
+            FROM (
+                SELECT tavg.avgprice, ttb.total_price, abs(tavg.avgprice - ttb.total_price) cj, ttb.team_id
+                FROM t_team_bidding ttb
+                LEFT JOIN (
+                    SELECT avg(total_price) avgprice, class_id
+                    FROM t_team_bidding
+                    WHERE class_id = #{classId}
+                    AND total_price &lt; #{limit}
+                ) tavg ON ttb.class_id = tavg.class_id
+                WHERE ttb.class_id = #{classId}
+                AND ttb.total_price &lt; #{priceLimit}
+            ) price, (SELECT @rownum := 0) b
+            ORDER BY price.cj
+        ) price
+        where price.team_id = #{teamId}
+    </select>
+
+    <!-- 维护投标价格得分 和最终得分 wangbj -->
+    <update id="countTeamScore" parameterType="integer">
+        update t_team_bidding ttb
+        left join (
+        <!-- 解决并列排名得分需要一样问题 WTL 2019-08-13-->
+        	select *
+                from (
+                    select   ttb.total_price, abs(ttb.total_price - (select avg(total.total_price) avgprice
+                        from t_team_bidding total
+                        where total.class_id = #{classId}
+                        <![CDATA[ and total.total_price < ${upperLimitF} ]]> 
+                        and total.total_price > ${lowerLimitF}  )) cj, ttb.class_id, ttb.team_id
+                    from t_team_bidding ttb
+                    where ttb.class_id = #{classId}
+                    <![CDATA[ and ttb.total_price < ${upperLimitF} ]]>
+                    and ttb.total_price > ${lowerLimitF} 
+                ) price LEFT JOIN (SELECT *,case when (5 - a.ord) * 5 &lt; 0 THEN 0 else (5 - a.ord) * 5 end price_score
+ from (SELECT @rownum:=@rownum+1 AS ord,o from (SELECT DISTINCT ABS((total_price - (select avg(total.total_price) avgprice
+                        from t_team_bidding total
+                        where total.class_id = #{classId}
+                        <![CDATA[ and total.total_price < ${upperLimitF} ]]> 
+                        and total.total_price > ${lowerLimitF} ))) o from t_team_bidding WHERE class_id = #{classId}
+							<![CDATA[ and total_price < ${upperLimitF} ]]> 
+                        and total_price > ${lowerLimitF})wa,(SELECT @rownum := 0) r ORDER BY wa.o)a) a ON price.cj = a.o
+            <!-- select price.*,
+            case when (5 - price.ord) * 5 &lt; 0 THEN 0 else (5 - price.ord) * 5 end price_score
+            from (
+                select *, @rownum:=@rownum+1 AS ord
+                from (
+                    select total.avgprice, ttb.total_price, abs(total.avgprice - ttb.total_price) cj, ttb.class_id, ttb.team_id
+                    from t_team_bidding ttb
+                    left join (
+                        select avg(total.total_price) avgprice, total.class_id
+                        from t_team_bidding total
+                        where total.class_id = #{classId}
+                        <![CDATA[ and total.total_price < ${upperLimitF} ]]> 
+                        and total.total_price > ${lowerLimitF} 
+                    ) total on ttb.class_id = total.class_id
+                    where ttb.class_id = #{classId}
+                    <![CDATA[ and ttb.total_price < ${upperLimitF} ]]>
+                    and ttb.total_price > ${lowerLimitF} 
+                ) price, (SELECT @rownum:=0) b
+                ORDER BY price.cj
+            ) price -->
+        ) price on ttb.class_id = price.class_id and ttb.team_id = price.team_id
+        left join t_conf_modelscore ttm on ttb.vehicle_type = ttm.motorcycle_type
+        set ttb.price_score = IFNULL(price.price_score, 0)
+        , ttb.final_score = case when ttb.total_price >= ${upperLimitF} then '废标：报价高于招标控制价！'
+					        <![CDATA[ when ttb.total_price <= ${lowerLimitF} then '废标：低价恶意竞标行为！' ]]>
+					        else ttb.qualitypriod_score + ttb.quality_score + ttb.assets_score + ttb.sales_score + IFNULL(price.price_score, 0) + ttb.vm_score
+        <!-- WTL 添加小于下限类型之前的不适用注释了 2019-07-11 -->
+        <!-- , ttb.final_score = case when price.price_score is null then '投标价格大于${upperLimit}亿, 废标!'
+        else ttb.qualitypriod_score + ttb.quality_score + ttb.assets_score + ttb.sales_score + IFNULL(price.price_score, 0) -->
+        <!-- + ttm.power_system + ttm.oil_wear + ttm.size_technical + ttm.vehicle_technology -->
+        end
+        where ttb.class_id = #{classId}
+    </update>
+
+    <!-- 查询最高分竞标信息 -->
+    <select id="findTeamBiddingTop" parameterType="int" resultMap="TeamBiddingMap">
+        select id, class_id, team_id
+        , vehicle_type, unit_price, warranty, total_price, input_time
+        , price_score, sales_score, assets_score, final_score
+        from t_team_bidding
+        where class_id = #{classId} and final_score not like '%废标%' ORDER BY CAST(final_score AS SIGNED)  desc limit 1 
+    </select>
+
+    <!-- 查询单价信息 -->
+    <select id="findDJ" resultType="java.lang.Double">
+        select adjusted_unit_price as unitPrice
+        from t_team_intermediate
+        where class_id = #{bidd.classId}
+        and team_id=#{bidd.teamId}
+        and vehicle_model= case #{bidd.vehicleType}
+          when 'S60' then 'h6' when 'N70' then 'wey' when 'PU30' then 'pickup' else 'limousine' end
+        and month= #{month}
+        and `year` = #{year}
+    </select>
+
+    <!-- 修改最终销售费用-其他 -->
+    <select id="updateSaleMonth">
+        update t_team_intermediate
+        set final_sales_other = IFNULL(final_sales_other, 0) + ${yL}
+        where class_id = #{bidd.classId}
+        and team_id = #{bidd.teamId}
+        and vehicle_model = #{bidd.vehicleType}
+        and ym_date = '${ym_date}'
+    </select>
+
+    <select id="getWinningTeam" parameterType="integer" resultType="com.tzcpa.model.question.TeamBidding">
+        select *
+        from t_team_bidding
+        where class_id = #{classId}
+        ORDER BY CAST(final_score as SIGNED) desc
+        LIMIT 1
+    </select>
+
+    <select id="getBidResult" resultType="map">
+        SELECT 	CASE
+            WHEN locate('废标',ttb.final_score) is null or locate('废标',ttb.final_score)>0 THEN
+                NULL  ELSE concat( '第', mathToChar (ttb.ord), '名') END
+                ranking,
+             tt.team_name teamName,
+             ttb.final_score finalScore,
+       CASE WHEN locate('废标',ttb.final_score) is null or locate('废标',ttb.final_score)>0 THEN NULL ELSE ROUND(ttb.total_price/100,2)  END
+        totalPrice
+        from (
+            select ttb.*, @rownum:=@rownum+1 AS ord
+            from t_team_bidding ttb, (SELECT @rownum:=0) b
+            where ttb.class_id = #{classId}
+            ORDER BY CAST(ttb.final_score as SIGNED) desc
+        ) ttb
+        LEFT JOIN t_team tt on ttb.team_id = tt.id
+        where tt.is_del = 0
+    </select>
+    
+    <!-- 获取所选择车型得分 -->
+    <select id="getVMScore" resultType="java.lang.Integer" >
+    	SELECT SUM(score_num) from t_conf_bidding_score WHERE vehicle_model = #{vm}
+    </select>
+
+</mapper>

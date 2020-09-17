@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tzcpa.mapper.treatment.ClassAnswerScoreMapper">
+  <resultMap id="BaseResultMap" type="com.tzcpa.model.treatment.ClassAnswerScoreDO">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="answer" jdbcType="VARCHAR" property="answer" />
+    <result column="question_id" jdbcType="INTEGER" property="questionId" />
+    <result column="score" jdbcType="INTEGER" property="score" />
+    <result column="strategic_choice" jdbcType="CHAR" property="strategicChoice" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+  </resultMap>
+  <!-- 初始化班级标准答案得分 -->
+  <insert id="initClassAnswerScore" parameterType="int">
+        INSERT INTO t_class_answer_score (
+            answer,
+            question_id,
+            score,
+            strategic_choice,
+            class_id
+        ) SELECT
+            answer,
+            question_id,
+            score,
+            strategic_choice,
+            #{classId}
+        FROM
+            t_conf_answer_score
+    </insert>
+</mapper>

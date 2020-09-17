@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.OSMapper">
+
+    <resultMap type="com.tzcpa.model.student.UacDO" id="uacMap">
+        <result column="operation" property="operation"/>
+        <result column="is_year" property="isYear"/>
+        <result column="impact_num" property="impactNum"/>
+        <result column="table_name" property="targetTable"/>
+        <result column="condition" property="condition"/>
+        <result column="table_column" property="targetColumn"/>
+        <result column="begin_date" property="bDate"/>
+    </resultMap>
+
+    <resultMap type="com.tzcpa.model.student.BalanceVariableDO" id="bvMap">
+        <result column="variable_name" property="variableName"/>
+        <result column="variable_val" property="variableVal"/>
+        <result column="compare_method" property="compareMethod"/>
+        <result column="unit" property="unit"/>
+    </resultMap>
+
+    <resultMap type="com.tzcpa.model.student.DelayedUpdateDO" id="duMap">
+        <result column="id" property="id"/>
+        <result column="task_ids" property="taskIds"/>
+        <result column="execution_times" property="executionTimes"/>
+        <result column="b_time" property="bTime"/>
+        <result column="strategy_select" property="strategySelect"/>
+        <result column="vi_data" property="viData"/>
+        <result column="delayed_type" property="delayedType"/>
+    </resultMap>
+
+    <!-- 查询此题的标准答案及需要给角色加的分数,查询出来的结果去查询答案影响进行操作（有多级答案的题只会查询出选择正确的结果） -->
+    <select id="checkRes" parameterType="com.tzcpa.model.student.AnswerScoreDO" resultType="java.util.Map">
+        SELECT
+        answer,
+        score,
+        strategic_choice strategicChoice,
+        question_id questionId
+        FROM
+        t_class_answer_score
+        WHERE
+        question_id = #{asd.questionId}
+        AND class_id = #{asd.classId}
+        <if test="asd.answer != null and asd.answer != ''">
+            AND answer = #{asd.answer}
+        </if>
+        <if test="asd.strategicChoice != null and asd.strategicChoice != ''">
+            AND strategic_choice = #{asd.strategicChoice}
+        </if>
+        ORDER BY score DESC
+    </select>
+
+    <!-- 批量添加学生成绩 -->
+    <insert id="addStuScore">
+        insert into t_stu_score(score, question_id, role_id, team_id, class_id, year, root_id) values
+        <foreach collection="scoreList" item="sl" index="index" separator=",">
+            (#{sl.score}, #{sl.questionId}, #{sl.roleId}, #{sl.teamId}, #{sl.classId} , #{sl.year}, #{sl.rootId})
+        </foreach>
+    </insert>
+
+    <!-- 批量添加学生答案表 -->
+    <insert id="addStuAnswer">
+        insert into t_stu_answer(answer, question_id, team_id, class_id) values
+        <foreach collection="answerList" item="al" index="index" separator=",">
+            (#{al.answer}, #{al.questionId}, #{al.teamId}, #{al.classId})
+        </foreach>
+    </insert>
+
+    <!-- 查询出选择的战略 -->
+    <select id="getStrategic" resultType="java.lang.String">
+        SELECT
+        strategic_select
+        FROM
+        t_team_strategic_select
+        WHERE
+        class_id = #{hse.classId}
+        AND team_id = #{hse.teamId}
+        <!-- 换成按照年排序取最近的一个 AND `year` = #{year} -->
+        AND vehicle_model = #{vehicleModel}
+        AND strategic_select IN ('A','B')
+        ORDER BY `year` DESC LIMIT 1
+    </select>
+
+    <!-- 添加团队选择的战略 -->
+    <insert id="addStrategic">
+		INSERT INTO t_team_strategic_select ( class_id, team_id, strategic_select, `year`, vehicle_model )
+		VALUES (#{classId}, #{teamId}, #{strategySelect}, #{year}, #{vehicleModel})
+		ON DUPLICATE KEY UPDATE strategic_select = VALUES(strategic_select)
+	</insert>
+
+    <!-- 获取所有车型的选择的战略 -->
+    <select id="getAllVMSC" resultType="java.lang.String">
+		SELECT
+			strategic_select
+		FROM
+			t_team_strategic_select 
+		WHERE
+			class_id = #{classId} 
+			AND team_id = #{teamId} 
+		ORDER BY
+			vehicle_model,
+			`year`
+	</select>
+
+    <!-- 查询出影响的指标codes(旧的 目前停止使用) -->
+    <select id="getImpactCodesOld" resultType="java.util.Map">
+        SELECT
+        task_id taskId,
+        is_delayed isDelayed,
+        execution_times executionTimes,
+        vehicle_model vehicleModel,
+        b_time bTime
+        FROM
+        t_class_answer_imfact
+        WHERE
+        question_id = #{asd.questionId}
+        AND class_id = #{asd.classId}
+        <if test="asd.answer != null and asd.answer != ''">
+            AND answer = #{asd.answer}
+        </if>
+        <if test="asd.strategicChoice != null and asd.strategicChoice != ''">
+            AND strategic_choice = #{asd.strategicChoice}
+        </if>
+        <if test="asd.vehicleModel != null and asd.vehicleModel != ''">
+            AND vehicle_model = #{asd.vehicleModel}
+        </if>
+        <if test="asd.isSelect != null and asd.isSelect != ''">
+            AND is_select = #{asd.isSelect}
+        </if>
+    </select>
+
+    <!-- 查询出影响的指标codes 新的为了兼容平衡计分卡 WTL 2019-05-28 -->
+    <select id="getImpactCodes" resultType="java.util.Map">
+        select * from (SELECT
+        task_id taskId,
+        is_delayed isDelayed,
+        execution_times executionTimes,
+        vehicle_model vehicleModel,
+        b_time bTime,
+        sort_num sortNum
+        FROM
+        t_class_answer_imfact
+        WHERE
+        question_id = #{asd.questionId}
+        AND class_id = #{asd.classId}
+        <if test="asd.answer != null and asd.answer != ''">
+            <choose>
+                <when test="asd.isSelect != null and asd.isSelect != ''">
+                    AND answer in (${asd.answer})
+                </when>
+                <otherwise>
+                    AND answer = #{asd.answer}
+                </otherwise>
+            </choose>
+        </if>
+        <choose>
+            <when test="asd.strategicChoice != null and asd.strategicChoice != ''">
+                AND strategic_choice = #{asd.strategicChoice}
+            </when>
+            <otherwise>
+                AND (strategic_choice is null or strategic_choice = '')
+            </otherwise>
+        </choose>
+        <if test="asd.vehicleModel != null and asd.vehicleModel != ''">
+            AND vehicle_model = #{asd.vehicleModel}
+        </if>
+        <if test="asd.taskId != null and asd.taskId != ''">
+            AND task_id = #{asd.taskId}
+        </if>
+        AND ( is_select = 0 OR is_select IS NULL )
+        <!-- 存在值的时候说明包含未选中的影响 -->
+        <if test="asd.isSelect != null and asd.isSelect != ''">
+            UNION
+            SELECT
+            task_id taskId,
+            is_delayed isDelayed,
+            execution_times executionTimes,
+            vehicle_model vehicleModel,
+            b_time bTime,
+        	sort_num sortNum
+            FROM
+            t_class_answer_imfact
+            WHERE
+            question_id = #{asd.questionId}
+            AND class_id = #{asd.classId}
+            <if test="asd.answer != null and asd.answer != ''">
+                AND answer not in (${asd.answer})
+            </if>
+            <choose>
+                <when test="asd.strategicChoice != null and asd.strategicChoice != ''">
+                    AND strategic_choice = #{asd.strategicChoice}
+                </when>
+                <otherwise>
+                    AND (strategic_choice is null or strategic_choice = '')
+                </otherwise>
+            </choose>
+            <if test="asd.vehicleModel != null and asd.vehicleModel != ''">
+                AND vehicle_model = #{asd.vehicleModel}
+            </if>
+            <if test="asd.taskId != null and asd.taskId != ''">
+                AND task_id = #{asd.taskId}
+            </if>
+            AND is_select = 1
+        </if>) a order by a.sortNum
+    </select>
+
+    <!-- 查询出指标所对应的影响 -->
+    <select id="findCodesImpactData" resultMap="uacMap">
+		SELECT
+			operation,
+			is_year,
+			impact_num,
+			table_name,
+			`condition`,
+			begin_date,
+			table_column 
+		FROM
+			t_class_data_effect 
+		WHERE
+			task_id in (${taskId})
+			AND class_id = #{classId}
+		order by sort_num
+	</select>
+
+    <!-- 修改调整字段数据 -->
+    <update id="updateAdjustedColumn">
+        UPDATE ${uac.targetTable}
+        SET ${uac.targetColumn} = ROUND(${uac.operation} + 0.0000001)
+        WHERE
+        class_id = #{uac.classId}
+        AND team_id = #{uac.teamId}
+        <!-- 修改数据的时候好像和战略无关，代码中处理影响的时候也直接将uac对象的值设置成了null，如需更改需要一起进行改动 -->
+        <!-- <if test="uac.strategySelect != null and uac.strategySelect != ''">
+            AND strategy_select = #{uac.strategySelect}
+        </if> -->
+        <if test="uac.ymBDate != null and uac.ymBDate != '' and uac.ymEDate != null and uac.ymEDate != ''">
+            AND <![CDATA[  ym_date >= #{uac.ymBDate} ]]>
+        </if>
+        <if test="uac.ymBDate != null and uac.ymBDate != '' and uac.ymEDate != null and uac.ymEDate != ''">
+            AND <![CDATA[  ym_date < #{uac.ymEDate} ]]>
+        </if>
+        <if test="uac.bYear != null and uac.bYear != '' and uac.eYear != null and uac.eYear != ''">
+            AND <![CDATA[  year >= #{uac.bYear} ]]>
+        </if>
+        <if test="uac.bYear != null and uac.bYear != '' and uac.eYear != null and uac.eYear != ''">
+            AND <![CDATA[  year < #{uac.eYear} ]]>
+        </if>
+        <if test="uac.condition != null and uac.condition != ''">
+            AND ${uac.condition}
+        </if>
+    </update>
+    
+    <!-- 查询将要修改的值的结果 -->
+    <select id="updateAdjustedColumnVAL" resultType="java.lang.String" >
+    	SELECT	ROUND(${uac.operation} + 0.0000001)
+        FROM ${uac.targetTable}
+        WHERE
+        class_id = #{uac.classId}
+        AND team_id = #{uac.teamId}
+        <!-- 修改数据的时候好像和战略无关，代码中处理影响的时候也直接将uac对象的值设置成了null，如需更改需要一起进行改动 -->
+        <!-- <if test="uac.strategySelect != null and uac.strategySelect != ''">
+            AND strategy_select = #{uac.strategySelect}
+        </if> -->
+        <if test="uac.ymBDate != null and uac.ymBDate != '' and uac.ymEDate != null and uac.ymEDate != ''">
+            AND <![CDATA[  ym_date >= #{uac.ymBDate} ]]>
+        </if>
+        <if test="uac.ymBDate != null and uac.ymBDate != '' and uac.ymEDate != null and uac.ymEDate != ''">
+            AND <![CDATA[  ym_date < #{uac.ymEDate} ]]>
+        </if>
+        <if test="uac.bYear != null and uac.bYear != '' and uac.eYear != null and uac.eYear != ''">
+            AND <![CDATA[  year >= #{uac.bYear} ]]>
+        </if>
+        <if test="uac.bYear != null and uac.bYear != '' and uac.eYear != null and uac.eYear != ''">
+            AND <![CDATA[  year < #{uac.eYear} ]]>
+        </if>
+        <if test="uac.condition != null and uac.condition != ''">
+            AND ${uac.condition}
+        </if>
+    </select>
+
+    <!-- 批量修改调整字段数据 -->
+    <update id="batchUpdateAdjustedColumn">
+        <foreach collection="list" separator=";" item="uac">
+            UPDATE ${uac.targetTable}
+            SET ${uac.targetColumn} = ROUND(${uac.operation} + 0.0000001)
+            WHERE
+            class_id = #{uac.classId}
+            AND team_id = #{uac.teamId}
+            <!-- 修改数据的时候好像和战略无关，代码中处理影响的时候也直接将uac对象的值设置成了null，如需更改需要一起进行改动 -->
+            <!-- <if test="uac.strategySelect != null and uac.strategySelect != ''">
+                AND strategy_select = #{uac.strategySelect}
+            </if> -->
+            <if test="uac.ymBDate != null and uac.ymBDate != '' and uac.ymEDate != null and uac.ymEDate != ''">
+                AND <![CDATA[  ym_date >= #{uac.ymBDate} ]]>
+            </if>
+            <if test="uac.ymBDate != null and uac.ymBDate != '' and uac.ymEDate != null and uac.ymEDate != ''">
+                AND <![CDATA[  ym_date < #{uac.ymEDate} ]]>
+            </if>
+            <if test="uac.bYear != null and uac.bYear != '' and uac.eYear != null and uac.eYear != ''">
+                AND <![CDATA[  year >= #{uac.bYear} ]]>
+            </if>
+            <if test="uac.bYear != null and uac.bYear != '' and uac.eYear != null and uac.eYear != ''">
+                AND <![CDATA[  year < #{uac.eYear} ]]>
+            </if>
+            <if test="uac.condition != null and uac.condition != ''">
+                AND ${uac.condition}
+            </if>
+        </foreach>
+    </update>
+
+    <!-- 获取变量信息 -->
+    <select id="getVariableInfo" resultMap="bvMap">
+        SELECT
+        variable_name,
+        variable_val,
+        compare_method,
+        unit
+        FROM
+        t_class_intermediate_variable
+        WHERE
+
+        class_id = #{classId}
+        <if test="optionVal != null and optionVal != ''">
+            AND option_val = #{optionVal}
+        </if>
+        <if test="variableName != null and variableName != ''">
+            AND variable_name = #{variableName}
+        </if>
+        <if test="strategicChoice != null and strategicChoice != ''">
+            AND strategic_choice = #{strategicChoice}
+        </if>
+    </select>
+
+    <!-- 批量添加平衡积分卡纪录 -->
+    <insert id="batchIBalancedVariable">
+        insert into t_team_intermediate_variable(team_id, class_id, variable_name, variable_val, unit) values
+        <foreach collection="bvList" item="bv" index="index" separator=",">
+            (#{bv.teamId}, #{bv.classId}, #{bv.variableName}, #{bv.variableVal}, #{bv.unit})
+        </foreach>
+        ON DUPLICATE KEY UPDATE variable_val = VALUES(variable_val),unit = VALUES(unit)
+    </insert>
+
+    <!-- 单个添加平衡积分卡纪录 -->
+    <insert id="addBalancedVariable">
+		insert into t_team_intermediate_variable(team_id, class_id, variable_name, variable_val, unit) values 
+        (#{bv.teamId}, #{bv.classId}, #{bv.variableName}, #{bv.variableVal}, #{bv.unit}) 
+        ON DUPLICATE KEY UPDATE variable_val = VALUES(variable_val),unit = VALUES(unit)
+	</insert>
+
+    <!-- 获取延迟更新的任务 -->
+    <select id="findDelayedUpdateTasks" resultMap="duMap">
+    	SELECT
+	        id,
+	        task_ids,
+	        execution_times,
+	        vi_data,
+	        delayed_type,
+	        b_time
+	        FROM
+	        t_team_delayed_update
+        WHERE
+        team_id = #{du.teamId}
+        AND class_id = #{du.classId}
+        <if test="du.dTypes != null and du.dTypes != ''">
+            AND delayed_type in (${du.dTypes})
+        </if>
+        <![CDATA[  AND b_time <= #{du.bTime} ]]>
+        ORDER BY sort_num 
+        <!-- select * from (SELECT
+        id,
+        task_ids,
+        execution_times,
+        vi_data,
+        delayed_type,
+        b_time,
+        CASE task_ids WHEN 53 THEN 1 WHEN 112 THEN 1 ELSE 0 END sortNum
+        FROM
+        t_team_delayed_update
+        WHERE
+        team_id = #{du.teamId}
+        AND class_id = #{du.classId}
+        <if test="du.dTypes != null and du.dTypes != ''">
+            AND delayed_type in (${du.dTypes})
+        </if>
+        <![CDATA[  AND b_time <= #{du.bTime} ]]>) d ORDER BY d.sortNum -->
+    </select>
+
+    <!-- 修改需要执行的次数及下次执行的开始时间 -->
+    <update id="updateETAndBTime">
+		update t_team_delayed_update set execution_times = #{executionTimes}, b_time = #{bTime} where id = #{id};
+	</update>
+
+    <!-- 删除团队所需要执行的延迟任务 -->
+    <delete id="deleteDelayedUpdate">
+		DELETE FROM t_team_delayed_update WHERE id in (${ids})
+	</delete>
+
+    <!-- 添加团队的延迟执行任务 -->
+    <insert id="addDelayedUpdate">
+		INSERT INTO t_team_delayed_update (team_id, class_id, task_ids, execution_times, b_time, delayed_type, vi_data, vehicle_model, sort_num) 
+		VALUES (#{du.teamId}, #{du.classId}, #{du.taskIds}, #{du.executionTimes}, #{du.bTime}, #{du.delayedType}, #{du.viData}, #{du.vehicleModel}, #{du.sortNum}) 
+	</insert>
+
+    <!-- 批量添加团队的延迟执行任务 -->
+    <insert id="addBatchDelayedUpdate">
+        INSERT INTO t_team_delayed_update (team_id, class_id, task_ids, execution_times, b_time, delayed_type, vi_data, vehicle_model, sort_num) VALUES
+        <foreach collection="duList" item="du" index="index" separator=",">
+            (#{du.teamId}, #{du.classId}, #{du.taskIds}, #{du.executionTimes}, #{du.bTime}, #{du.delayedType}, #{du.viData}, #{du.vehicleModel}, #{du.sortNum})
+        </foreach>
+    </insert>
+
+    <!-- 获取相应的财务值 -->
+    <select id="getFinanceVal" resultType="java.lang.Long">
+        SELECT
+        ${sfd.targetColumn}
+        FROM
+        ${sfd.targetTable}
+        WHERE
+        class_id = #{sfd.classId}
+        AND team_id = #{sfd.teamId}
+        <if test="sfd.year != null and sfd.year != ''">
+            AND `year` = #{sfd.year}
+        </if>
+        <if test="sfd.operation != null and sfd.operation != ''">
+            ${sfd.operation}
+        </if>
+    </select>
+
+    <!-- 获取变量的纪录值 -->
+    <select id="getVariableRecord" resultType="java.util.Map">
+		SELECT
+			variable_val variableVal,
+			unit 
+		FROM
+			t_team_intermediate_variable 
+		WHERE
+			class_id = #{classId} 
+			AND team_id = #{teamId} 
+			AND variable_name = #{variableName}
+	</select>
+
+    <!-- 查询某一年所有的车型的某个比例 -->
+    <select id="findVehicleModelRatio" resultType="java.util.Map">
+		SELECT
+			vehicle_model vehicleModel,
+			${targetColumn} ratio
+		FROM
+			t_class_fixed_charge_amortization_ratio 
+		WHERE
+			`year` = #{year} 
+			AND class_id = #{classId}
+		GROUP BY
+			vehicle_model
+	</select>
+
+    <!-- 获取变量的区间取值 -->
+    <select id="getVariableSection" resultType="java.util.Map">
+		SELECT
+			upper_limit upperLimit,
+			lower_limit lowerLimit
+		FROM
+			t_conf_variable_section 
+		WHERE
+			`year` = #{year}
+	</select>
+
+    <!-- 添加填报研发费用 -->
+    <insert id="addRDV">
+		INSERT INTO t_team_rdv (class_id, team_id, `year`, v_code, v_value)
+		VALUES (#{classId}, #{teamId}, #{year}, #{vCode}, #{vValue})
+	</insert>
+
+    <!-- 查询配置变量 wangbj -->
+    <select id="selectTeamRdv" parameterType="java.util.HashMap" resultType="java.lang.String">
+        select v_value
+        from
+        <choose>
+            <when test="isYT == null">
+                t_conf_variable
+            </when>
+            <otherwise>
+                t_team_rdv
+            </otherwise>
+        </choose>
+        where
+        v_code = #{vCode}
+        <if test="isYT != null and classId != null">
+            and class_id = #{classId}
+        </if>
+        <if test="isYT != null and teamId != null">
+            and team_id = #{teamId}
+        </if>
+        <if test="isYT != null and year != null">
+            and `year`=#{year}
+        </if>
+    </select>
+
+    <!-- 更新调整后销量为战略基准销量 wangbj -->
+    <update id="updateAdjustedSales" parameterType="java.util.HashMap">
+        update t_team_intermediate
+        set adjusted_sales = strategy_benchmark_sales
+        where adjusted_sales is null
+        AND class_id = #{uac.classId}
+        AND team_id = #{uac.teamId}
+        <if test="uac.ymBDate != null and uac.ymBDate != '' and uac.ymEDate != null and uac.ymEDate != ''">
+            AND <![CDATA[  ym_date >= #{uac.ymBDate} ]]>
+        </if>
+        <if test="uac.ymBDate != null and uac.ymBDate != '' and uac.ymEDate != null and uac.ymEDate != ''">
+            AND <![CDATA[  ym_date < #{uac.ymEDate} ]]>
+        </if>
+        <if test="uac.bYear != null and uac.bYear != '' and uac.eYear != null and uac.eYear != ''">
+            AND <![CDATA[  `year` >= #{uac.bYear} ]]>
+        </if>
+        <if test="uac.bYear != null and uac.bYear != '' and uac.eYear != null and uac.eYear != ''">
+            AND <![CDATA[  `year` < #{uac.eYear} ]]>
+        </if>
+        <if test="uac.condition != null and uac.condition != ''">
+            AND ${uac.condition}
+        </if>
+    </update>
+
+    <!-- 更新调整后单价为战略基准单价 wangbj -->
+    <update id="updateAdjustedUnitPrice" parameterType="java.util.HashMap">
+        update t_team_intermediate
+        set adjusted_unit_price = strategy_benchmark_unit_price
+        where adjusted_unit_price is null
+        AND class_id = #{uac.classId}
+        AND team_id = #{uac.teamId}
+        <if test="uac.ymBDate != null and uac.ymBDate != '' and uac.ymEDate != null and uac.ymEDate != ''">
+            AND <![CDATA[  ym_date >= #{uac.ymBDate} ]]>
+        </if>
+        <if test="uac.ymBDate != null and uac.ymBDate != '' and uac.ymEDate != null and uac.ymEDate != ''">
+            AND <![CDATA[  ym_date < #{uac.ymEDate} ]]>
+        </if>
+        <if test="uac.bYear != null and uac.bYear != '' and uac.eYear != null and uac.eYear != ''">
+            AND <![CDATA[  `year` >= #{uac.bYear} ]]>
+        </if>
+        <if test="uac.bYear != null and uac.bYear != '' and uac.eYear != null and uac.eYear != ''">
+            AND <![CDATA[  `year` < #{uac.eYear} ]]>
+        </if>
+        <if test="uac.condition != null and uac.condition != ''">
+            AND ${uac.condition}
+        </if>
+    </update>
+
+    <!-- 查询2018年1-6月营业利润 -->
+    <select id="findYyLr" resultType="java.lang.Double">
+		SELECT
+			sum(operating_profit)
+		FROM
+		t_team_monthly_profit_statement
+		WHERE
+		`year` = 2018
+			AND class_id = #{hse.classId}
+			AND team_id = #{hse.teamId}
+			AND `month` IN (1, 2, 3, 4, 5, 6)
+	</select>
+
+    <!-- 查询2018年1-6月销量 -->
+    <select id="findSale" resultType="java.lang.Integer">
+		SELECT
+			sum(adjusted_sales) 
+		FROM
+		t_team_intermediate
+		WHERE
+		`year` = 2018
+			AND class_id = #{hse.classId}
+			AND team_id = #{hse.teamId}
+			AND `month` IN (1, 2, 3, 4, 5, 6)
+	</select>
+
+    <!-- 查询单车毛利在答案表里面 -->
+    <select id="findDanMaoLi" resultType="java.lang.String">
+		select answer from t_stu_answer
+		WHERE
+		question_id=#{qid}
+		AND team_id = #{hse.teamId}
+		AND class_id = #{hse.classId}
+		
+	</select>
+
+    <!-- 查询营业利润在Option里面 -->
+    <select id="findLRFromOption" resultType="java.lang.Double">
+		select quesion_option_desc from t_class_question_option where question_id=458 
+		AND class_id = #{hseT.classId}
+	</select>
+	
+	<!-- 查询他公司销量 -->
+	<select id="findXL" resultType="java.lang.Double">
+		select quesion_option_desc from t_class_question_option where question_id=451 
+		AND class_id = #{hseT.classId}
+	</select>
+
+    <!-- 查询答案分数在答案分数表里面 -->
+    <select id="findAnswerScoreByQuestionIds" resultType="java.util.Map">
+		 SELECT
+		 question_id as questionId,
+        answer,
+        score
+        FROM
+        t_class_answer_score
+        WHERE class_id = #{hse.classId}
+        AND question_id in (${questionIds})
+        ORDER BY score DESC
+		
+	</select>
+
+    <!-- 查询我公司在答案表里面 -->
+    <select id="findWeCompanyDate" resultType="map">
+		select question_id as questionId,answer from t_stu_answer
+		WHERE
+		question_id in(${qid})
+		AND team_id = #{hse.teamId}
+		AND class_id = #{hse.classId}
+		
+	</select>
+
+    <!-- 查询系统变量值 wangbj -->
+    <select id="selectConfVariable" parameterType="String" resultType="String">
+        select v_value
+        from t_conf_variable
+        where v_code = #{vCode}
+        AND (year = 2010
+        or year is null)
+        limit 1
+    </select>
+
+    <select id="getBufferTime" resultType="long">
+        select CAST(sum(tcv.v_value) as SIGNED ) from t_conf_variable tcv
+       where tcv.v_code in ('ADD_TIME_BAS','ADD_TIME_LOOK')
+    </select>
+    
+    <!-- 查询此年份都含有哪些车型 -->
+    <select id="findVMByYear" resultType="java.lang.String" >
+    	SELECT
+			vehicle_model
+		FROM
+			t_class_fixed_charge_amortization_ratio 
+		WHERE
+			class_id = #{classId}  
+			AND `year` = #{year} 
+			AND administrative_expenses_development_expense != 0 
+			AND administrative_expenses_development_expense IS NOT NULL
+    </select>
+    <!-- 查询2018年1-6月营业毛利 -->
+    <select id="findYyLrT" resultType="java.lang.Double">
+		SELECT
+			
+				sum(operation_revenue) - sum(operating_cost)
+			
+		FROM
+		t_team_monthly_profit_statement
+		WHERE
+		`year` = 2018
+			AND class_id = #{hse.classId}
+			AND team_id = #{hse.teamId}
+			AND `month` IN (1, 2, 3, 4, 5, 6)
+	</select>
+	
+	<!-- 查询选择外购的条数 -->
+	<select id="getWGCount" resultType="java.lang.Integer" >
+		SELECT count(1) from t_team_strategic_select WHERE team_id = #{teamId} AND class_id = #{classId} AND strategic_select = 'E'
+	</select>
+	
+	<!-- 批量添加资产负债表的影响 -->
+    <insert id="addBatchTBSI">
+		insert into t_team_balance_sheet_impact(class_id, team_id, year,
+		original_value_fixed_assets, intangible_assets,
+		accumulated_depreciation, capitalization, short_term_borrowing,
+		goodwill, bonds_payable, capital_reserve) values
+		<foreach collection="zcList" item="zc" index="index" separator=",">
+			(#{zc.classId}, #{zc.teamId}, #{zc.year}, #{zc.originalValue},
+			#{zc.intangibleAssets} , #{zc.aDepreciation}, #{zc.capitalization},
+			#{zc.stBorrowing}, #{zc.goodWill}, #{zc.bondsPayable} , #{zc.capitalReserve})
+		</foreach>
+		ON DUPLICATE KEY UPDATE 
+		original_value_fixed_assets = IFNULL(original_value_fixed_assets,0) + IFNULL(VALUES(original_value_fixed_assets),0),
+		intangible_assets = IFNULL(intangible_assets,0) + IFNULL(VALUES(intangible_assets),0),
+		accumulated_depreciation = IFNULL(accumulated_depreciation,0) + IFNULL(VALUES(accumulated_depreciation),0),
+		capitalization = IFNULL(capitalization,0) + IFNULL(VALUES(capitalization),0),
+		short_term_borrowing = IFNULL(short_term_borrowing,0) + IFNULL(VALUES(short_term_borrowing),0),
+		goodwill = IFNULL(goodwill,0) + IFNULL(VALUES(goodwill),0),
+		bonds_payable = IFNULL(bonds_payable,0) + IFNULL(VALUES(bonds_payable),0),
+		capital_reserve = IFNULL(capital_reserve,0) + IFNULL(VALUES(capital_reserve),0)
+	</insert>
+	
+	<!-- 查询题的答案 -->
+	<select id="getAnswerByQID" resultType="java.lang.String" >
+		SELECT answer from t_stu_answer WHERE team_id = #{hse.teamId} AND class_id = #{hse.classId} AND question_id = #{questionId}
+	</select>
+	
+	<!-- 查询题的答案个数 -->
+	<select id="getcountDateAnswer" resultType="java.lang.Integer" >
+		select count(*)  from t_stu_answer WHERE team_id = ${teamId} AND root_id = ${rootId}
+	</select>
+	
+	<!-- 查询营销的满分 -->
+	<select id="getYXMF" resultType="Double" >
+		SELECT SUM(score) from (SELECT max(score) score FROM t_class_answer_score WHERE class_id = #{classId} AND question_id in(${questionIds}) GROUP BY question_id) a;
+	</select>
+	
+	<!-- 查询配置的变量信息 -->
+	<select id="getConfVariable" resultType="java.lang.String" >
+		SELECT
+			v_value
+		FROM
+			t_conf_variable
+		WHERE
+			v_code = #{vCode}
+		<if test="year != null and year != ''">
+			AND `year` = #{year}
+		</if>
+	</select>
+
+</mapper>

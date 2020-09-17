@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.ClassPickupComparisonMapper">
+  <insert id="initClassPickupComparison" parameterType="int" >
+	INSERT INTO t_class_pickup_comparison (
+		enact_id,
+		assess_id,
+		class_id
+	) SELECT
+		enact_id,
+		assess_id,
+		#{classId}
+	FROM
+		t_conf_pickup_comparison
+  </insert>
+</mapper>

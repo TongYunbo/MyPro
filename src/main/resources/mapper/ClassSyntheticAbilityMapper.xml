@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.ClassSyntheticAbilityMapper" >
+  
+  <!-- 初始化班级综合排行表 -->
+  <insert id="initClassSyntheticAbility" parameterType="int">
+	INSERT INTO t_class_synthetic_ability (
+		value_of_item,
+		term_description,
+		weight,
+		class_id
+	) SELECT
+		value_of_item,
+		term_description,
+		weight,
+		#{classId}
+	FROM
+		t_conf_synthetic_ability
+  </insert>
+</mapper>

@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.TeamBalanceSheetMapper" >
+
+    <resultMap id="BaseResultMap" type="com.tzcpa.model.treatment.TeamBalanceSheetDO" >
+        <result column="id" property="id" jdbcType="INTEGER" />
+        <result column="year" property="year" jdbcType="INTEGER" />
+        <result column="current_assets" property="currentAssets" jdbcType="BIGINT" />
+        <result column="monetary_capital" property="monetaryCapital" jdbcType="BIGINT" />
+        <result column="notes_accounts_receivable" property="notesAccountsReceivable" jdbcType="BIGINT" />
+        <result column="prepayment" property="prepayment" jdbcType="BIGINT" />
+        <result column="other_receivables" property="otherReceivables" jdbcType="BIGINT" />
+        <result column="inventory" property="inventory" jdbcType="BIGINT" />
+        <result column="raw_material" property="rawMaterial" jdbcType="BIGINT" />
+        <result column="finished_goods" property="finishedGoods" jdbcType="BIGINT" />
+        <result column="total_current_assets" property="totalCurrentAssets" jdbcType="BIGINT" />
+        <result column="noncurrent_assets" property="noncurrentAssets" jdbcType="BIGINT" />
+        <result column="long_term_equity_investment" property="longTermEquityInvestment" jdbcType="BIGINT" />
+        <result column="original_value_fixed_assets" property="originalValueFixedAssets" jdbcType="BIGINT" />
+        <result column="accumulated_depreciation" property="accumulatedDepreciation" jdbcType="BIGINT" />
+        <result column="net_value_fixed_assets" property="netValueFixedAssets" jdbcType="BIGINT" />
+        <result column="fixed_assets_depreciation_reserves" property="fixedAssetsDepreciationReserves" jdbcType="BIGINT" />
+        <result column="net_fixed_assets" property="netFixedAssets" jdbcType="BIGINT" />
+        <result column="construction_in_process" property="constructionInProcess" jdbcType="BIGINT" />
+        <result column="intangible_assets" property="intangibleAssets" jdbcType="BIGINT" />
+        <result column="making_loans_payments" property="makingLoansPayments" jdbcType="BIGINT" />
+        <result column="deferred_tax_assets" property="deferredTaxAssets" jdbcType="BIGINT" />
+        <result column="other_noncurrent_assets" property="otherNoncurrentAssets" jdbcType="BIGINT" />
+        <result column="total_noncurrent_assets" property="totalNoncurrentAssets" jdbcType="BIGINT" />
+        <result column="total_assets" property="totalAssets" jdbcType="BIGINT" />
+        <result column="current_liabilities" property="currentLiabilities" jdbcType="BIGINT" />
+        <result column="short_term_borrowing" property="shortTermBorrowing" jdbcType="BIGINT" />
+        <result column="notes_accounts_payable" property="notesAccountsPayable" jdbcType="BIGINT" />
+        <result column="unearned_revenue" property="unearnedRevenue" jdbcType="BIGINT" />
+        <result column="payroll_payable" property="payrollPayable" jdbcType="BIGINT" />
+        <result column="tax_payable" property="taxPayable" jdbcType="BIGINT" />
+        <result column="other_payables" property="otherPayables" jdbcType="BIGINT" />
+        <result column="noncurrent_liabilities_mature_one_year" property="noncurrentLiabilitiesMatureOneYear" jdbcType="BIGINT" />
+        <result column="other_current_liability" property="otherCurrentLiability" jdbcType="BIGINT" />
+        <result column="total_current_liability" property="totalCurrentLiability" jdbcType="BIGINT" />
+        <result column="noncurrent_liability" property="noncurrentLiability" jdbcType="BIGINT" />
+        <result column="long_term_loan" property="longTermLoan" jdbcType="BIGINT" />
+        <result column="bonds_payable" property="bondsPayable" jdbcType="BIGINT" />
+        <result column="long_term_payable" property="longTermPayable" jdbcType="BIGINT" />
+        <result column="long_term_compensation_employees" property="longTermCompensationEmployees" jdbcType="BIGINT" />
+        <result column="anticipation_liabilities" property="anticipationLiabilities" jdbcType="BIGINT" />
+        <result column="deferred_income" property="deferredIncome" jdbcType="BIGINT" />
+        <result column="deferred_income_tax_liabilities" property="deferredIncomeTaxLiabilities" jdbcType="BIGINT" />
+        <result column="other_noncurrent_liabilities" property="otherNoncurrentLiabilities" jdbcType="BIGINT" />
+        <result column="total_noncurrent_liabilities" property="totalNoncurrentLiabilities" jdbcType="BIGINT" />
+        <result column="total_liability" property="totalLiability" jdbcType="BIGINT" />
+        <result column="ownership_interest" property="ownershipInterest" jdbcType="BIGINT" />
+        <result column="capitalization" property="capitalization" jdbcType="BIGINT" />
+        <result column="capital_reserve" property="capitalReserve" jdbcType="BIGINT" />
+        <result column="earned_surplus" property="earnedSurplus" jdbcType="BIGINT" />
+        <result column="undistributed_profit" property="undistributedProfit" jdbcType="BIGINT" />
+        <result column="total_owners_equity" property="totalOwnersEquity" jdbcType="BIGINT" />
+        <result column="total_liabilities_equity" property="totalLiabilitiesEquity" jdbcType="BIGINT" />
+        <result column="team_id" property="teamId" jdbcType="INTEGER" />
+        <result column="class_id" property="classId" jdbcType="INTEGER" />
+    </resultMap>
+
+	<!-- 初始化团队资产负债表-->
+    <insert id="initClassBalanceSheet">
+		INSERT INTO t_team_balance_sheet (
+			`year`,
+			current_assets,
+			monetary_capital,
+			notes_accounts_receivable,
+			prepayment,
+			other_receivables,
+			inventory,
+			raw_material,
+			finished_goods,
+			other_current_assets,
+			total_current_assets,
+			noncurrent_assets,
+			long_term_equity_investment,
+			original_value_fixed_assets,
+			accumulated_depreciation,
+			net_value_fixed_assets,
+			fixed_assets_depreciation_reserves,
+			net_fixed_assets,
+			construction_in_process,
+			intangible_assets,
+			making_loans_payments,
+			goodwill,
+			deferred_tax_assets,
+			other_noncurrent_assets,
+			total_noncurrent_assets,
+			total_assets,
+			current_liabilities,
+			short_term_borrowing,
+			notes_accounts_payable,
+			unearned_revenue,
+			payroll_payable,
+			tax_payable,
+			other_payables,
+			noncurrent_liabilities_mature_one_year,
+			other_current_liability,
+			total_current_liability,
+			noncurrent_liability,
+			long_term_loan,
+			bonds_payable,
+			long_term_payable,
+			long_term_compensation_employees,
+			anticipation_liabilities,
+			deferred_income,
+			deferred_income_tax_liabilities,
+			other_noncurrent_liabilities,
+			total_noncurrent_liabilities,
+			total_liability,
+			ownership_interest,
+			capitalization,
+			capital_reserve,
+			earned_surplus,
+			undistributed_profit,
+			total_owners_equity,
+			total_liabilities_equity,
+			return_on_equity,
+		    adjusted_sales,
+			class_id,
+			team_id
+		) SELECT
+			`year`,
+			current_assets,
+			monetary_capital,
+			notes_accounts_receivable,
+			prepayment,
+			other_receivables,
+			inventory,
+			raw_material,
+			finished_goods,
+			other_current_assets,
+			total_current_assets,
+			noncurrent_assets,
+			long_term_equity_investment,
+			original_value_fixed_assets,
+			accumulated_depreciation,
+			net_value_fixed_assets,
+			fixed_assets_depreciation_reserves,
+			net_fixed_assets,
+			construction_in_process,
+			intangible_assets,
+			making_loans_payments,
+			goodwill,
+			deferred_tax_assets,
+			other_noncurrent_assets,
+			total_noncurrent_assets,
+			total_assets,
+			current_liabilities,
+			short_term_borrowing,
+			notes_accounts_payable,
+			unearned_revenue,
+			payroll_payable,
+			tax_payable,
+			other_payables,
+			noncurrent_liabilities_mature_one_year,
+			other_current_liability,
+			total_current_liability,
+			noncurrent_liability,
+			long_term_loan,
+			bonds_payable,
+			long_term_payable,
+			long_term_compensation_employees,
+			anticipation_liabilities,
+			deferred_income,
+			deferred_income_tax_liabilities,
+			other_noncurrent_liabilities,
+			total_noncurrent_liabilities,
+			total_liability,
+			ownership_interest,
+			capitalization,
+			capital_reserve,
+			earned_surplus,
+			undistributed_profit,
+			total_owners_equity,
+			total_liabilities_equity,
+			return_on_equity,
+		    adjusted_sales,
+			class_id,
+			#{teamId}
+		FROM
+			t_class_balance_sheet
+		WHERE 
+			class_id = #{classId}
+    </insert>
+
+    <insert id="insert" parameterType="com.tzcpa.model.treatment.TeamBalanceSheetDO" >
+        <!--
+          WARNING - @mbggenerated
+          This element is automatically generated by MyBatis Generator, do not modify.
+        -->
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_team_balance_sheet (`year`, current_assets, monetary_capital,
+        notes_accounts_receivable, prepayment, other_receivables,
+        inventory, raw_material, finished_goods,
+        total_current_assets, noncurrent_assets, long_term_equity_investment,
+        original_value_fixed_assets, accumulated_depreciation,
+        net_value_fixed_assets, fixed_assets_depreciation_reserves,
+        net_fixed_assets, construction_in_process, intangible_assets,
+        making_loans_payments, deferred_tax_assets, other_noncurrent_assets,
+        total_noncurrent_assets, total_assets, current_liabilities,
+        short_term_borrowing, notes_accounts_payable,
+        unearned_revenue, payroll_payable, tax_payable,
+        other_payables, noncurrent_liabilities_mature_one_year,
+        other_current_liability, total_current_liability,
+        noncurrent_liability, long_term_loan, bonds_payable,
+        long_term_payable, long_term_compensation_employees,
+        anticipation_liabilities, deferred_income,
+        deferred_income_tax_liabilities, other_noncurrent_liabilities,
+        total_noncurrent_liabilities, total_liability,
+        ownership_interest, capitalization, capital_reserve,
+        earned_surplus, undistributed_profit, total_owners_equity,
+        total_liabilities_equity, team_id, class_id, goodwill
+        )
+        values (#{year,jdbcType=INTEGER}, #{currentAssets,jdbcType=BIGINT}, #{monetaryCapital,jdbcType=BIGINT},
+        #{notesAccountsReceivable,jdbcType=BIGINT}, #{prepayment,jdbcType=BIGINT}, #{otherReceivables,jdbcType=BIGINT},
+        #{inventory,jdbcType=BIGINT}, #{rawMaterial,jdbcType=BIGINT}, #{finishedGoods,jdbcType=BIGINT},
+        #{totalCurrentAssets,jdbcType=BIGINT}, #{noncurrentAssets,jdbcType=BIGINT}, #{longTermEquityInvestment,jdbcType=BIGINT},
+        #{originalValueFixedAssets,jdbcType=BIGINT}, #{accumulatedDepreciation,jdbcType=BIGINT},
+        #{netValueFixedAssets,jdbcType=BIGINT}, #{fixedAssetsDepreciationReserves,jdbcType=BIGINT},
+        #{netFixedAssets,jdbcType=BIGINT}, #{constructionInProcess,jdbcType=BIGINT}, #{intangibleAssets,jdbcType=BIGINT},
+        #{makingLoansPayments,jdbcType=BIGINT}, #{deferredTaxAssets,jdbcType=BIGINT}, #{otherNoncurrentAssets,jdbcType=BIGINT},
+        #{totalNoncurrentAssets,jdbcType=BIGINT}, #{totalAssets,jdbcType=BIGINT}, #{currentLiabilities,jdbcType=BIGINT},
+        #{shortTermBorrowing,jdbcType=BIGINT}, #{notesAccountsPayable,jdbcType=BIGINT},
+        #{unearnedRevenue,jdbcType=BIGINT}, #{payrollPayable,jdbcType=BIGINT}, #{taxPayable,jdbcType=BIGINT},
+        #{otherPayables,jdbcType=BIGINT}, #{noncurrentLiabilitiesMatureOneYear,jdbcType=BIGINT},
+        #{otherCurrentLiability,jdbcType=BIGINT}, #{totalCurrentLiability,jdbcType=BIGINT},
+        #{noncurrentLiability,jdbcType=BIGINT}, #{longTermLoan,jdbcType=BIGINT}, #{bondsPayable,jdbcType=BIGINT},
+        #{longTermPayable,jdbcType=BIGINT}, #{longTermCompensationEmployees,jdbcType=BIGINT},
+        #{anticipationLiabilities,jdbcType=BIGINT}, #{deferredIncome,jdbcType=BIGINT},
+        #{deferredIncomeTaxLiabilities,jdbcType=BIGINT}, #{otherNoncurrentLiabilities,jdbcType=BIGINT},
+        #{totalNoncurrentLiabilities,jdbcType=BIGINT}, #{totalLiability,jdbcType=BIGINT},
+        #{ownershipInterest,jdbcType=BIGINT}, #{capitalization,jdbcType=BIGINT}, #{capitalReserve,jdbcType=BIGINT},
+        #{earnedSurplus,jdbcType=BIGINT}, #{undistributedProfit,jdbcType=BIGINT}, #{totalOwnersEquity,jdbcType=BIGINT},
+        #{totalLiabilitiesEquity,jdbcType=BIGINT}, #{teamId,jdbcType=INTEGER}, #{classId,jdbcType=INTEGER} ,#{goodwill,jdbcType=BIGINT}
+        )
+    </insert>
+
+    <!-- 查询存货 wangbj -->
+	<select id="getInventory" parameterType="java.util.HashMap" resultType="java.lang.Long">
+        select inventory
+        from t_team_balance_sheet
+        where class_id = #{classId}
+        and team_id = #{teamId}
+        and `year` = #{year}
+	</select>
+
+    <!-- 查询资产总计 wangbj -->
+    <select id="selectTotalAssets" parameterType="java.util.HashMap" resultType="java.lang.Long">
+        select total_assets
+        from t_team_balance_sheet
+        where class_id = #{classId}
+        and team_id = #{teamId}
+        and `year` = #{year}
+    </select>
+
+	<!-- 获取资产负债表数据源-->
+	<select id="getBalanceSheetSource" resultType="com.tzcpa.model.treatment.TeamBalanceSheetDO">
+
+        select tbs.*,
+        <!-- #资产总计 -->
+        ifnull(tbs.total_current_assets,0) + ifnull(tbs.total_noncurrent_assets,0)
+        total_assets,
+        <!-- #负债合计-->
+        tbs.total_current_liability + tbs.total_noncurrent_liabilities total_liability,
+        <!--#负债和所有者权益总计-->
+        tbs.total_current_liability + tbs.total_noncurrent_liabilities
+        + tbs.total_owners_equity
+        total_liabilities_equity
+
+
+        from (
+        select tbs.*,
+        <!-- #货币资金 -->
+        ( tbs.total_current_liability + tbs.total_noncurrent_liabilities
+        + tbs.total_owners_equity - tbs.total_noncurrent_assets -
+        tbs.notes_accounts_receivable - tbs.prepayment- tbs.inventory
+        - tbs.other_receivables - tbs.other_current_assets)
+        monetary_capital,
+
+        <!-- #流动资产合计-->
+        (tbs.total_current_liability + tbs.total_noncurrent_liabilities
+        + tbs.total_owners_equity - tbs.total_noncurrent_assets -
+        tbs.notes_accounts_receivable - tbs.prepayment- tbs.inventory
+        - tbs.other_receivables - tbs.other_current_assets+
+        tbs.notes_accounts_receivable + tbs.prepayment
+        +tbs.other_receivables
+        +tbs.inventory
+        )
+        total_current_assets
+
+        from (
+        select
+        <!-- #-流动资产-->
+        <!-- #应收票据及应收账款 - * A%-->
+        ttps.gross_revenue*ttbs.notes_accounts_receivable notes_accounts_receivable,
+        <!-- #预付款项 -*B%-->
+        ttps.gross_revenue*ttbs.prepayment  prepayment,
+        <!-- #其他应收款 -->
+        ttbs.other_receivables,
+        <!-- # 存货 *C% -->
+        ttps.gross_revenue*ttbs.inventory inventory,
+        <!-- # 原材料 -->
+        (ttps.gross_revenue*ttbs.inventory*0.3) raw_material,
+        <!-- # 库存商品(产成品) -->
+        ttps.gross_revenue*ttbs.inventory*0.5 finished_goods,
+        <!-- #其它流动资产 -->
+        ttbs.other_current_assets,
+        <!-- #流动资产合计 -->
+
+        <!-- #-非流动资产 -->
+        <!-- #长期股权投资 -->
+        ttbs.long_term_equity_investment,
+        <!-- #固定资产原价 -->
+        ttbs.original_value_fixed_assets+IFNULL(tbsi.original_value_fixed_assets,0)
+        original_value_fixed_assets,
+        <!-- #减：累计折旧 -->
+        ttbs.accumulated_depreciation+IFNULL(tbsi.accumulated_depreciation,0)
+        accumulated_depreciation,
+        <!--  #固定资产净值 固定资产原价-累计折旧 -->
+        ttbs.original_value_fixed_assets+IFNULL(tbsi.original_value_fixed_assets,0)
+        - (ttbs.accumulated_depreciation+IFNULL(tbsi.accumulated_depreciation,0))
+        net_value_fixed_assets,
+        <!-- # 减：固定资产减值准备 -->
+        ttbs.fixed_assets_depreciation_reserves,
+        <!-- #固定资产净额 固定资产净值-固定资产减值准备 -->
+        ttbs.original_value_fixed_assets+IFNULL(tbsi.original_value_fixed_assets,0) -
+        (ttbs.accumulated_depreciation+IFNULL(tbsi.accumulated_depreciation,0)) - ttbs.fixed_assets_depreciation_reserves
+        net_fixed_assets,
+        <!--#在建工程 -->
+        ttbs.construction_in_process,
+        <!--#无形资产 -->
+        ttbs.intangible_assets+IFNULL(tbsi.intangible_assets,0) intangible_assets,
+        <!-- #发放贷款及款项 -->
+        ttps.gross_revenue * ttbs.making_loans_payments making_loans_payments ,
+        <!-- #递延所得税资产 -->
+        ttbs.deferred_tax_assets,
+        <!-- #其他非流动资产 -->
+        ttbs.other_noncurrent_assets,
+        <!-- #非流动资产合计 -->
+        ( IFNULL(ttbs.original_value_fixed_assets+IFNULL(tbsi.original_value_fixed_assets,0),0)
+        - IFNULL(ttbs.accumulated_depreciation+IFNULL(tbsi.accumulated_depreciation,0),0) - IFNULL(ttbs.fixed_assets_depreciation_reserves,0)+
+        IFNULL(ttbs.construction_in_process,0) + IFNULL(ttbs.intangible_assets+IFNULL(tbsi.intangible_assets,0),0)+
+        IFNULL(ttps.gross_revenue,0) * IFNULL(ttbs.making_loans_payments,0)
+        +IFNULL(ttbs.deferred_tax_assets,0)+IFNULL(ttbs.other_noncurrent_assets,0) + IFNULL(tbsi.goodwill,0))
+        total_noncurrent_assets,
+        <!-- #-非流动资产 -->
+        <!-- #资  产  总  计 -->
+
+        <!-- # -流动负债部分 -->
+        <!-- #短期借款 -->
+        IFNULL(ttbs.short_term_borrowing+IFNULL(tbsi.short_term_borrowing,0),0) short_term_borrowing,
+        <!--#应付票据及应付账款 -->
+        (ttps.final_material_cost+  ttps.gross_revenue*ttbs.inventory)*ttbs.notes_accounts_payable
+        notes_accounts_payable,
+        <!--#预收款项 -->
+        ttps.gross_revenue*ttbs.unearned_revenue unearned_revenue,
+        <!-- #应付职工薪酬 -->
+        ttbs.payroll_payable,
+        <!-- #应交税费 -->
+        ttbs.tax_payable,
+
+        <!-- #其他应付款 -->
+        case when ( (IFNULL(ttbs.short_term_borrowing+IFNULL(tbsi.short_term_borrowing,0),0)+(IFNULL(ttps.final_material_cost,0)+
+        IFNULL(ttps.gross_revenue*ttbs.inventory,0))*IFNULL(ttbs.notes_accounts_payable,0)
+        +IFNULL(ttps.gross_revenue*ttbs.unearned_revenue,0)+IFNULL(ttbs.payroll_payable,0)
+        +IFNULL(ttbs.other_payables,0)+IFNULL(ttbs.noncurrent_liabilities_mature_one_year,0)
+        +IFNULL(ttbs.other_current_liability,0)+ttbs.tax_payable)
+        + (ttbs.long_term_loan+ttbs.bonds_payable+IFNULL(tbsi.bonds_payable,0)+ttbs.long_term_payable
+        +IFNULL(ttbs.long_term_compensation_employees,0)+ttbs.anticipation_liabilities
+        +ttbs.deferred_income+ttbs.deferred_income_tax_liabilities
+        +ttbs.other_noncurrent_liabilities)
+        +  (IFNULL(ttbs.capitalization+IFNULL(tbsi.capitalization,0),0)+
+        IFNULL(ttbs.capital_reserve+IFNULL(tbsi.capital_reserve,0),0)
+        +IFNULL(ttb.earned_surplus,0) - IFNULL(ttps.undistributed_profits_withdrawal_surplus_reserves,0)
+        +IFNULL(ttps.end_year_undistributed_profits,0))
+        - ( IFNULL(ttbs.original_value_fixed_assets+IFNULL(tbsi.original_value_fixed_assets,0),0)
+        - IFNULL(ttbs.accumulated_depreciation+IFNULL(tbsi.accumulated_depreciation,0),0) - IFNULL(ttbs.fixed_assets_depreciation_reserves,0)+
+        IFNULL(ttbs.construction_in_process,0) + IFNULL(ttbs.intangible_assets+IFNULL(tbsi.intangible_assets,0),0)+
+        IFNULL(ttps.gross_revenue,0) * IFNULL(ttbs.making_loans_payments,0)
+        +IFNULL(ttbs.deferred_tax_assets,0)+IFNULL(ttbs.other_noncurrent_assets,0) + IFNULL(tbsi.goodwill,0) ) -
+        ttps.gross_revenue*ttbs.notes_accounts_receivable
+        - ttps.gross_revenue*ttbs.prepayment-
+        ttps.gross_revenue*ttbs.inventory
+        -  ttbs.other_receivables
+        - ttbs.other_current_assets ) &lt; 100000000000
+        then ttbs.other_payables +
+        (100000000000 - ( (IFNULL(ttbs.short_term_borrowing+IFNULL(tbsi.short_term_borrowing,0),0)+(IFNULL(ttps.final_material_cost,0)+
+        IFNULL(ttps.gross_revenue*ttbs.inventory,0))*IFNULL(ttbs.notes_accounts_payable,0)
+        +IFNULL(ttps.gross_revenue*ttbs.unearned_revenue,0)+IFNULL(ttbs.payroll_payable,0)
+        +IFNULL(ttbs.other_payables,0)+IFNULL(ttbs.noncurrent_liabilities_mature_one_year,0)
+        +IFNULL(ttbs.other_current_liability,0)+ttbs.tax_payable)
+        + (ttbs.long_term_loan+ttbs.bonds_payable+IFNULL(tbsi.bonds_payable,0)+ttbs.long_term_payable
+        +IFNULL(ttbs.long_term_compensation_employees,0)+ttbs.anticipation_liabilities
+        +ttbs.deferred_income+ttbs.deferred_income_tax_liabilities
+        +ttbs.other_noncurrent_liabilities)
+        +  (IFNULL(ttbs.capitalization+IFNULL(tbsi.capitalization,0),0)
+        +IFNULL(ttbs.capital_reserve+IFNULL(tbsi.capital_reserve,0),0)
+        +IFNULL(ttb.earned_surplus,0) - IFNULL(ttps.undistributed_profits_withdrawal_surplus_reserves,0)
+        +IFNULL(ttps.end_year_undistributed_profits,0))
+        - ( IFNULL(ttbs.original_value_fixed_assets+IFNULL(tbsi.original_value_fixed_assets,0),0)
+        - IFNULL(ttbs.accumulated_depreciation+IFNULL(tbsi.accumulated_depreciation,0),0) - IFNULL(ttbs.fixed_assets_depreciation_reserves,0)+
+        IFNULL(ttbs.construction_in_process,0) + IFNULL(ttbs.intangible_assets+IFNULL(tbsi.intangible_assets,0),0)+
+        IFNULL(ttps.gross_revenue,0) * IFNULL(ttbs.making_loans_payments,0)
+        +IFNULL(ttbs.deferred_tax_assets,0)+IFNULL(ttbs.other_noncurrent_assets,0) + IFNULL(tbsi.goodwill,0) ) -
+        ttps.gross_revenue*ttbs.notes_accounts_receivable
+        - ttps.gross_revenue*ttbs.prepayment-
+        ttps.gross_revenue*ttbs.inventory
+        -  ttbs.other_receivables
+        - ttbs.other_current_assets ) )
+        else ttbs.other_payables end other_payables,
+        <!-- # 一年内到期的非流动负债 -->
+        ttbs.noncurrent_liabilities_mature_one_year,
+        <!--#其他流动负债 -->
+        ttbs.other_current_liability,
+        <!-- #流动负债合计 -->
+        (IFNULL(ttbs.short_term_borrowing+IFNULL(tbsi.short_term_borrowing,0),0)+(IFNULL(ttps.final_material_cost,0)+
+        IFNULL(ttps.gross_revenue*ttbs.inventory,0))*IFNULL(ttbs.notes_accounts_payable,0)
+        +IFNULL(ttps.gross_revenue*ttbs.unearned_revenue,0)+IFNULL(ttbs.payroll_payable,0)
+        +( case when ( (IFNULL(ttbs.short_term_borrowing+IFNULL(tbsi.short_term_borrowing,0),0)+(IFNULL(ttps.final_material_cost,0)+
+        IFNULL(ttps.gross_revenue*ttbs.inventory,0))*IFNULL(ttbs.notes_accounts_payable,0)
+        +IFNULL(ttps.gross_revenue*ttbs.unearned_revenue,0)+IFNULL(ttbs.payroll_payable,0)
+        +IFNULL(ttbs.other_payables,0)+IFNULL(ttbs.noncurrent_liabilities_mature_one_year,0)
+        +IFNULL(ttbs.other_current_liability,0)+ttbs.tax_payable)
+        + (ttbs.long_term_loan+ttbs.bonds_payable+IFNULL(tbsi.bonds_payable,0)+ttbs.long_term_payable
+        +IFNULL(ttbs.long_term_compensation_employees,0)+ttbs.anticipation_liabilities
+        +ttbs.deferred_income+ttbs.deferred_income_tax_liabilities
+        +ttbs.other_noncurrent_liabilities)
+        +  (IFNULL(ttbs.capitalization+IFNULL(tbsi.capitalization,0),0)+IFNULL(ttbs.capital_reserve+IFNULL(tbsi.capital_reserve,0),0)
+        +IFNULL(ttb.earned_surplus,0) - IFNULL(ttps.undistributed_profits_withdrawal_surplus_reserves,0)
+        +IFNULL(ttps.end_year_undistributed_profits,0))
+        - ( IFNULL(ttbs.original_value_fixed_assets+IFNULL(tbsi.original_value_fixed_assets,0),0)
+        - IFNULL(ttbs.accumulated_depreciation+IFNULL(tbsi.accumulated_depreciation,0),0) - IFNULL(ttbs.fixed_assets_depreciation_reserves,0)+
+        IFNULL(ttbs.construction_in_process,0) + IFNULL(ttbs.intangible_assets+IFNULL(tbsi.intangible_assets,0),0)+
+        IFNULL(ttps.gross_revenue,0) * IFNULL(ttbs.making_loans_payments,0)
+        +IFNULL(ttbs.deferred_tax_assets,0)+IFNULL(ttbs.other_noncurrent_assets,0) + IFNULL(tbsi.goodwill,0) ) -
+        ttps.gross_revenue*ttbs.notes_accounts_receivable
+        - ttps.gross_revenue*ttbs.prepayment-
+        ttps.gross_revenue*ttbs.inventory
+        -  ttbs.other_receivables
+        - ttbs.other_current_assets ) &lt; 100000000000
+        then IFNULL(ttbs.other_payables,0) +
+        (100000000000 - ( (IFNULL(ttbs.short_term_borrowing+IFNULL(tbsi.short_term_borrowing,0),0)+(IFNULL(ttps.final_material_cost,0)+
+        IFNULL(ttps.gross_revenue*ttbs.inventory,0))*IFNULL(ttbs.notes_accounts_payable,0)
+        +IFNULL(ttps.gross_revenue*ttbs.unearned_revenue,0)+IFNULL(ttbs.payroll_payable,0)
+        +IFNULL(ttbs.other_payables,0)+IFNULL(ttbs.noncurrent_liabilities_mature_one_year,0)
+        +IFNULL(ttbs.other_current_liability,0)+ttbs.tax_payable)
+        + (ttbs.long_term_loan+ttbs.bonds_payable+IFNULL(tbsi.bonds_payable,0)+ttbs.long_term_payable
+        +IFNULL(ttbs.long_term_compensation_employees,0)+ttbs.anticipation_liabilities
+        +ttbs.deferred_income+ttbs.deferred_income_tax_liabilities
+        +ttbs.other_noncurrent_liabilities)
+        +  (IFNULL(ttbs.capitalization+IFNULL(tbsi.capitalization,0),0)+IFNULL(ttbs.capital_reserve+IFNULL(tbsi.capital_reserve,0),0)
+        +IFNULL(ttb.earned_surplus,0) - IFNULL(ttps.undistributed_profits_withdrawal_surplus_reserves,0)
+        +IFNULL(ttps.end_year_undistributed_profits,0))
+        - ( IFNULL(ttbs.original_value_fixed_assets+IFNULL(tbsi.original_value_fixed_assets,0),0)
+        - IFNULL(ttbs.accumulated_depreciation+IFNULL(tbsi.accumulated_depreciation,0),0) - IFNULL(ttbs.fixed_assets_depreciation_reserves,0)+
+        IFNULL(ttbs.construction_in_process,0) + IFNULL(ttbs.intangible_assets+IFNULL(tbsi.intangible_assets,0),0)+
+        IFNULL(ttps.gross_revenue,0) * IFNULL(ttbs.making_loans_payments,0)
+        +IFNULL(ttbs.deferred_tax_assets,0)+IFNULL(ttbs.other_noncurrent_assets,0) + IFNULL(tbsi.goodwill,0) ) -
+        ttps.gross_revenue*ttbs.notes_accounts_receivable
+        - ttps.gross_revenue*ttbs.prepayment-
+        ttps.gross_revenue*ttbs.inventory
+        -  ttbs.other_receivables
+        - ttbs.other_current_assets ) )
+        else ttbs.other_payables end)+IFNULL(ttbs.noncurrent_liabilities_mature_one_year,0)
+        +IFNULL(ttbs.other_current_liability,0)+ttbs.tax_payable)
+        total_current_liability,
+        <!-- #-流动负债结束 -->
+        <!--#-非流动负债 -->
+        <!-- #长期借款 -->
+        ttbs.long_term_loan,
+        <!-- #应付债券 -->
+        ttbs.bonds_payable+IFNULL(tbsi.bonds_payable,0) bonds_payable,
+        <!-- #长期应付款 -->
+        ttbs.long_term_payable,
+        <!-- #长期应付职工薪酬 -->
+        IFNULL(ttbs.long_term_compensation_employees,0) long_term_compensation_employees,
+        <!-- #预计负债 -->
+        ttbs.anticipation_liabilities,
+        <!-- #递延收益 -->
+        ttbs.deferred_income,
+        <!-- #递延所得税负债 -->
+        ttbs.deferred_income_tax_liabilities,
+        <!-- #其他非流动负债 -->
+        ttbs.other_noncurrent_liabilities,
+        <!-- #非流动负债合计 -->
+        (ttbs.long_term_loan+ttbs.bonds_payable+IFNULL(tbsi.bonds_payable,0)+ttbs.long_term_payable
+        +IFNULL(ttbs.long_term_compensation_employees,0)+ttbs.anticipation_liabilities
+        +ttbs.deferred_income+ttbs.deferred_income_tax_liabilities
+        +ttbs.other_noncurrent_liabilities)
+        total_noncurrent_liabilities,
+        <!-- #负 债 合 计 -->
+        <!-- #-负债结束 -->
+        <!-- #-所有者权益 -->
+        <!-- #股本 -->
+        ttbs.capitalization+IFNULL(tbsi.capitalization,0) capitalization,
+        <!-- #资本公积 -->
+        ttbs.capital_reserve+IFNULL(tbsi.capital_reserve,0) capital_reserve,
+        <!-- #盈余公积 -->
+        IFNULL(ttb.earned_surplus,0) - IFNULL(ttps.undistributed_profits_withdrawal_surplus_reserves,0)
+        earned_surplus,
+        <!-- #未分配利润 -->
+        IFNULL(ttps.end_year_undistributed_profits,0) undistributed_profit,
+        <!-- #所有者权益合计 -->
+        (IFNULL(ttbs.capitalization+IFNULL(tbsi.capitalization,0),0)+IFNULL(ttbs.capital_reserve+IFNULL(tbsi.capital_reserve,0),0)
+        +IFNULL(ttb.earned_surplus,0) - IFNULL(ttps.undistributed_profits_withdrawal_surplus_reserves,0)
+        +IFNULL(ttps.end_year_undistributed_profits,0))
+        total_owners_equity,
+        IFNULL(tbsi.goodwill,0) goodwill,
+        ttps.class_id,
+        ttps.team_id,
+        ttps.`year`
+        from
+        t_team_profit_statement ttps
+        left join t_class_balance_sheet_deploy ttbs
+        on ttps.class_id = ttbs.class_id
+        and ttps.`year` = ttbs.`year`
+        left join t_team_balance_sheet ttb
+        on ttps.class_id = ttb.class_id and ttps.team_id = ttb.team_id
+        and ttb.`year` = #{lastYear}
+        LEFT JOIN t_team_balance_sheet_impact tbsi
+        on ttps.class_id = tbsi.class_id and ttps.team_id = tbsi.team_id
+        and ttps.`year` = tbsi.year
+        where
+        ttps.class_id = #{classId}
+        and ttps.`year` = cast( date_format(#{currentMonth}, '%Y') AS SIGNED)
+        and ttps.team_id = #{teamId}
+        GROUP BY ttps.`year`,ttps.team_id
+        ) tbs
+        )tbs
+
+</select>
+
+    <select id="getBalanceSheetForm" resultType="com.tzcpa.model.treatment.TeamBalanceSheetDO">
+        select * from t_team_balance_sheet ttbs
+        where ttbs.class_id = #{classId}
+        and ttbs.team_id = #{teamId}
+        and ttbs.`year` in (#{lastYear},#{localYear})
+        ORDER BY ttbs.`year` desc
+    </select>
+
+
+</mapper>

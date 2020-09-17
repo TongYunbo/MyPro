@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.teacher.TeamMapper">
+
+    <resultMap id="TeamResultMap" type="com.tzcpa.model.teacher.Team">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="account" property="account" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="team_name" property="teamName" jdbcType="VARCHAR"/>
+        <result column="team_desc" property="teamDesc" jdbcType="VARCHAR"/>
+        <result column="team_prospect" property="teamProspect" jdbcType="VARCHAR"/>
+        <result column="end_date" property="endDate" jdbcType="TIMESTAMP"/>
+        <result column="class_id" property="classId" jdbcType="INTEGER"/>
+        <result column="is_del" property="isDel" jdbcType="INTEGER"/>
+        <result column="input_time" property="inputTime" jdbcType="TIMESTAMP"/>
+        <result column="input_person" property="inputPerson" jdbcType="VARCHAR"/>
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+        <result column="modify_person" property="modifyPerson" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 选择性地添加团队信息 -->
+    <insert id="insertTeam" parameterType="com.tzcpa.model.teacher.Team">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_team
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="account != null">
+                account,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="teamName != null">
+                team_name,
+            </if>
+            <if test="teamDesc != null">
+                team_desc,
+            </if>
+            <if test="teamProspect != null">
+                team_prospect,
+            </if>
+            <if test="endDate != null">
+                end_date,
+            </if>
+            <if test="classId != null">
+                class_id,
+            </if>
+            <if test="isDel != null">
+                is_del,
+            </if>
+            <if test="inputPerson != null">
+                input_person,
+            </if>
+            <if test="modifyPerson != null">
+                modify_person,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="account != null">
+                #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="teamName != null">
+                #{teamName,jdbcType=VARCHAR},
+            </if>
+            <if test="teamDesc != null">
+                #{teamDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="teamProspect != null">
+                #{teamProspect,jdbcType=VARCHAR},
+            </if>
+            <if test="endDate != null">
+                #{endDate,jdbcType=VARCHAR},
+            </if>
+            <if test="classId != null">
+                #{classId,jdbcType=INTEGER},
+            </if>
+            <if test="isDel != null">
+                #{isDel,jdbcType=INTEGER},
+            </if>
+            <if test="inputPerson != null">
+                #{inputPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyPerson != null">
+                #{modifyPerson,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 选择性地修改团队信息 -->
+    <update id="updateTeam" parameterType="com.tzcpa.model.teacher.Team">
+        update t_team
+        <set>
+            <if test="account != null">
+                account = #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="teamName != null">
+                team_name = #{teamName,jdbcType=VARCHAR},
+            </if>
+            <if test="teamDesc != null">
+                team_desc = #{teamDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="teamProspect != null">
+                team_prospect = #{teamProspect,jdbcType=VARCHAR},
+            </if>
+            <if test="endDate != null">
+                end_date = #{endDate,jdbcType=VARCHAR},
+            </if>
+            <if test="classId != null">
+                class_id = #{classId,jdbcType=INTEGER},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel,jdbcType=INTEGER},
+            </if>
+            <if test="modifyPerson != null">
+                modify_person = #{modifyPerson,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!-- 查询学员列表总记录数 -->
+    <select id="selectCount" resultType="int">
+		SELECT
+			COUNT(tt.id)
+		FROM
+			t_team tt
+		INNER JOIN t_class c ON c.id = tt.class_id
+		WHERE
+			tt.is_del IN (0, 2)
+		AND c.is_del IN (0, 2)
+ 	</select>
+
+    <!-- 查询团队列表信息  -->
+    <select id="findByPage" parameterType="map" resultMap="TeamResultMap">
+		SELECT
+			tt.id,
+			tt.account,
+			tt.`password`,
+			tt.team_name,
+			tt.team_desc,
+			tt.team_prospect,
+			tt.class_id,
+			tt.end_date,
+			tt.is_del,
+			c.id,
+			c.class_name,
+			c.class_desc,
+			c.is_del del
+		FROM
+			t_team tt
+		INNER JOIN t_class c ON c.id = tt.class_id
+		WHERE
+			tt.is_del IN (0, 2)
+		AND c.is_del IN (0, 2)
+		ORDER BY
+			tt.input_time DESC
+        <if test="start!=null and size!=null">
+            limit #{start}, #{size}
+        </if>
+    </select>
+
+    <!-- 查询学员角色列表信息 -->
+    <select id="getStuRoleInfo" resultType="com.tzcpa.model.teacher.StuRole">
+ 		select tt.id, tt.account, tt.`password`, tt.team_name, tt.team_desc,
+        tt.team_prospect, tt.class_id, tt.end_date, tt.is_del,
+ 		tsr.role_id, tsr.role_name, tsr.user_name, tsr.team_id
+ 		from t_team tt
+		LEFT JOIN t_stu_role tsr ON tt.id = tsr.team_id
+		WHERE tt.is_del in (0, 2)
+		AND role_name IN ('CEO', 'CMO', 'COO', 'CFO', 'CRO') OR role_name is NULL
+ 	</select>
+
+    <!-- 添加团队之班级回显 -->
+    <select id="getClazzInfo" resultType="com.tzcpa.model.teacher.Clazz">
+        SELECT
+        tc.id,
+        tc.class_name className,
+        tc.class_desc classDesc,
+        tc.is_del isDel
+        FROM
+        t_class tc
+        LEFT JOIN t_class_teacher tct ON tc.id = tct.class_id
+        left join 	t_teacher teacher on tct.teacher_id = teacher.id
+        WHERE
+        tc.is_del IN (0, 2)
+        <if test="teacherAccount != null and teacherAccount != null " >
+            and teacher.account = #{teacherAccount} AND  teacher.is_del IN (0, 2)
+        </if>
+        <if test="flag == 1">
+            and tc.answer_state=0
+        </if>
+
+        GROUP BY
+        tc.input_time DESC
+
+ 	</select>
+
+
+
+    <!-- 判断账号是否重复 -->
+    <select id="selectAccountByTeam" parameterType="String" resultType="String">
+ 		select account
+ 		from t_team
+ 		where account = #{account}
+ 		AND is_del in (0, 2)
+ 	</select>
+
+    <!-- 根据团队id查看班级信息 -->
+    <select id="getClazzInfoById" parameterType="int" resultType="com.tzcpa.model.teacher.Clazz">
+ 		select c.id, c.class_name, c.class_desc, c.is_del
+ 		FROM t_team tt
+		LEFT JOIN t_class c ON tt.class_id = c.id
+		where tt.is_del in (0, 2)
+		AND c.is_del in (0, 2)
+		and tt.id = #{id}
+ 	</select>
+
+    <select id="getTeamByClass" parameterType="integer" resultMap="TeamResultMap">
+		SELECT
+			tt.*, r.user_name
+		FROM
+		t_team tt
+			LEFT JOIN t_class c ON tt.class_id = c.id
+			LEFT JOIN ( select * from t_stu_role  r where r.role_name='CFO') r ON tt.class_id = r.class_id
+			AND tt.id = r.team_id
+			where tt.is_del in (0, 2)
+			AND c.is_del in (0, 2)
+			and c.id = #{classId}
+			order by tt.input_time DESC
+ 	</select>
+
+    <!-- 判断团队账号是否重复 -->
+    <select id="getAccountByNotId" parameterType="com.tzcpa.model.teacher.Team" resultType="String">
+ 		select account
+ 		from t_team
+ 		where account = #{account}
+ 		AND id != #{id}
+ 		AND is_del in (0, 2)
+ 	</select>
+
+    <!-- 学员登录 根据账号查询学员信息 wangbj -->
+    <select id="teamLogin" parameterType="String" resultMap="TeamResultMap">
+        select id, account, password
+        , team_name, team_desc, team_prospect
+        , end_date, class_id, is_del
+        from t_team
+        where is_del in (0, 2)
+        <!-- and end_date > now() -->
+        and account = #{account}
+    </select>
+
+    <!-- 查询学员信息 wangbj -->
+    <select id="selectTeam" parameterType="com.tzcpa.model.teacher.Team" resultMap="TeamResultMap">
+        select id, account, password
+        , team_name, team_desc, team_prospect
+        , end_date, class_id , is_del
+        from t_team
+        where id = #{id}
+    </select>
+
+</mapper>

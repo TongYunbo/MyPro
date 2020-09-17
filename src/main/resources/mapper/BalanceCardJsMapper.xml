@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzcpa.mapper.treatment.BalanceJsMapper" >
+ 
+  
+  <!-- 查询营业利润率（营业利润/营业收入） -->
+  <select id="findProfitMargin" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	    operating_profit / operation_revenue opr
+    FROM
+	t_team_profit_statement
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+  </select>
+<!-- 查询年度利润表中营业收入 -->
+  <select id="findOperationRevenue" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	    operation_revenue
+    FROM
+	t_team_profit_statement
+	where class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+  </select>
+
+<!-- 查询资产负债本年总资产 -->
+  <select id="findTotalAssets" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+		total_assets
+    FROM
+	    t_team_balance_sheet
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+  </select>
+<!-- 查询资产负债去年总资产 -->
+  <select id="findLastTotalAssets" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+		total_assets
+    FROM
+	    t_team_balance_sheet
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}-1
+  </select>
+  <!-- 查询年度利润表净利润 -->
+  <select id="findNetProfit" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+		retained_profits
+	FROM
+	t_team_profit_statement
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+  </select>
+  <!-- 查询新产品溢价率 -->
+  <select id="findPremiumRate" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	sum(final_sales)/SUM(adjusted_sales) / strategy_benchmark_unit_price - 1 AS PremiumRate  from t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+    AND vehicle_model='h6'
+  </select>
+  <!-- 查询单车成本下降率 20190702修改-->
+  <select id="findCostReductionRate" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	1-
+		(IFNULL(sum(IFNULL(final_material_cost,0)),0) / IFNULL(sum(IFNULL(adjusted_sales,0)),0))
+	 / 
+		(IFNULL(sum(IFNULL(strategy_benchmark_materials_cost_total,0)),0) / IFNULL(sum(IFNULL(strategy_benchmark_sales,0)),0))
+	FROM
+	t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+    AND vehicle_model='h6'
+  </select>
+  <!-- 查询变量XQCP的值 -->
+  <select id="findXQCP" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='XQCP'
+  </select>
+  <!-- 查询H6本年销售量的值 -->
+  <select id="findH6Sale" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Integer">
+	SELECT
+	sum(adjusted_sales) as sa from t_team_intermediate 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND vehicle_model='h6'
+    AnD `year`=${year}
+  </select>
+  <!-- 查询全部车型本年销售量的值 -->
+  <select id="findAllSale" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Integer">
+	SELECT
+	sum(adjusted_sales) as sa from t_team_intermediate 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AnD `year`=${year}
+  </select>
+  <!-- 查询变量4PKHMYDH6的值 -->
+  <select id="findFPKHMYDH6" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='4PKHMYDH6'
+  </select>
+  <!-- 查询变量4PJGMYDH6 -->
+  <select id="findFPJGMYDH6" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='4PJGMYDH6'
+  </select>
+  <!-- 查询变量YYLCYH -->
+  <select id="findYylcyh" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='YYLCYH'
+  </select>
+  <!-- 查询H6本年销售额 -->
+  <select id="findSalesH6" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	sum(final_sales)
+    FROM
+	t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND vehicle_model='h6'
+    AnD `year`=${year}
+  </select>
+  <!-- 查询全部车型本年销售额 -->
+  <select id="findSalesAll" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	sum(final_sales)
+    FROM
+	t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AnD `year`=${year}
+  </select>
+  <!-- 查询变量YFFX -->
+  <select id="findYffx" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='YFFX'
+  </select>
+  <!-- 查询变量PXH6 -->
+  <select id="findPxH6" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='PXH6'
+  </select>
+  <!-- 查询变量GJRCH6 -->
+  <select id="findGjrH6" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='GJRCH6'
+  </select>
+   <!-- 查询变量ZZJGH6 -->
+  <select id="findZzJGH6" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='ZZJGH6'
+  </select>
+  <!-- 查询变量FXSBH6 -->
+  <select id="findFxSBH6" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='FXSBH6'
+  </select>
+  <!-- 查询本年研发费用 -->
+  <select id="findYvalue" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	v_value
+FROM
+	t_team_rdv
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND v_code = 'e55cf57928aa1151c5a4299595d7eccf'
+    AnD `year`=${year}
+  </select>
+  <!-- 查询上一年研发费用 -->
+  <select id="findYLastValue" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	v_value
+FROM
+	t_team_rdv
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND v_code = 'e55cf57928aa1151c5a4299595d7eccf'
+    AnD `year`=${year}-1
+  </select>
+  
+  <!--查询年营业收入  -->
+  <select id="findYysr" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Long">
+	SELECT
+	operation_revenue
+    FROM
+	t_team_profit_statement
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+  </select>
+  <!-- 查询企业文化数量 -->
+  <select id="findQywenH" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	<!-- SELECT
+		v_value
+	FROM
+		t_team_rdv
+    WHERE
+		class_id = #{param.classId}
+   		AND team_id = #{param.teamId}
+    	AND v_code = '3f23aa4247a53d9010fd78be91ef24b5'
+    	AnD `year`=${year} -->
+    <!-- 变量的表替换 2019-06-13 WTL -->
+	    SELECT
+		v_value
+	FROM
+		t_conf_variable
+    WHERE
+		v_code = '3f23aa4247a53d9010fd78be91ef24b5'
+  </select>
+   <!-- 查询本年所有车型的最终销售额 -->
+  <select id="findFinalSales" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+		sum(final_sales) as finalSales
+	FROM
+		t_team_intermediate
+    WHERE
+		class_id = #{param.classId}
+   		AND team_id = #{param.teamId}
+    	AnD `year`=${year}
+  </select>
+  <!-- 查询本年所有车型的调整后销量 -->
+  <select id="findAdjustedSales" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+		sum(adjusted_sales) as finalSales
+	FROM
+		t_team_intermediate
+    WHERE
+		class_id = #{param.classId}
+   		AND team_id = #{param.teamId}
+    	AnD `year`=${year}
+  </select>
+   <!-- 查询去年所有车型的最终销售额 -->
+  <select id="findFinalLastSales" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+		sum(final_sales) as finalSales
+	FROM
+		t_team_intermediate
+    WHERE
+		class_id = #{param.classId}
+   		AND team_id = #{param.teamId}
+    	AnD `year`=${year}-1
+  </select>
+  <!-- 查询去年所有车型的调整后销量 -->
+  <select id="findAdjustedLastSales" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+		sum(adjusted_sales) as finalSales
+	FROM
+		t_team_intermediate
+    WHERE
+		class_id = #{param.classId}
+   		AND team_id = #{param.teamId}
+    	AnD `year`=${year}-1
+  </select>
+  <select id="findPJTG" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	<!-- SELECT
+	v_value
+FROM
+	t_team_rdv
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND v_code = '47d33d5615eabb21bbee3c409db9a752'
+    AND `year`=${year} -->
+	<!-- 变量的表替换 2019-06-13 WTL -->
+	    SELECT
+		v_value
+	FROM
+		t_conf_variable
+	    WHERE
+		v_code = '47d33d5615eabb21bbee3c409db9a752'
+  </select>
+  <!-- 查询WEY本年销售额 -->
+  <select id="salesRevenue" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	sum(final_sales)
+    FROM
+	t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND vehicle_model='wey'
+    AnD `year`=${year}
+  </select>
+  <!-- 查询新产品溢价率 -->
+  <select id="findPremiumRateWEY" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	(SUM(final_sales)/sum(adjusted_sales) / (sum(strategy_benchmark_unit_price) / 12)) - 1 AS PremiumRate  from t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+    AND vehicle_model='wey'
+  </select>
+  <!-- 查询单车成本下降率WEY -->
+  <select id="findCostReductionRateWEY" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	(IFNULL(sum(IFNULL(final_material_cost,0)),0) / IFNULL(sum(IFNULL(adjusted_sales,0)),0))
+	 / 
+	(IFNULL(sum(IFNULL(strategy_benchmark_materials_cost_total,0)),0) / IFNULL(sum(IFNULL(strategy_benchmark_sales,0)),0))
+		FROM
+	t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+    AND vehicle_model='wey'
+  </select>
+  <!-- 查询变量PPMYD-WEY -->
+  <select id="findPPMYD" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='PPMYD-WEY'
+  </select>
+  <!-- 查询新车WEY毛利率 -->
+  <select id="grossprofitMargin" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT 
+	(sum(final_sales)-sum(final_operating_cost_plus))/sum(final_sales) from t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+    AND vehicle_model='wey'
+  </select>
+  <!-- WEY市场份额 -->
+  <select id="findMarketShare" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT sum(adjusted_sales) from t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+    AND vehicle_model='wey'
+  </select>
+  <!-- 查询变量HKMYD-WEY -->
+  <select id="findHKMYD" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='HKMYD-WEY'
+  </select>
+  <!-- 查询变量4PKHXYL-WEY -->
+  <select id="findFPKHXYL" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='4PKHXYL-WEY'
+  </select>
+  <!-- 查询调整后销量WEY -->
+  <select id="findXL" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	sum(adjusted_sales) from t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+    AND vehicle_model='wey'
+  </select>
+  <select id="findNum" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	<!-- SELECT
+	v_value
+FROM
+	t_team_rdv
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND v_code = '9f25499bcffb21a95a8e32f90404f693'
+    AND `year`=${year} -->
+	    <!-- 变量的表替换 2019-06-13 WTL -->
+	    SELECT
+		v_value
+	FROM
+		t_conf_variable
+	    WHERE
+		v_code = '9f25499bcffb21a95a8e32f90404f693'
+		and `year` = #{year}
+  </select>
+  <!-- 查询本年（利润表营业收入/（调整后的所有销量和） -->
+  <select id="findsJRate" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	sum(final_sales)/sum(adjusted_sales) from t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+  </select>
+  <!-- 查询去年（利润表营业收入/（调整后的所有销量和） -->
+  <select id="findsLastJRate" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	sum(final_sales)/sum(adjusted_sales) from t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}-1
+  </select>
+  <!-- 查询W本年营业总收入 -->
+  <select id="zZRate" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	sum(final_sales) from t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+    AND vehicle_model='wey';
+  </select>
+  
+  <!-- 查询去年营业总收入 -->
+  <select id="zZLastRate" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	sum(gross_revenue) from t_team_profit_statement
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+  </select>
+  
+  <!-- 查询所有车型收入 -->
+  <select id="findZzRate" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	sum(final_sales) from t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+  </select>
+  <!-- 查询变量NBKZWEY -->
+  <select id="findNBKZWEY" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='NBKZWEY'
+  </select>
+  <!-- WEY净利润 -->
+  <select id="findJLR" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+		IFNULL(sum(final_sales),0)   -- 最终销售额
+        -IFNULL(sum(final_operating_cost_plus),0) -- 最终营业成本合计
+        -IFNULL(sum(final_operating_tax_surcharge),0)  -- 最终营业税金及附加
+        -IFNULL(sum(final_sales_total),0)  -- 最终销售费用合计
+        -IFNULL(sum(final_management_total),0) -- 最终管理费用合计
+	    -IFNULL(sum(final_financial_cost),0)  -- 最终财务费用
+        -IFNULL(sum(final_assets_impairment_loss_total),0)  -- 最终资产减值损失合计
+        +IFNULL(sum(final_nonbusiness_income),0)  -- 最终营业外收入
+        -IFNULL(sum(final_nonbusiness_expenditure),0)-- 最终营业外支出
+    FROM
+	t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+    AND vehicle_model='wey'
+  </select>
+  <!-- 查询变量XJSPPWEY -->
+  <select id="findxJSPPWEY" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='XJSPPWEY'
+  </select>
+  <!-- 查询变量YGNLWEY -->
+  <select id="findYGNLWEY" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='YGNLWEY'
+  </select>
+  <!-- 查询变量XXJSWEY -->
+  <select id="findxXJSWEY" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.String">
+	SELECT
+	variable_val from t_team_intermediate_variable 
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND variable_name='XXJSWEY'
+  </select>
+  <!-- 查询WEY销售毛利 -->
+  <select id="findMLSale" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	sum(final_sales)-sum(final_operating_cost_plus) from t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+    AND vehicle_model='wey'
+  </select>
+  <!-- 本年末存货金额值 -->
+  <select id="findKCXJRate" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	inventory from t_team_balance_sheet
+    WHERE
+	class_id = #{param.classId}
+	AND team_id = #{param.teamId}
+    AND `year` = ${year}
+  </select>
+  <!-- 上年末存货金额值 -->
+  <select id="findKCXJRateLast" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	inventory from t_team_balance_sheet
+    WHERE
+	class_id = #{param.classId}
+	AND team_id = #{param.teamId}
+    AND `year` = ${year}-1
+  </select>
+  <!-- 查询WEY车型销量 -->
+  <select id="findAllModle" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	SELECT
+	sum(adjusted_sales) from t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+    and vehicle_model='wey'
+  </select>
+  <select id="findCn" parameterType="com.tzcpa.model.question.BalanceScoreSettlementDO" resultType="java.lang.Double">
+	<!-- SELECT
+	v_value
+FROM
+	t_team_rdv
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND v_code = '5da8532d8863b872087ece97fddf0aa3'
+    AND `year`=${year} -->
+    
+    <!-- 变量的表替换 2019-06-13 WTL -->
+	    SELECT
+		v_value
+	FROM
+		t_conf_variable
+	    WHERE
+		v_code = '5da8532d8863b872087ece97fddf0aa3'
+		AND `year`=${year}
+  </select>
+  <!-- 查询2010年H6平均单价  -->
+  <select id="findDj" resultType="java.lang.Double">
+	SELECT
+		v_value
+	FROM
+		t_conf_variable
+    WHERE  v_code = 'd6396fa9e65af90d17b08247b49ff28f'
+  </select>
+  
+  <!-- 查询此表中的单个数据 -->
+  <select id="getRdvValue" resultType="java.lang.String" >
+  	SELECT
+		v_value 
+	FROM
+		t_team_rdv 
+	WHERE
+		team_id = #{teamId} 
+		AND class_id = #{classId} 
+		AND v_code = #{vCode} 
+		AND `year` = #{year}
+  </select>
+  <!-- 行业总销量 -->
+  <select id="findAdjustSale" resultType="java.lang.Double">
+	<!-- SELECT sum(market_shares) from t_team_intermediate
+    WHERE
+	class_id = #{param.classId}
+    AND team_id = #{param.teamId}
+    AND `year` = ${year}
+    AND vehicle_model_group = 'suv' -->
+    SELECT
+		v_value
+	FROM
+		t_conf_variable
+    WHERE  v_code = 'a019340a2f305e8f5d0b6b6be44c2059'
+    AND `year` = ${year}
+  </select>
+  
+  <!-- 查询给定填报研发 -->
+  <select id="findTBYF" resultType="java.lang.Double">
+  	SELECT
+		v_value
+	FROM
+		t_conf_variable
+	    WHERE
+		v_code = 'bd0eaf1cbbbeca4165b1bebb7931ca27'
+		AND `year`=${year}
+  </select>
+  
+  
+ </mapper>
